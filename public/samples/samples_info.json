@@ -1,0 +1,66 @@
+{
+  "samples": [
+    {
+      "file": "00_Amanita_muscaria.jpg",
+      "species": "Amanita muscaria",
+      "index": 0
+    },
+    {
+      "file": "01_Boletus_edulis.jpg",
+      "species": "Boletus edulis",
+      "index": 1
+    },
+    {
+      "file": "02_Cantharellus_cibarius.jpg",
+      "species": "Cantharellus cibarius",
+      "index": 2
+    },
+    {
+      "file": "03_Psilocybe_cyanescens.jpg",
+      "species": "Psilocybe cyanescens",
+      "index": 3
+    },
+    {
+      "file": "04_Lactarius_deliciosus.jpg",
+      "species": "Lactarius deliciosus",
+      "index": 4
+    },
+    {
+      "file": "05_Phallus_impudicus.jpg",
+      "species": "Phallus impudicus",
+      "index": 5
+    },
+    {
+      "file": "06_Trametes_versicolor.jpg",
+      "species": "Trametes versicolor",
+      "index": 6
+    },
+    {
+      "file": "07_Ganoderma_applanatum.jpg",
+      "species": "Ganoderma applanatum",
+      "index": 7
+    },
+    {
+      "file": "08_Grifola_frondosa.jpg",
+      "species": "Grifola frondosa",
+      "index": 8
+    },
+    {
+      "file": "09_Cerioporus_squamosus.jpg",
+      "species": "Cerioporus squamosus",
+      "index": 9
+    },
+    {
+      "file": "10_Cladonia_fimbriata.jpg",
+      "species": "Cladonia fimbriata",
+      "index": 10
+    },
+    {
+      "file": "11_Agaricus_augustus.jpg",
+      "species": "Agaricus augustus",
+      "index": 11
+    }
+  ],
+  "total": 12,
+  "source": "/home/abel/.cache/kagglehub/datasets/zlatan599/mushroom1/versions/2/merged_dataset"
+}
