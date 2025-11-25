@@ -5,6 +5,7 @@ import SudokuSolver from './pages/projects/SudokuSolver';
 import ChatBot from './pages/projects/ChatBot';
 import MushroomClassifier from './pages/projects/MushroomClassifier';
 import StockPrediction from './pages/projects/StockPrediction';
+import SudokuOCR from './pages/projects/SudokuOCR';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/projects/chatbot" element={<ChatBot />} />
         <Route path="/projects/mushroom-classifier" element={<MushroomClassifier />} />
         <Route path="/projects/stock-prediction" element={<StockPrediction />} />
+        <Route path="/projects/ocr-sudoku" element={<SudokuOCR />} />
       </Routes>
     </Router>
   );

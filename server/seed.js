@@ -135,7 +135,7 @@ const sampleProjects = [
     featured: true,
     interactive: true,
     interactivePath: '/projects/stock-prediction',
-    createdAt: new Date('2024-09-10'),
+    createdAt: new Date('2024-10-10'),
   },
   {
     title: 'Portfolio Dynamique',
@@ -153,10 +153,40 @@ const sampleProjects = [
     technologies: ['React', 'TypeScript', 'TailwindCSS', 'Framer Motion', 'MongoDB', 'Node.js'],
     imageUrl: '/images/projects/portfolio.png',
     bannerUrl: '/images/projects/portfolio-banner.jpg',
-    githubUrl: 'https://github.com/Strikeshyni',
+    githubUrl: 'https://github.com/Strikeshyni/My_website_portfolio',
     category: 'web',
     featured: true,
     createdAt: new Date('2025-11-20'),
+  },
+  {
+    title: 'OCR Sudoku Solver',
+    description: 'Solveur de Sudoku en C avec OCR et CNN from scratch',
+    longDescription: `Solveur de Sudoku complet en C pur avec reconnaissance optique de caractères (OCR) basée sur un réseau de neurones convolutif (CNN) implémenté from scratch.
+
+    Fonctionnalités :
+    - Prétraitement d'image : conversion en niveaux de gris, binarisation Otsu, débruitage
+    - Détection de grille : détection des lignes via transformée de Hough
+    - Extraction de cases : découpage de la grille en 81 cases
+    - Reconnaissance de chiffres : CNN implémenté en C (backpropagation, SGD/Adam)
+    - Résolution : algorithme de backtracking optimisé avec heuristique MRV
+    - Reconstruction : génération de l'image finale avec les chiffres complétés
+    
+    Performance :
+    - Précision OCR > 98.3% sur chiffres manuscrits
+    - Temps résolution < 100ms par grille
+    
+    Architecture :
+    - C99 standard sans dépendances lourdes (pas d'OpenCV/TensorFlow)
+    - Entraînement sur dataset MNIST`,
+    technologies: ['C', 'CNN', 'OCR', 'Image Processing', 'Make'],
+    imageUrl: '/images/projects/ocr-sudoku.jpg',
+    bannerUrl: '/images/projects/ocr-sudoku-banner.jpg',
+    githubUrl: 'https://github.com/Strikeshyni/OCR_Sudoku',
+    category: 'ai',
+    featured: true,
+    interactive: true,
+    interactivePath: '/projects/ocr-sudoku',
+    createdAt: new Date('2025-11-24'),
   },
 ];
 

@@ -29,6 +29,7 @@ kill_port 5173  # Vite
 kill_port 8000  # Chatbot API
 kill_port 8001  # Mushroom API
 # kill_port 8002  # Stock API
+kill_port 8003  # OCR Sudoku API
 echo ""
 
 # Démarrer MongoDB
@@ -96,8 +97,26 @@ fi
 sleep 2
 echo ""
 
+# Démarrer l'API OCR Sudoku
+echo -e "${GREEN}7. OCR Sudoku API (port 8003)${NC}"
+OCR_DIR="server/ocr_sudoku"
+if [ -d "$OCR_DIR" ] && [ -f "$OCR_DIR/api.py" ]; then
+    cd "$OCR_DIR"
+    # On suppose que l'environnement virtuel est déjà créé ou on utilise python3 direct
+    # Idéalement: source venv/bin/activate
+    python3 -m uvicorn api:app --host 0.0.0.0 --port 8003 &
+    OCR_PID=$!
+    cd - > /dev/null
+    echo "OCR Sudoku API démarrée (PID: $OCR_PID)"
+else
+    echo -e "${YELLOW}  $OCR_DIR/api.py non trouvé${NC}"
+    OCR_PID=""
+fi
+sleep 2
+echo ""
+
 # Démarrer Vite
-echo -e "${GREEN}7. Frontend Vite (port 5173)${NC}"
+echo -e "${GREEN}8. Frontend Vite (port 5173)${NC}"
 npm run dev &
 VITE_PID=$!
 sleep 3
@@ -114,6 +133,7 @@ echo "  • Sudoku API:  http://localhost:5000"
 echo "  • Chatbot API: http://localhost:8000"
 echo "  • Mushroom API: http://localhost:8001"
 echo "  • Stock API:   http://localhost:8002"
+echo "  • OCR API:     http://localhost:8003"
 echo ""
 echo "Process IDs:"
 echo "  • Backend: $BACKEND_PID"
@@ -121,11 +141,12 @@ echo "  • Sudoku:  $SUDOKU_PID"
 echo "  • Chatbot: $CHATBOT_PID"
 echo "  • Mushroom: $MUSHROOM_PID"
 [ -n "$STOCK_PID" ] && echo "  • Stock:   $STOCK_PID"
+[ -n "$OCR_PID" ] && echo "  • OCR:     $OCR_PID"
 echo "  • Vite:    $VITE_PID"
 echo ""
 echo -e "${YELLOW}Appuyez sur Ctrl+C pour arrêter tous les services${NC}"
 echo ""
 
 # Attendre et nettoyer à la sortie
-trap "kill $BACKEND_PID $SUDOKU_PID $CHATBOT_PID $MUSHROOM_PID $STOCK_PID $VITE_PID 2>/dev/null" EXIT
+trap "kill $BACKEND_PID $SUDOKU_PID $CHATBOT_PID $MUSHROOM_PID $STOCK_PID $OCR_PID $VITE_PID 2>/dev/null" EXIT
 wait

@@ -78,6 +78,17 @@ cd ../CAC40_stock_prediction
 pip install keras-tuner yfinance tensorflow scikit-learn pandas numpy
 ```
 
+### 5. OCR Sudoku
+
+Localisation: `server/ocr_sudoku/`
+
+```bash
+cd server/ocr_sudoku
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
 ## Démarrage
 
 ### Option 1: Tout démarrer automatiquement
@@ -125,6 +136,13 @@ cd ../CAC40_stock_prediction
 uvicorn api.main:app --host 0.0.0.0 --port 8002
 ```
 
+Terminal 7 - OCR Sudoku:
+```bash
+cd server/ocr_sudoku
+source venv/bin/activate
+uvicorn api:app --host 0.0.0.0 --port 8003
+```
+
 ## Vérification
 
 Accéder aux services:
@@ -135,6 +153,7 @@ Accéder aux services:
 - Sudoku API: http://localhost:5000
 - Mushroom API: http://localhost:8001
 - Stock API: http://localhost:8002/docs
+- OCR Sudoku API: http://localhost:8003/docs
 
 ## Problèmes courants
 

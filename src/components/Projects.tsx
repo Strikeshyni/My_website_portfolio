@@ -119,7 +119,7 @@ const Projects = () => {
 
         {/* Projects Grid */}
         {!loading && (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
             {filteredProjects.map((project, idx) => (
             <motion.div
               key={project._id}
@@ -127,7 +127,7 @@ const Projects = () => {
               animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
               transition={{ duration: 0.5, delay: idx * 0.1 }}
               whileHover={{ y: -10 }}
-              className="glass-effect rounded-xl overflow-hidden group"
+              className="glass-effect rounded-xl overflow-hidden group flex flex-col h-full"
             >
               <div className="relative h-48 overflow-hidden">
                 <img
@@ -138,28 +138,30 @@ const Projects = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-dark via-dark/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
 
-              <div className="p-6">
-                <h3 className="text-2xl font-bold mb-2">{project.title}</h3>
-                <p className="text-gray-400 mb-2">{project.description}</p>
-                <p className="text-xs text-gray-500 mb-4">
-                  {new Date(project.createdAt).toLocaleDateString('fr-FR', {
-                    year: 'numeric',
-                    month: 'long'
-                  })}
-                </p>
+              <div className="p-6 flex flex-col flex-1">
+                <div className="flex-1">
+                  <h3 className="text-2xl font-bold mb-2">{project.title}</h3>
+                  <p className="text-gray-400 mb-2">{project.description}</p>
+                  <p className="text-xs text-gray-500 mb-4">
+                    {new Date(project.createdAt).toLocaleDateString('fr-FR', {
+                      year: 'numeric',
+                      month: 'long'
+                    })}
+                  </p>
 
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {project.technologies.slice(0, 3).map((tech) => (
-                    <span
-                      key={tech}
-                      className="px-3 py-1 bg-primary/20 rounded-full text-xs"
-                    >
-                      {tech}
-                    </span>
-                  ))}
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {project.technologies.slice(0, 3).map((tech) => (
+                      <span
+                        key={tech}
+                        className="px-3 py-1 bg-primary/20 rounded-full text-xs"
+                      >
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
                 </div>
 
-                <div className="flex gap-4">
+                <div className="flex gap-4 mt-4">
                   <Link
                     to={`/project/${project._id}`}
                     className="flex-1 text-center px-4 py-2 bg-primary rounded-lg hover:bg-primary/80 transition-colors"
@@ -180,7 +182,7 @@ const Projects = () => {
               </div>
             </motion.div>
           ))}
-          </div>
+        </div>
         )}
       </motion.div>
     </section>

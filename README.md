@@ -64,7 +64,7 @@ my_website/
 
 - Port: 5000 (Flask)
 - Chemin: `/sudoku`
-- Résolution par backtracking
+- Résolution par backtracking optimisé
 
 ### 3. Classification de Champignons
 
@@ -125,7 +125,7 @@ npm run server
 
 - `docs/SETUP.md` - Installation détaillée
 - `docs/API.md` - Documentation API complète
-- `docs/PROJECTS.md` - Guide des projets interactifs
+- `docs/README.md` - Guide des projets interactifs
 
 ## License
 

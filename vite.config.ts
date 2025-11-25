@@ -24,6 +24,11 @@ export default defineConfig({
         target: 'http://localhost:8002',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/stock/, ''),
+      },
+      '/ocr-sudoku': {
+        target: 'http://localhost:8003',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/ocr-sudoku/, ''),
       }
     }
   }
