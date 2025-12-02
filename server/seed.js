@@ -196,7 +196,7 @@ const sampleProjects = [
     featured: true,
     interactive: true,
     interactivePath: '/projects/ocr-sudoku',
-    healthCheckUrl: '/ocr/api/health',
+    healthCheckUrl: '/ocr-sudoku/health',
     maturity: 'beta',
     createdAt: new Date('2022-09-10'),
   },

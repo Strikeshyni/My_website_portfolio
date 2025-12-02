@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { Link } from 'react-router-dom';
-import { ExternalLink, Github } from 'lucide-react';
+import { Github } from 'lucide-react';
 import axios from 'axios';
 import { Project } from '../types';
 
@@ -24,7 +24,12 @@ const Projects = () => {
       const checks = projects.map(async (project) => {
         if (project.healthCheckUrl) {
           try {
-            await axios.get(project.healthCheckUrl, { timeout: 5000 });
+            const response = await axios.get(project.healthCheckUrl, { timeout: 5000 });
+            // Verify that we didn't get the HTML fallback page
+            const isHtml = typeof response.data === 'string' && response.data.trim().startsWith('<!doctype html>');
+            if (isHtml) {
+                throw new Error('Received HTML instead of JSON');
+            }
             return { id: project._id, isHealthy: true };
           } catch (error) {
             console.warn(`Health check failed for ${project.title}`);

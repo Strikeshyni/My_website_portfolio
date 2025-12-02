@@ -41,7 +41,7 @@ const SudokuSolver = () => {
   const generatePuzzle = async () => {
     setGenerating(true);
     try {
-      const response = await fetch('http://localhost:5000/api/sudoku/generate', {
+      const response = await fetch('/sudoku/api/sudoku/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ difficulty }),
@@ -62,7 +62,7 @@ const SudokuSolver = () => {
   const solveSudoku = async () => {
     setSolving(true);
     try {
-      const response = await fetch('http://localhost:5000/api/sudoku/solve', {
+      const response = await fetch('/sudoku/api/sudoku/solve', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ grid }),
@@ -86,7 +86,7 @@ const SudokuSolver = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:5000/api/sudoku/hint', {
+      const response = await fetch('/sudoku/api/sudoku/hint', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ gameId, currentGrid: grid }),

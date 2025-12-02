@@ -101,7 +101,7 @@ Description: LSTM pour prediction de prix + simulations
 - 3001: Backend API (Express)
 - 27017: MongoDB
 - 8000: Chatbot API (FastAPI)
-- 5000: Sudoku API (Flask)
+- 8004: Sudoku API (Flask)
 - 8001: Mushroom API (Flask)
 - 8002: Stock API (FastAPI)
 

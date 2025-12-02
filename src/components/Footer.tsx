@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion';
 import { Code2, Github, Linkedin, Mail, Trophy } from 'lucide-react';
 
 const Footer = () => {

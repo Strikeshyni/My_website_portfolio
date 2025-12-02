@@ -108,7 +108,7 @@ const Skills = () => {
             <h3 className="text-3xl font-bold">Langages de Programmation</h3>
           </div>
           <div className="flex flex-wrap gap-4 justify-center">
-            {languages.map((lang, idx) => (
+            {languages.map((lang) => (
               <motion.span
                 key={lang.name}
                 className={`${getSizeClass(lang.size)} ${getColorClass(lang.color)} 
@@ -133,7 +133,7 @@ const Skills = () => {
             <h3 className="text-3xl font-bold">Frameworks & Bibliothèques</h3>
           </div>
           <div className="flex flex-wrap gap-4 justify-center">
-            {frameworks.map((framework, idx) => (
+            {frameworks.map((framework) => (
               <motion.span
                 key={framework.name}
                 className={`${getSizeClass(framework.size)} ${getColorClass(framework.color)} 
@@ -158,7 +158,7 @@ const Skills = () => {
             <h3 className="text-3xl font-bold">Outils & Environnements</h3>
           </div>
           <div className="flex flex-wrap gap-4 justify-center">
-            {tools.map((tool, idx) => (
+            {tools.map((tool) => (
               <motion.span
                 key={tool.name}
                 className={`${getSizeClass(tool.size)} ${getColorClass(tool.color)} 

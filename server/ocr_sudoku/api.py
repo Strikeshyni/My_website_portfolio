@@ -27,6 +27,10 @@ DEBUG_IMAGES = [
     "debug_6_cells.png"
 ]
 
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy", "service": "ocr-sudoku"}
+
 @app.post("/solve")
 async def solve_sudoku(file: UploadFile = File(...)):
     # Ensure data directory exists

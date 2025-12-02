@@ -1,0 +1,79 @@
+version: '3.8'
+
+services:
+  # --- Frontend (Nginx + React) ---
+  frontend:
+    build:
+      context: ..
+      dockerfile: deployment/frontend.Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+      - sudoku-service
+      - mushroom-service
+      - ocr-service
+    networks:
+      - portfolio-network
+
+  # --- Backend (Node.js) ---
+  backend:
+    build:
+      context: ..
+      dockerfile: deployment/backend.Dockerfile
+    environment:
+      - MONGODB_URI=mongodb://mongo:27017/portfolio
+      - PORT=3001
+    depends_on:
+      - mongo
+    networks:
+      - portfolio-network
+
+  # --- Database ---
+  mongo:
+    image: mongo:latest
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - portfolio-network
+
+  # --- Python Services ---
+  
+  sudoku-service:
+    build:
+      context: ..
+      dockerfile: deployment/sudoku.Dockerfile
+    networks:
+      - portfolio-network
+
+  mushroom-service:
+    build:
+      context: ..
+      dockerfile: deployment/mushroom.Dockerfile
+    networks:
+      - portfolio-network
+
+  ocr-service:
+    build:
+      context: ..
+      dockerfile: deployment/ocr.Dockerfile
+    networks:
+      - portfolio-network
+
+  # --- External Services (Commented out until integrated) ---
+  # chatbot-service:
+  #   build: ../../chatbot_perso
+  #   networks:
+  #     - portfolio-network
+  
+  # stock-service:
+  #   build: ../../CAC40_stock_prediction
+  #   networks:
+  #     - portfolio-network
+
+networks:
+  portfolio-network:
+    driver: bridge
+
+volumes:
+  mongo-data:

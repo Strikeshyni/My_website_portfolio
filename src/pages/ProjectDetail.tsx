@@ -53,7 +53,12 @@ const ProjectDetail = () => {
     if (project?.healthCheckUrl) {
       const checkHealth = async () => {
         try {
-          await axios.get(project.healthCheckUrl!, { timeout: 5000 });
+          const response = await axios.get(project.healthCheckUrl!, { timeout: 5000 });
+          // Verify that we didn't get the HTML fallback page
+          const isHtml = typeof response.data === 'string' && response.data.trim().startsWith('<!doctype html>');
+          if (isHtml) {
+             throw new Error('Received HTML instead of JSON');
+          }
           setIsHealthy(true);
         } catch (error) {
           console.warn('Health check failed:', error);
@@ -108,7 +113,7 @@ const ProjectDetail = () => {
             <div className="mb-8 p-4 bg-red-900/20 border border-red-500/50 rounded-lg text-red-200">
               <p className="flex items-center gap-2">
                 <span className="text-xl">⚠️</span>
-                Les démos requièrent des serveurs pour tourner et aucun serveur n'est disponible pour le moment. J'espère trouver une solution bientôt.
+                La démo de ce projet nécessite des serveurs pour tourner et aucun serveur n'est disponible pour le moment. J'espère trouver une solution bientôt.
               </p>
             </div>
           )}

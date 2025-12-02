@@ -93,7 +93,7 @@ Réponse:
 
 Documentation interactive: http://localhost:8000/docs
 
-## Solveur Sudoku (Port 5000)
+## Solveur Sudoku (Port 8004)
 
 **Résoudre une grille**
 ```

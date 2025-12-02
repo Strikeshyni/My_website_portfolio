@@ -1,7 +1,7 @@
-import { useState } from 'react';
+// import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { Mail, Send } from 'lucide-react';
+import { Mail } from 'lucide-react';
 
 const Contact = () => {
   const [ref, inView] = useInView({
@@ -9,27 +9,27 @@ const Contact = () => {
     threshold: 0.1,
   });
 
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: '',
-  });
+//   const [formData, setFormData] = useState({
+//     name: '',
+//     email: '',
+//     message: '',
+//   });
 
-  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
+//   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setStatus('sending');
+//   const handleSubmit = async (e: React.FormEvent) => {
+//     e.preventDefault();
+//     setStatus('sending');
 
-    try {
-      // Simulation d'envoi - À remplacer par votre API
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      setStatus('sent');
-      setFormData({ name: '', email: '', message: '' });
-    } catch (error) {
-      setStatus('error');
-    }
-  };
+//     try {
+//       // Simulation d'envoi - À remplacer par votre API
+//       await new Promise(resolve => setTimeout(resolve, 1000));
+//       setStatus('sent');
+//       setFormData({ name: '', email: '', message: '' });
+//     } catch (error) {
+//       setStatus('error');
+//     }
+//   };
 
   return (
     <section id="contact" className="section-padding">
