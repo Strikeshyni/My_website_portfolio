@@ -10,12 +10,28 @@ const ProjectDetail = () => {
   const navigate = useNavigate();
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isHealthy, setIsHealthy] = useState<boolean | null>(null);
 
   const handleBackToProjects = () => {
     navigate('/', { replace: true });
     setTimeout(() => {
       document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' });
     }, 100);
+  };
+
+  const getMaturityBadge = (maturity?: string) => {
+    switch (maturity) {
+      case 'stable':
+        return <span className="absolute top-4 right-4 px-3 py-1 bg-green-500/80 text-white text-xs font-bold rounded-full backdrop-blur-sm">Stable</span>;
+      case 'beta':
+        return <span className="absolute top-4 right-4 px-3 py-1 bg-yellow-500/80 text-white text-xs font-bold rounded-full backdrop-blur-sm">Bêta</span>;
+      case 'alpha':
+        return <span className="absolute top-4 right-4 px-3 py-1 bg-orange-500/80 text-white text-xs font-bold rounded-full backdrop-blur-sm">Alpha</span>;
+      case 'deprecated':
+        return <span className="absolute top-4 right-4 px-3 py-1 bg-red-500/80 text-white text-xs font-bold rounded-full backdrop-blur-sm">Obsolète</span>;
+      default:
+        return null;
+    }
   };
 
   useEffect(() => {
@@ -32,6 +48,23 @@ const ProjectDetail = () => {
 
     fetchProject();
   }, [id]);
+
+  useEffect(() => {
+    if (project?.healthCheckUrl) {
+      const checkHealth = async () => {
+        try {
+          await axios.get(project.healthCheckUrl!, { timeout: 5000 });
+          setIsHealthy(true);
+        } catch (error) {
+          console.warn('Health check failed:', error);
+          setIsHealthy(false);
+        }
+      };
+      checkHealth();
+    } else if (project) {
+      setIsHealthy(true);
+    }
+  }, [project]);
 
   if (loading) {
     return (
@@ -70,6 +103,16 @@ const ProjectDetail = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
+          {/* Health Warning Banner */}
+          {isHealthy === false && (
+            <div className="mb-8 p-4 bg-red-900/20 border border-red-500/50 rounded-lg text-red-200">
+              <p className="flex items-center gap-2">
+                <span className="text-xl">⚠️</span>
+                Les démos requièrent des serveurs pour tourner et aucun serveur n'est disponible pour le moment. J'espère trouver une solution bientôt.
+              </p>
+            </div>
+          )}
+
           {/* Banner */}
           <div className="relative h-96 rounded-2xl overflow-hidden mb-12">
             <img
@@ -98,6 +141,8 @@ const ProjectDetail = () => {
                 ))}
               </div>
             </div>
+
+            {getMaturityBadge(project.maturity)}
             
             {/* Boutons en bas à droite */}
             <div className="absolute bottom-8 right-8 flex gap-3">
@@ -126,14 +171,25 @@ const ProjectDetail = () => {
                 </a>
               )}
               {project.interactive && project.interactivePath && (
-                <Link
-                  to={project.interactivePath}
-                  className="flex items-center gap-2 px-4 py-2 bg-dark/80 backdrop-blur-sm border border-secondary/50 rounded-lg hover:bg-secondary/20 hover:border-secondary transition-all"
-                  title="Démo interactive"
-                >
-                  <ExternalLink size={20} />
-                  <span className="hidden sm:inline">Démo</span>
-                </Link>
+                isHealthy === false ? (
+                  <button
+                    disabled
+                    className="flex items-center gap-2 px-4 py-2 bg-red-900/20 backdrop-blur-sm border border-red-500/50 rounded-lg cursor-not-allowed text-red-400"
+                    title="Démo indisponible"
+                  >
+                    <ExternalLink size={20} />
+                    <span className="hidden sm:inline">Démo Indisponible</span>
+                  </button>
+                ) : (
+                  <Link
+                    to={project.interactivePath}
+                    className="flex items-center gap-2 px-4 py-2 bg-dark/80 backdrop-blur-sm border border-secondary/50 rounded-lg hover:bg-secondary/20 hover:border-secondary transition-all"
+                    title="Démo interactive"
+                  >
+                    <ExternalLink size={20} />
+                    <span className="hidden sm:inline">Démo</span>
+                  </Link>
+                )
               )}
             </div>
           </div>

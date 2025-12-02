@@ -57,15 +57,15 @@ const Contact = () => {
                 </div>
                 <div>
                   <p className="text-sm text-gray-400">Email</p>
-                  <a href="mailto:contact@abelaubron.com" className="text-white hover:text-primary">
-                    contact@abelaubron.com
+                  <a href="mailto:abelpong@gmail.com" className="text-white hover:text-primary">
+                    abelpong@gmail.com
                   </a>
                 </div>
               </div>
             </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          {/* <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label htmlFor="name" className="block text-sm mb-2">
                 Nom
@@ -129,7 +129,7 @@ const Contact = () => {
                 Une erreur est survenue. Veuillez réessayer.
               </p>
             )}
-          </form>
+          </form> */}
         </div>
       </motion.div>
     </section>

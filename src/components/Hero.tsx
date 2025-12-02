@@ -60,7 +60,7 @@ const Hero = () => {
               className="p-4 glass-effect rounded-full hover:bg-accent/20 transition-colors"
               title="LeetCode"
             >
-              <Trophy size={24} />
+              <Code2 size={24} />
             </motion.a>
                         <motion.a
               href="https://leekwars.com/farmer/90987"
@@ -83,11 +83,11 @@ const Hero = () => {
           </div>
 
           <motion.a
-            href="#about"
+            href="#projects"
             className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-primary to-secondary rounded-full text-lg font-semibold hover:scale-105 transition-transform"
             whileHover={{ scale: 1.05 }}
           >
-            Découvrir mon parcours
+            Découvrir mes projets
             <ArrowDown size={20} />
           </motion.a>
         </motion.div>

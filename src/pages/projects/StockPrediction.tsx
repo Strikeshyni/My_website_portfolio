@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { 
   ArrowLeft, TrendingUp, PlayCircle, BarChart3, 
   Clock, CheckCircle, XCircle, Loader, Info,
-  Calendar, Target
+  Calendar, Target, History
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
@@ -44,31 +44,76 @@ interface SimulationStatus {
   total_days: number;
   current_balance: number;
   current_stocks: number;
+  current_stock_value?: number;
+  current_price?: number;
   total_transactions: number;
   estimated_time_remaining?: number;
   start_time: string;
   end_time: string | null;
   error: string | null;
+  plot_path?: string;
+}
+
+interface StrategyDayResult {
+  action: string;
+  balance: number;
+  stocks_owned: number;
+  portfolio_value: number;
+  decision_details?: any;
 }
 
 interface SimulationDayResult {
   date: string;
-  actual_price: number;
+  actual_price?: number;
+  predicted_price?: number;
+  predicted_last_day?: number;
+  error?: string;
+  strategies?: Record<string, StrategyDayResult>;
+  // Legacy fields for backward compatibility
+  action?: string;
+  balance?: number;
+  stocks_owned?: number;
+  portfolio_value?: number;
+}
+
+interface Transaction {
+  transaction_id: number;
+  date: string;
+  transaction_type: 'buy' | 'sell';
+  stock_price: number;
+  quantity: number;
+  total_value: number;
+  balance_after: number;
+  stocks_owned_after: number;
+  reason: string;
   predicted_price: number;
-  predicted_last_day: number;
-  action: string;
-  balance: number;
-  stocks_owned: number;
+  predicted_change_pct: number;
+  strategy?: string;
+}
+
+interface StrategyResult {
+  final_balance: number;
+  benefit: number;
+  benefit_percentage: number;
+  total_trades: number;
+  win_rate: number;
 }
 
 interface SimulationResult {
+  sim_id: string;
+  status: string;
   stock_name: string;
   simulation_period: { from: string; to: string };
   initial_balance: number;
   final_balance: number;
+  final_stocks_owned?: number;
+  final_stock_value?: number;
   benefit: number;
   benefit_percentage: number;
+  strategy_used: string;
   daily_results: SimulationDayResult[];
+  transactions?: Transaction[];
+  strategies_results?: Record<string, StrategyResult>;
   summary: {
     total_trades: number;
     buy_trades: number;
@@ -76,6 +121,8 @@ interface SimulationResult {
     winning_trades: number;
     losing_trades: number;
     win_rate: number;
+    total_days?: number;
+    days_with_errors?: number;
   };
 }
 
@@ -150,7 +197,7 @@ const StockPrediction = () => {
     to_date: '2024-12-31',
     train_size_percent: 0.8,
     val_size_percent: 0.2,
-    time_step: 300,
+    time_step: 100,
     global_tuning: true,
   });
   const [currentJobId, setCurrentJobId] = useState<string | null>(null);
@@ -168,14 +215,16 @@ const StockPrediction = () => {
     stock_name: 'ENGI.PA',
     from_date: new Date(Date.now()-10*24*60*60*1000).toISOString().split('T')[0],
     to_date: new Date(Date.now()).toISOString().split('T')[0],
-    initial_balance: 100,
-    time_step: 300,
+    initial_balance: 1000,
+    time_step: 100,
     nb_years_data: 10,
     strategy: 'simple',
-    buy_threshold: 2.0,
-    sell_threshold: 1.5,
-    min_profit_percentage: 5.0,
-    max_loss_percentage: 3.0,
+    strategies: ['simple', 'conservative'] as string[],
+    retrain_interval: 5,
+    buy_threshold: 1.0,
+    sell_threshold: 1.0,
+    min_profit_percentage: 1.0,
+    max_loss_percentage: 1.0,
   });
   const [currentSimId, setCurrentSimId] = useState<string | null>(null);
   const [simulationStatus, setSimulationStatus] = useState<SimulationStatus | null>(null);
@@ -316,8 +365,8 @@ const StockPrediction = () => {
         pollSimulationStatus(simId);
       };
     } catch (error) {
-      console.error('Error running simulation:', error);
-      alert('Erreur lors de la simulation');
+      console.error('Error starting simulation:', error);
+      alert('Erreur lors du démarrage de la simulation');
       setSimulating(false);
     }
   };
@@ -389,6 +438,12 @@ const StockPrediction = () => {
       const mins = Math.ceil((seconds % 3600) / 60);
       return `${hours}h ${mins}min restantes`;
     }
+  };
+
+  const formatDate = (dateStr: string | null) => {
+    if (!dateStr) return '-';
+    const date = new Date(dateStr);
+    return isNaN(date.getTime()) ? '-' : date.toLocaleString('fr-FR');
   };
 
   const getStatusIcon = (status: string) => {
@@ -548,7 +603,8 @@ const StockPrediction = () => {
                     disabled={isTraining}
                   />
                   <label htmlFor="global-tuning" className="text-sm">
-                    Optimisation globale des hyperparamètres (plus lent mais meilleur)
+                    Optimisation globale des hyperparamètres (recommendé de laisser coché)<br />
+                    Décocher fournis de meilleurs résultats mais peux multiplier par 5-10 le temps d'entraînement.
                   </label>
                 </div>
 
@@ -627,14 +683,14 @@ const StockPrediction = () => {
                     <div className="p-3 bg-dark-light rounded-lg">
                       <p className="text-xs text-gray-400">Démarré</p>
                       <p className="text-sm">
-                        {new Date(jobStatus.start_time).toLocaleString('fr-FR')}
+                        {formatDate(jobStatus.start_time)}
                       </p>
                     </div>
                     {jobStatus.end_time && (
                       <div className="p-3 bg-dark-light rounded-lg">
                         <p className="text-xs text-gray-400">Terminé</p>
                         <p className="text-sm">
-                          {new Date(jobStatus.end_time).toLocaleString('fr-FR')}
+                          {formatDate(jobStatus.end_time)}
                         </p>
                       </div>
                     )}
@@ -900,7 +956,7 @@ const StockPrediction = () => {
                 </div>
               </div>
 
-              {/* Strategy Parameters */}
+                {/* Strategy Parameters */}
               <div className="space-y-4 border-t border-gray-700 pt-6">
                 <h3 className="text-lg font-semibold text-gray-300 flex items-center gap-2">
                   <Target size={18} />
@@ -909,48 +965,123 @@ const StockPrediction = () => {
 
                 <div>
                   <label className="block text-sm font-medium mb-2 flex items-center gap-2">
-                    Type de stratégie
-                    <Tooltip text={STRATEGY_INFO[simulationConfig.strategy].description}>
+                    Mode de simulation
+                  </label>
+                  <div className="flex gap-4 mb-4">
+                    <button
+                      onClick={() => setSimulationConfig({ ...simulationConfig, strategies: [] })}
+                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                        simulationConfig.strategies.length === 0
+                          ? 'bg-primary text-white'
+                          : 'bg-dark-light text-gray-400 hover:text-white'
+                      }`}
+                    >
+                      Stratégie Unique
+                    </button>
+                    <button
+                      onClick={() => setSimulationConfig({ ...simulationConfig, strategies: ['simple', 'conservative'] })}
+                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                        simulationConfig.strategies.length > 0
+                          ? 'bg-primary text-white'
+                          : 'bg-dark-light text-gray-400 hover:text-white'
+                      }`}
+                    >
+                      Multi-Stratégies (Comparaison)
+                    </button>
+                  </div>
+                </div>
+
+                {simulationConfig.strategies.length > 0 ? (
+                  <div className="space-y-4">
+                    <label className="block text-sm font-medium mb-2">
+                      Sélectionnez les stratégies à comparer
+                    </label>
+                    <div className="grid grid-cols-2 gap-2">
+                      {Object.entries(STRATEGY_INFO).map(([key, info]) => (
+                        <div
+                          key={key}
+                          onClick={() => {
+                            const newStrategies = simulationConfig.strategies.includes(key)
+                              ? simulationConfig.strategies.filter(s => s !== key)
+                              : [...simulationConfig.strategies, key];
+                            setSimulationConfig({ ...simulationConfig, strategies: newStrategies });
+                          }}
+                          className={`p-3 rounded-lg cursor-pointer border transition-all ${
+                            simulationConfig.strategies.includes(key)
+                              ? 'bg-primary/20 border-primary text-white'
+                              : 'bg-dark-light border-transparent text-gray-400 hover:border-gray-600'
+                          }`}
+                        >
+                          <div className="font-bold text-sm">{info.name}</div>
+                          <div className="text-xs opacity-70 line-clamp-2">{info.description}</div>
+                        </div>
+                      ))}
+                    </div>
+                    {simulationConfig.strategies.length === 0 && (
+                      <p className="text-red-400 text-xs">Veuillez sélectionner au moins une stratégie</p>
+                    )}
+                  </div>
+                ) : (
+                  <div>
+                    <label className="block text-sm font-medium mb-2 flex items-center gap-2">
+                      Type de stratégie
+                      <Tooltip text={STRATEGY_INFO[simulationConfig.strategy].description}>
+                        <Info size={14} className="text-gray-400" />
+                      </Tooltip>
+                    </label>
+                    <select
+                      value={simulationConfig.strategy}
+                      onChange={(e) => setSimulationConfig({ ...simulationConfig, strategy: e.target.value })}
+                      className="w-full px-4 py-2 bg-dark-light rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                      disabled={simulating}
+                    >
+                      {Object.entries(STRATEGY_INFO).map(([key, info]) => (
+                        <option key={key} value={key}>
+                          {info.name}
+                        </option>
+                      ))}
+                    </select>
+                    <p className="text-xs text-gray-400 mt-1">
+                      {STRATEGY_INFO[simulationConfig.strategy].description}
+                    </p>
+                  </div>
+                )}
+
+                <div>
+                  <label className="block text-sm font-medium mb-2 flex items-center gap-2">
+                    Intervalle de ré-entraînement (jours): {simulationConfig.retrain_interval}
+                    <Tooltip text="Fréquence à laquelle le modèle est ré-entraîné. 1 = tous les jours (lent), 5 = tous les 5 jours (plus rapide).">
                       <Info size={14} className="text-gray-400" />
                     </Tooltip>
                   </label>
-                  <select
-                    value={simulationConfig.strategy}
-                    onChange={(e) => setSimulationConfig({ ...simulationConfig, strategy: e.target.value })}
-                    className="w-full px-4 py-2 bg-dark-light rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                  <input
+                    type="range"
+                    min="1"
+                    max="30"
+                    step="1"
+                    value={simulationConfig.retrain_interval}
+                    onChange={(e) => setSimulationConfig({ ...simulationConfig, retrain_interval: parseInt(e.target.value) })}
+                    className="w-full"
                     disabled={simulating}
-                  >
-                    {Object.entries(STRATEGY_INFO).map(([key, info]) => (
-                      <option key={key} value={key}>
-                        {info.name}
-                      </option>
-                    ))}
-                  </select>
-                  <p className="text-xs text-gray-400 mt-1">
-                    {STRATEGY_INFO[simulationConfig.strategy].description}
-                  </p>
+                  />
                 </div>
 
                 {/* Strategy-specific parameters */}
-                {(simulationConfig.strategy === 'threshold' || simulationConfig.strategy === 'percentage') && (
+                {(simulationConfig.strategy === 'threshold' || simulationConfig.strategy === 'percentage' || simulationConfig.strategies.length > 0) && (
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium mb-2 flex items-center gap-2">
                         Seuil d'achat: {simulationConfig.buy_threshold}
-                        {simulationConfig.strategy === 'threshold' ? '€' : '%'}
-                        <Tooltip text={
-                          simulationConfig.strategy === 'threshold'
-                            ? "Différence minimale en euros pour déclencher un achat. Plus élevé = moins de trades."
-                            : "Pourcentage minimal de hausse prédite pour acheter. Ex: 2% = achète si hausse >= 2%."
-                        }>
+                        {simulationConfig.strategy === 'threshold' && simulationConfig.strategies.length === 0 ? '€' : '%'}
+                        <Tooltip text="Seuil déclencheur pour l'achat.">
                           <Info size={14} className="text-gray-400" />
                         </Tooltip>
                       </label>
                       <input
                         type="range"
-                        min={simulationConfig.strategy === 'threshold' ? 0.1 : 0.1}
-                        max={simulationConfig.strategy === 'threshold' ? 5.0 : 10.0}
-                        step={0.1}
+                        min="0.1"
+                        max="10.0"
+                        step="0.1"
                         value={simulationConfig.buy_threshold}
                         onChange={(e) => setSimulationConfig({ ...simulationConfig, buy_threshold: parseFloat(e.target.value) })}
                         className="w-full"
@@ -960,20 +1091,16 @@ const StockPrediction = () => {
                     <div>
                       <label className="block text-sm font-medium mb-2 flex items-center gap-2">
                         Seuil de vente: {simulationConfig.sell_threshold}
-                        {simulationConfig.strategy === 'threshold' ? '€' : '%'}
-                        <Tooltip text={
-                          simulationConfig.strategy === 'threshold'
-                            ? "Différence minimale en euros pour déclencher une vente."
-                            : "Pourcentage minimal de baisse prédite pour vendre."
-                        }>
+                        {simulationConfig.strategy === 'threshold' && simulationConfig.strategies.length === 0 ? '€' : '%'}
+                        <Tooltip text="Seuil déclencheur pour la vente.">
                           <Info size={14} className="text-gray-400" />
                         </Tooltip>
                       </label>
                       <input
                         type="range"
-                        min={simulationConfig.strategy === 'threshold' ? 0.1 : 0.1}
-                        max={simulationConfig.strategy === 'threshold' ? 5.0 : 10.0}
-                        step={0.1}
+                        min="0.1"
+                        max="10.0"
+                        step="0.1"
                         value={simulationConfig.sell_threshold}
                         onChange={(e) => setSimulationConfig({ ...simulationConfig, sell_threshold: parseFloat(e.target.value) })}
                         className="w-full"
@@ -1067,7 +1194,7 @@ const StockPrediction = () => {
               </div>
 
               {/* Time Estimation */}
-              <div className="mt-6 p-4 bg-blue-900/20 border border-blue-500/30 rounded-lg">
+              {/* <div className="mt-6 p-4 bg-blue-900/20 border border-blue-500/30 rounded-lg">
                 <p className="text-sm text-blue-300 flex items-center gap-2">
                   <Clock size={16} />
                   Temps estimé: {estimateSimulationTime()}
@@ -1075,7 +1202,7 @@ const StockPrediction = () => {
                 <p className="text-xs text-gray-400 mt-1">
                   La simulation entraîne un modèle par jour (~2-3s/jour)
                 </p>
-              </div>
+              </div> */}
 
               <button
                 onClick={handleSimulate}
@@ -1152,23 +1279,31 @@ const StockPrediction = () => {
                   </div>
 
                   {/* Current Status */}
-                  <div className="grid md:grid-cols-3 gap-4">
+                  <div className="grid md:grid-cols-4 gap-4">
                     <div className="p-3 bg-green-900/20 border border-green-500/30 rounded-lg">
                       <p className="text-xs text-gray-400">Balance</p>
                       <p className="text-xl font-bold text-green-400">
-                        {simulationStatus.current_balance.toFixed(2)}€
+                        {simulationStatus.current_balance?.toFixed(2) || '0.00'}€
                       </p>
                     </div>
                     <div className="p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
                       <p className="text-xs text-gray-400">Actions détenues</p>
                       <p className="text-xl font-bold text-blue-400">
-                        {simulationStatus.current_stocks.toFixed(4)}
+                        {simulationStatus.current_stocks?.toFixed(4) || '0.0000'}
+                      </p>
+                    </div>
+                    <div className="p-3 bg-indigo-900/20 border border-indigo-500/30 rounded-lg">
+                      <p className="text-xs text-gray-400">Valeur Actions</p>
+                      <p className="text-xl font-bold text-indigo-400">
+                        {simulationStatus.current_stock_value 
+                          ? simulationStatus.current_stock_value.toFixed(2)
+                          : '0.00'}€
                       </p>
                     </div>
                     <div className="p-3 bg-purple-900/20 border border-purple-500/30 rounded-lg">
                       <p className="text-xs text-gray-400">Transactions</p>
                       <p className="text-xl font-bold text-purple-400">
-                        {simulationStatus.total_transactions}
+                        {simulationStatus.total_transactions || 0}
                       </p>
                     </div>
                   </div>
@@ -1180,32 +1315,116 @@ const StockPrediction = () => {
             {simulationResult && (
               <div className="space-y-6">
                 {/* Summary */}
-                <div className="grid md:grid-cols-4 gap-4">
+                <div className="grid md:grid-cols-3 gap-4">
                   <div className="glass-effect p-4 rounded-xl">
                     <p className="text-sm text-gray-400 mb-1">Capital initial</p>
                     <p className="text-2xl font-bold text-gray-300">
-                      {simulationResult.initial_balance.toFixed(2)}€
+                      {simulationResult.initial_balance?.toFixed(2) || '0.00'}€
                     </p>
                   </div>
                   <div className="glass-effect p-4 rounded-xl">
-                    <p className="text-sm text-gray-400 mb-1">Capital final</p>
+                    <p className="text-sm text-gray-400 mb-1">Capital final (Cash)</p>
                     <p className="text-2xl font-bold text-secondary">
-                      {simulationResult.final_balance.toFixed(2)}€
+                      {simulationResult.final_balance?.toFixed(2) || '0.00'}€
+                    </p>
+                  </div>
+                  <div className="glass-effect p-4 rounded-xl">
+                    <p className="text-sm text-gray-400 mb-1">Valeur Actions</p>
+                    <p className="text-2xl font-bold text-blue-400">
+                      {simulationResult.final_stock_value?.toFixed(2) || '0.00'}€
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      {simulationResult.final_stocks_owned?.toFixed(4) || '0'} actions
+                    </p>
+                  </div>
+                  <div className="glass-effect p-4 rounded-xl">
+                    <p className="text-sm text-gray-400 mb-1">Valeur Totale</p>
+                    <p className="text-2xl font-bold text-white">
+                      {((simulationResult.final_balance || 0) + (simulationResult.final_stock_value || 0)).toFixed(2)}€
                     </p>
                   </div>
                   <div className="glass-effect p-4 rounded-xl">
                     <p className="text-sm text-gray-400 mb-1">Bénéfice</p>
                     <p className={`text-2xl font-bold ${simulationResult.benefit >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                      {simulationResult.benefit >= 0 ? '+' : ''}{simulationResult.benefit.toFixed(2)}€
+                      {simulationResult.benefit >= 0 ? '+' : ''}{simulationResult.benefit?.toFixed(2) || '0.00'}€
                     </p>
                   </div>
                   <div className="glass-effect p-4 rounded-xl">
                     <p className="text-sm text-gray-400 mb-1">Rendement</p>
                     <p className={`text-2xl font-bold ${simulationResult.benefit_percentage >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                      {simulationResult.benefit_percentage >= 0 ? '+' : ''}{simulationResult.benefit_percentage.toFixed(1)}%
+                      {simulationResult.benefit_percentage >= 0 ? '+' : ''}{simulationResult.benefit_percentage?.toFixed(1) || '0.0'}%
                     </p>
                   </div>
                 </div>
+
+                {/* Simulation Plot */}
+                {simulationStatus?.sim_id && (
+                  <div className="glass-effect p-6 rounded-2xl">
+                    <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                      <TrendingUp size={20} className="text-primary" />
+                      Graphique de performance
+                    </h3>
+                    <div className="w-full bg-dark-light rounded-lg overflow-hidden border border-gray-700">
+                      <img 
+                        src={`/stock/api/simulate/${simulationStatus.sim_id}/plot`} 
+                        alt="Graphique de la simulation" 
+                        className="w-full h-auto object-contain"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).style.display = 'none';
+                          (e.target as HTMLImageElement).parentElement!.innerHTML = '<p class="p-4 text-center text-gray-400">Graphique non disponible</p>';
+                        }}
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {/* Strategy Comparison (Multi-Strategy Mode) */}
+                {simulationResult.strategies_results && Object.keys(simulationResult.strategies_results).length > 0 && (
+                  <div className="glass-effect p-6 rounded-2xl">
+                    <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                      <Target size={20} className="text-primary" />
+                      Comparaison des stratégies
+                    </h3>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm text-left">
+                        <thead className="text-xs text-gray-400 uppercase bg-dark-light">
+                          <tr>
+                            <th className="px-4 py-3 rounded-l-lg">Stratégie</th>
+                            <th className="px-4 py-3">Capital Final</th>
+                            <th className="px-4 py-3">Bénéfice</th>
+                            <th className="px-4 py-3">Rendement</th>
+                            <th className="px-4 py-3">Trades</th>
+                            <th className="px-4 py-3 rounded-r-lg">Win Rate</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {Object.entries(simulationResult.strategies_results).map(([name, result], idx) => (
+                            <tr key={name} className="border-b border-gray-700 last:border-0 hover:bg-white/5 transition-colors">
+                              <td className="px-4 py-3 font-medium text-white capitalize">
+                                {STRATEGY_INFO[name]?.name || name}
+                              </td>
+                              <td className="px-4 py-3 font-bold text-white">
+                                {result.final_balance?.toFixed(2) || '0.00'}€
+                              </td>
+                              <td className={`px-4 py-3 font-bold ${result.benefit >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                                {result.benefit >= 0 ? '+' : ''}{result.benefit?.toFixed(2) || '0.00'}€
+                              </td>
+                              <td className={`px-4 py-3 font-bold ${result.benefit_percentage >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                                {result.benefit_percentage?.toFixed(2) || '0.00'}%
+                              </td>
+                              <td className="px-4 py-3 text-gray-300">
+                                {result.trades}
+                              </td>
+                              <td className="px-4 py-3 text-primary font-bold">
+                                {result.win_rate?.toFixed(1) || '0.0'}%
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
 
                 {/* Trading Summary */}
                 <div className="glass-effect p-6 rounded-2xl">
@@ -1232,41 +1451,137 @@ const StockPrediction = () => {
 
                 {/* Daily Results */}
                 <div className="glass-effect p-6 rounded-2xl">
-                  <h3 className="text-xl font-bold mb-4">
-                    Résultats quotidiens (derniers 10 jours)
-                  </h3>
-                  <div className="space-y-2 max-h-96 overflow-y-auto">
-                    {simulationResult.daily_results.slice(-10).reverse().map((day, idx) => (
-                      <div key={idx} className="p-3 bg-dark-light rounded-lg grid grid-cols-5 gap-2 text-sm">
-                        <div>
-                          <p className="text-xs text-gray-400">Date</p>
-                          <p className="font-medium">{new Date(day.date).toLocaleDateString('fr-FR')}</p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-gray-400">Prix réel</p>
-                          <p className="font-medium">{day.actual_price.toFixed(2)}€</p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-gray-400">Prédiction</p>
-                          <p className="font-medium">{day.predicted_price.toFixed(2)}€</p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-gray-400">Action</p>
-                          <p className={`font-bold uppercase ${
-                            day.action === 'buy' ? 'text-green-400' : 
-                            day.action === 'sell' ? 'text-red-400' : 'text-gray-400'
-                          }`}>
-                            {day.action}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-gray-400">Balance</p>
-                          <p className="font-medium">{day.balance.toFixed(2)}€</p>
-                        </div>
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-xl font-bold">
+                      Résultats quotidiens (derniers 10 jours)
+                    </h3>
+                    {simulationConfig.strategies.length > 1 && (
+                      <div className="text-xs text-gray-400">
+                        Affichage: <span className="text-primary font-bold">{simulationConfig.strategies[0]}</span>
                       </div>
-                    ))}
+                    )}
+                  </div>
+                  <div className="space-y-2 max-h-96 overflow-y-auto">
+                    {simulationResult.daily_results.slice(-10).reverse().map((day, idx) => {
+                      if (day.error || day.actual_price === undefined) {
+                        return (
+                          <div key={idx} className="p-3 bg-dark-light rounded-lg text-sm border border-red-500/30 bg-red-900/10">
+                            <div className="flex justify-between items-center">
+                              <div>
+                                <p className="text-xs text-gray-400">Date</p>
+                                <p className="font-medium">{new Date(day.date).toLocaleDateString('fr-FR')}</p>
+                              </div>
+                              <div className="text-red-400 italic flex-1 text-right">
+                                {day.error || "Données manquantes"}
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      }
+
+                      // Determine which strategy data to show
+                      // Priority: 1. First selected strategy, 2. 'simple', 3. First available, 4. Legacy flat structure
+                      const strategyName = simulationConfig.strategies.length > 0 ? simulationConfig.strategies[0] : 'simple';
+                      const strategyData = day.strategies 
+                        ? (day.strategies[strategyName] || Object.values(day.strategies)[0]) 
+                        : day;
+
+                      // If we still don't have data (e.g. strategy not found), fallback to empty object
+                      const data = strategyData || { action: '-', stocks_owned: 0, balance: 0, portfolio_value: 0 };
+
+                      return (
+                        <div key={idx} className="p-3 bg-dark-light rounded-lg grid grid-cols-7 gap-2 text-sm">
+                          <div>
+                            <p className="text-xs text-gray-400">Date</p>
+                            <p className="font-medium">{new Date(day.date).toLocaleDateString('fr-FR')}</p>
+                          </div>
+                          <div>
+                            <p className="text-xs text-gray-400">Prix réel</p>
+                            <p className="font-medium">{day.actual_price?.toFixed(2)}€</p>
+                          </div>
+                          <div>
+                            <p className="text-xs text-gray-400">Prédiction</p>
+                            <p className="font-medium">{day.predicted_price?.toFixed(2)}€</p>
+                          </div>
+                          <div>
+                            <p className="text-xs text-gray-400">Action</p>
+                            <p className={`font-bold uppercase ${
+                              data.action === 'buy' ? 'text-green-400' : 
+                              data.action === 'sell' ? 'text-red-400' : 'text-gray-400'
+                            }`}>
+                              {data.action || '-'}
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-xs text-gray-400">Actions</p>
+                            <p className="font-medium">{data.stocks_owned?.toFixed(4) || '0.0000'}</p>
+                          </div>
+                          <div>
+                            <p className="text-xs text-gray-400">Balance</p>
+                            <p className="font-medium">{data.balance?.toFixed(2) || '0.00'}€</p>
+                          </div>
+                          <div>
+                            <p className="text-xs text-gray-400">Valeur Totale</p>
+                            <p className="font-medium text-blue-300">
+                              {(data.portfolio_value || ((data.balance || 0) + (data.stocks_owned || 0) * (day.actual_price || 0)))?.toFixed(2)}€
+                            </p>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
+                {/* Transaction History */}
+                {simulationResult.transactions && simulationResult.transactions.length > 0 && (
+                  <div className="glass-effect p-6 rounded-2xl">
+                    <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                      <History size={20} className="text-primary" />
+                      Historique des transactions
+                    </h3>
+                    <div className="space-y-2 max-h-96 overflow-y-auto">
+                      {simulationResult.transactions.slice().reverse().map((tx, idx) => (
+                        <div key={idx} className="p-3 bg-dark-light rounded-lg grid grid-cols-7 gap-2 text-sm items-center">
+                          <div>
+                            <p className="text-xs text-gray-400">Date</p>
+                            <p className="font-medium">{new Date(tx.date).toLocaleDateString('fr-FR')}</p>
+                          </div>
+                          <div>
+                            <p className="text-xs text-gray-400">Stratégie</p>
+                            <span className="text-xs font-medium px-2 py-1 bg-gray-700 rounded capitalize">
+                              {tx.strategy || simulationResult.strategy_used || 'Unknown'}
+                            </span>
+                          </div>
+                          <div>
+                            <p className="text-xs text-gray-400">Action</p>
+                            <span className={`px-2 py-1 rounded text-xs font-bold uppercase ${
+                              tx.transaction_type === 'buy' ? 'bg-green-900/30 text-green-400' : 'bg-red-900/30 text-red-400'
+                            }`}>
+                              {tx.transaction_type === 'buy' ? 'ACHAT' : 'VENTE'}
+                            </span>
+                          </div>
+                          <div>
+                            <p className="text-xs text-gray-400">Prix</p>
+                            <p className="font-medium">{tx.stock_price?.toFixed(2) || '0.00'}€</p>
+                          </div>
+                          <div>
+                            <p className="text-xs text-gray-400">Quantité</p>
+                            <p className="font-medium">{tx.quantity?.toFixed(4) || '0.0000'}</p>
+                          </div>
+                          <div>
+                            <p className="text-xs text-gray-400">Montant</p>
+                            <p className="font-medium text-white">{tx.total_value?.toFixed(2) || '0.00'}€</p>
+                          </div>
+                          <div className="col-span-1">
+                            <p className="text-xs text-gray-400">Raison</p>
+                            <p className="text-xs italic text-gray-400 truncate" title={tx.reason}>
+                              {tx.reason}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>

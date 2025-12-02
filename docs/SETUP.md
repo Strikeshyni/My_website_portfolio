@@ -22,6 +22,12 @@ NODE_ENV=development
 
 Initialiser la base de données:
 
+Si pas lancé:
+```bash
+docker run -d -p 27017:27017 --name mongodb mongo
+
+```
+
 ```bash
 npm run seed
 ```

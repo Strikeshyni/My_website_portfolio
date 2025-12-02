@@ -12,6 +12,8 @@ export interface Project {
   featured: boolean;
   interactive?: boolean;
   interactivePath?: string;
+  healthCheckUrl?: string;
+  maturity?: 'stable' | 'beta' | 'alpha' | 'deprecated';
   createdAt: Date;
 }
 

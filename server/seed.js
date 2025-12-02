@@ -32,6 +32,8 @@ const sampleProjects = [
     featured: true,
     interactive: true,
     interactivePath: '/projects/sudoku-solver',
+    healthCheckUrl: '/sudoku/api/sudoku/health',
+    maturity: 'alpha',
     createdAt: new Date('2025-11-20'),
   },
   {
@@ -53,7 +55,9 @@ const sampleProjects = [
     featured: true,
     interactive: true,
     interactivePath: '/projects/chatbot',
-    createdAt: new Date('2025-11-20'),
+    healthCheckUrl: '/chatbot/health',
+    maturity: 'stable',
+    createdAt: new Date('2025-03-15'),
   },
   {
     title: 'Classification de Champignons avec Prédiction Conforme',
@@ -85,6 +89,8 @@ const sampleProjects = [
     featured: true,
     interactive: true,
     interactivePath: '/projects/mushroom-classifier',
+    healthCheckUrl: '/mushroom/health',
+    maturity: 'beta',
     createdAt: new Date('2025-10-15'),
   },
   {
@@ -135,6 +141,8 @@ const sampleProjects = [
     featured: true,
     interactive: true,
     interactivePath: '/projects/stock-prediction',
+    healthCheckUrl: '/stock/health',
+    maturity: 'beta',
     createdAt: new Date('2024-10-10'),
   },
   {
@@ -156,6 +164,8 @@ const sampleProjects = [
     githubUrl: 'https://github.com/Strikeshyni/My_website_portfolio',
     category: 'web',
     featured: true,
+    interactive: false,
+    maturity: 'stable',
     createdAt: new Date('2025-11-20'),
   },
   {
@@ -179,14 +189,16 @@ const sampleProjects = [
     - C99 standard sans dépendances lourdes (pas d'OpenCV/TensorFlow)
     - Entraînement sur dataset MNIST`,
     technologies: ['C', 'CNN', 'OCR', 'Image Processing', 'Make'],
-    imageUrl: '/images/projects/ocr-sudoku.jpg',
-    bannerUrl: '/images/projects/ocr-sudoku-banner.jpg',
+    imageUrl: '/images/projects/ocr-sudoku.png',
+    bannerUrl: '/images/projects/ocr-sudoku-banner.png',
     githubUrl: 'https://github.com/Strikeshyni/OCR_Sudoku',
     category: 'ai',
     featured: true,
     interactive: true,
     interactivePath: '/projects/ocr-sudoku',
-    createdAt: new Date('2025-11-24'),
+    healthCheckUrl: '/ocr/api/health',
+    maturity: 'beta',
+    createdAt: new Date('2022-09-10'),
   },
 ];
 

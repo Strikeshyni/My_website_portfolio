@@ -46,7 +46,7 @@ const Footer = () => {
               className="p-3 glass-effect rounded-full hover:bg-accent/20 transition-colors"
               title="LeetCode"
             >
-              <Trophy size={24} />
+              <Code2 size={24} />
             </a>
             <a
               href="https://leekwars.com/farmer/90987"

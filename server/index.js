@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import projectRoutes from './routes/projects.js';
 import sudokuRoutes from './routes/sudoku.js';
 import chatbotRoutes from './routes/chatbot.js';
+import testImagesSudokuRoutes from './routes/test_images_sudoku.js';
 
 dotenv.config();
 
@@ -24,6 +25,7 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/portfolio
 app.use('/api/projects', projectRoutes);
 app.use('/api/sudoku', sudokuRoutes);
 app.use('/api/chatbot', chatbotRoutes);
+app.use('/api/test-images-sudoku', testImagesSudokuRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Server is running' });

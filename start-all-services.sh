@@ -24,7 +24,7 @@ kill_port() {
 # Nettoyer les ports
 echo -e "${BLUE}Nettoyage des ports...${NC}"
 kill_port 3001  # MongoDB API
-kill_port 5000  # Sudoku API
+kill_port 8004  # Sudoku API
 kill_port 5173  # Vite
 kill_port 8000  # Chatbot API
 kill_port 8001  # Mushroom API
@@ -46,13 +46,13 @@ sleep 2
 echo ""
 
 # Démarrer l'API Sudoku Python
-echo -e "${GREEN}3. Sudoku API Python (port 5000)${NC}"
-if [ -f "server/sudoku_api.py" ]; then
-    python3 server/sudoku_api.py &
+echo -e "${GREEN}3. Sudoku API Python (port 8004)${NC}"
+if [ -f "server/sudoku/sudoku_api.py" ]; then
+    python3 server/sudoku/sudoku_api.py &
     SUDOKU_PID=$!
     echo "Sudoku API démarrée (PID: $SUDOKU_PID)"
 else
-    echo -e "${YELLOW}  sudoku_api.py non trouvé${NC}"
+    echo -e "${YELLOW}  server/sudoku/sudoku_api.py non trouvé${NC}"
 fi
 sleep 2
 echo ""
@@ -127,13 +127,13 @@ echo -e "${GREEN} Tous les services sont démarrés!${NC}"
 echo "======================================"
 echo ""
 echo "Services actifs:"
-echo "  • Frontend:    http://localhost:5173"
-echo "  • Backend API: http://localhost:3001"
-echo "  • Sudoku API:  http://localhost:5000"
-echo "  • Chatbot API: http://localhost:8000"
-echo "  • Mushroom API: http://localhost:8001"
-echo "  • Stock API:   http://localhost:8002"
-echo "  • OCR API:     http://localhost:8003"
+echo "  • Frontend:       http://localhost:5173"
+echo "  • Backend API:    http://localhost:3001"
+echo "  • Sudoku API:     http://localhost:8004"
+echo "  • Chatbot API:    http://localhost:8000"
+echo "  • Mushroom API:   http://localhost:8001"
+echo "  • Stock API:      http://localhost:8002"
+echo "  • OCR Sudoku API: http://localhost:8003"
 echo ""
 echo "Process IDs:"
 echo "  • Backend: $BACKEND_PID"

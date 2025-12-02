@@ -157,8 +157,8 @@ def health_check():
 
 
 if __name__ == '__main__':
-    print("🎮 Sudoku API démarrée sur http://localhost:5000")
-    print("📝 Endpoints disponibles:")
+    print(" Sudoku API démarrée sur http://localhost:8004")
+    print(" Endpoints disponibles:")
     print("  POST /api/sudoku/generate - Générer une grille")
     print("  POST /api/sudoku/solve - Résoudre une grille")
     print("  POST /api/sudoku/check - Vérifier une solution")
@@ -166,4 +166,4 @@ if __name__ == '__main__':
     print("  POST /api/sudoku/validate-move - Valider un coup")
     print("  GET  /api/sudoku/health - Health check")
     
-    app.run(debug=True, port=5000, host='0.0.0.0')
+    app.run(debug=True, port=8004, host='0.0.0.0')

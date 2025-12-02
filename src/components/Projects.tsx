@@ -15,6 +15,42 @@ const Projects = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [filter, setFilter] = useState<string>('all');
   const [loading, setLoading] = useState(true);
+  const [healthStatus, setHealthStatus] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    const checkHealth = async () => {
+      const status: Record<string, boolean> = {};
+      
+      const checks = projects.map(async (project) => {
+        if (project.healthCheckUrl) {
+          try {
+            await axios.get(project.healthCheckUrl, { timeout: 5000 });
+            return { id: project._id, isHealthy: true };
+          } catch (error) {
+            console.warn(`Health check failed for ${project.title}`);
+            return { id: project._id, isHealthy: false };
+          }
+        }
+        return null;
+      });
+
+      const results = await Promise.all(checks);
+      
+      results.forEach(result => {
+        if (result) {
+          status[result.id] = result.isHealthy;
+        }
+      });
+
+      if (Object.keys(status).length > 0) {
+        setHealthStatus(prev => ({ ...prev, ...status }));
+      }
+    };
+
+    if (projects.length > 0) {
+      checkHealth();
+    }
+  }, [projects]);
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -38,6 +74,8 @@ const Projects = () => {
             featured: true,
             interactive: true,
             interactivePath: '/projects/sudoku-solver',
+            healthCheckUrl: '/sudoku/api/sudoku/health',
+            maturity: 'stable',
             createdAt: new Date(),
           },
           {
@@ -52,6 +90,24 @@ const Projects = () => {
             featured: true,
             interactive: true,
             interactivePath: '/projects/chatbot',
+            healthCheckUrl: '/chatbot/health',
+            maturity: 'beta',
+            createdAt: new Date(),
+          },
+          {
+            _id: '4',
+            title: 'Classification de Champignons',
+            description: 'Modèle CNN avec prédiction conforme pour classifier 169 espèces de champignons',
+            longDescription: 'Projet de Deep Learning appliquant la prédiction conforme à la classification de champignons.',
+            technologies: ['Python', 'PyTorch', 'Deep Learning', 'React'],
+            imageUrl: '/images/projects/mushroom.jpg',
+            bannerUrl: '/images/projects/mushroom-banner.jpg',
+            category: 'ai',
+            featured: true,
+            interactive: true,
+            interactivePath: '/projects/mushroom-classifier',
+            healthCheckUrl: '/mushroom/health',
+            maturity: 'alpha',
             createdAt: new Date(),
           },
           {
@@ -64,6 +120,7 @@ const Projects = () => {
             bannerUrl: '/images/projects/portfolio-banner.jpg',
             category: 'web',
             featured: true,
+            maturity: 'stable',
             createdAt: new Date(),
           },
         ];
@@ -82,6 +139,21 @@ const Projects = () => {
     ? projects 
     : projects.filter(p => p.category === filter);
 
+  const getMaturityBadge = (maturity?: string) => {
+    switch (maturity) {
+      case 'stable':
+        return <span className="absolute top-4 right-4 px-3 py-1 bg-green-500/80 text-white text-xs font-bold rounded-full backdrop-blur-sm">Stable</span>;
+      case 'beta':
+        return <span className="absolute top-4 right-4 px-3 py-1 bg-yellow-500/80 text-white text-xs font-bold rounded-full backdrop-blur-sm">Bêta</span>;
+      case 'alpha':
+        return <span className="absolute top-4 right-4 px-3 py-1 bg-orange-500/80 text-white text-xs font-bold rounded-full backdrop-blur-sm">Alpha</span>;
+      case 'deprecated':
+        return <span className="absolute top-4 right-4 px-3 py-1 bg-red-500/80 text-white text-xs font-bold rounded-full backdrop-blur-sm">Obsolète</span>;
+      default:
+        return null;
+    }
+  };
+
   return (
     <section id="projects" className="section-padding bg-dark-light">
       <motion.div
@@ -92,6 +164,37 @@ const Projects = () => {
         className="max-w-7xl mx-auto"
       >
         <h2 className="text-5xl font-bold mb-12 gradient-text">Projets</h2>
+
+        {/* Maturity Legend */}
+        <div className="flex flex-wrap gap-4 mb-8 p-4 glass-effect rounded-lg">
+          <span className="text-sm text-gray-400 mr-2">Légende :</span>
+          <div className="flex items-center gap-2">
+            <span className="w-3 h-3 rounded-full bg-green-500"></span>
+            <span className="text-xs text-gray-300">Stable (Production)</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="w-3 h-3 rounded-full bg-yellow-500"></span>
+            <span className="text-xs text-gray-300">Bêta (Test/Peu contenir des bugs)</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="w-3 h-3 rounded-full bg-orange-500"></span>
+            <span className="text-xs text-gray-300">Alpha (Dev/Peu contenir des bugs/Projet volontairement incomplet)</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="w-3 h-3 rounded-full bg-red-500"></span>
+            <span className="text-xs text-gray-300">Obsolète (Projet volontairement incomplet/Non maintenu)</span>
+          </div>
+        </div>
+
+        {/* Global Health Warning */}
+        {Object.values(healthStatus).some(status => status === false) && (
+          <div className="mb-8 p-4 bg-red-900/20 border border-red-500/50 rounded-lg text-red-200 text-sm">
+            <p className="flex items-center gap-2">
+              <span className="text-xl">⚠️</span>
+              Les démos requièrent des serveurs pour tourner et certaines sont donc indisponibles pour le moment.
+            </p>
+          </div>
+        )}
 
         {/* Filters */}
         <div className="flex flex-wrap gap-4 mb-12">
@@ -129,39 +232,49 @@ const Projects = () => {
               whileHover={{ y: -10 }}
               className="glass-effect rounded-xl overflow-hidden group flex flex-col h-full"
             >
-              <div className="relative h-48 overflow-hidden">
-                <img
-                  src={project.imageUrl}
-                  alt={project.title}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-dark via-dark/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-              </div>
+              <Link to={`/project/${project._id}`}>
+                <div className="relative h-48 overflow-hidden">
+                  <img
+                    src={project.imageUrl}
+                    alt={project.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-dark via-dark/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  {healthStatus[project._id] === false && (
+                    <span className="absolute top-4 left-4 px-3 py-1 bg-red-600/90 text-white text-xs font-bold rounded-full backdrop-blur-sm z-10">
+                      Démo Indisponible
+                    </span>
+                  )}
+                  {getMaturityBadge(project.maturity)}
+                </div>
+              </Link>
 
               <div className="p-6 flex flex-col flex-1">
-                <div className="flex-1">
-                  <h3 className="text-2xl font-bold mb-2">{project.title}</h3>
-                  <p className="text-gray-400 mb-2">{project.description}</p>
-                  <p className="text-xs text-gray-500 mb-4">
-                    {new Date(project.createdAt).toLocaleDateString('fr-FR', {
-                      year: 'numeric',
-                      month: 'long'
-                    })}
-                  </p>
+                <Link to={`/project/${project._id}`}>
+                  <div className="flex-1">
+                    <h3 className="text-2xl font-bold mb-2">{project.title}</h3>
+                    <p className="text-gray-400 mb-2">{project.description}</p>
+                    <p className="text-xs text-gray-500 mb-4">
+                      {new Date(project.createdAt).toLocaleDateString('fr-FR', {
+                        year: 'numeric',
+                        month: 'long'
+                      })}
+                    </p>
 
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {project.technologies.slice(0, 3).map((tech) => (
-                      <span
-                        key={tech}
-                        className="px-3 py-1 bg-primary/20 rounded-full text-xs"
-                      >
-                        {tech}
-                      </span>
-                    ))}
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {project.technologies.slice(0, 3).map((tech) => (
+                        <span
+                          key={tech}
+                          className="px-3 py-1 bg-primary/20 rounded-full text-xs"
+                        >
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                </Link>
 
-                <div className="flex gap-4 mt-4">
+                <div className="flex gap-4 mt-auto">
                   <Link
                     to={`/project/${project._id}`}
                     className="flex-1 text-center px-4 py-2 bg-primary rounded-lg hover:bg-primary/80 transition-colors"

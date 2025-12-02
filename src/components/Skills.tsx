@@ -11,31 +11,31 @@ const Skills = () => {
   // Langages de programmation avec tailles variées pour effet nuage
   const languages = [
     { name: 'Python', size: 'large', color: 'primary' },
-    { name: 'Java', size: 'large', color: 'secondary' },
-    { name: 'C++', size: 'large', color: 'accent' },
+    { name: 'Java', size: 'large', color: 'primary' },
+    { name: 'C++', size: 'large', color: 'primary' },
     { name: 'JavaScript', size: 'large', color: 'primary' },
-    { name: 'C', size: 'large', color: 'secondary' },
-    { name: 'OCaml', size: 'large', color: 'accent' },
+    { name: 'C', size: 'large', color: 'primary' },
+    { name: 'OCaml', size: 'large', color: 'primary' },
     { name: 'Lua', size: 'large', color: 'primary' },
   ];
 
   // Frameworks & Bibliothèques
   const frameworks = [
-    { name: 'PyTorch', size: 'large', color: 'primary' },
+    { name: 'PyTorch', size: 'large', color: 'secondary' },
     { name: 'TensorFlow', size: 'large', color: 'secondary' },
-    { name: 'Keras', size: 'large', color: 'accent' },
-    { name: 'OpenCV', size: 'large', color: 'primary' },
+    { name: 'Keras', size: 'large', color: 'secondary' },
+    { name: 'OpenCV', size: 'large', color: 'secondary' },
     { name: 'PySpark', size: 'large', color: 'secondary' },
-    { name: 'React', size: 'large', color: 'accent' },
+    { name: 'React', size: 'large', color: 'secondary' },
   ];
 
   // Outils
   const tools = [
-    { name: 'VS Code', size: 'large', color: 'primary' },
-    { name: 'PyCharm', size: 'large', color: 'secondary' },
+    { name: 'VS Code', size: 'large', color: 'accent' },
+    { name: 'PyCharm', size: 'large', color: 'accent' },
     { name: 'IntelliJ', size: 'large', color: 'accent' },
-    { name: 'Git', size: 'large', color: 'primary' },
-    { name: 'Vim', size: 'large', color: 'secondary' },
+    { name: 'Git', size: 'large', color: 'accent' },
+    { name: 'Vim', size: 'large', color: 'accent' },
     { name: 'Unity', size: 'large', color: 'accent' }
   ];
 
@@ -111,10 +111,6 @@ const Skills = () => {
             {languages.map((lang, idx) => (
               <motion.span
                 key={lang.name}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={inView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
-                transition={{ duration: 0.5, delay: idx * 0.1 }}
-                whileHover={{ scale: 1.1, y: -5 }}
                 className={`${getSizeClass(lang.size)} ${getColorClass(lang.color)} 
                   border-2 rounded-full font-bold transition-all cursor-default
                   shadow-lg hover:shadow-xl`}
@@ -140,10 +136,6 @@ const Skills = () => {
             {frameworks.map((framework, idx) => (
               <motion.span
                 key={framework.name}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={inView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
-                transition={{ duration: 0.5, delay: idx * 0.1 }}
-                whileHover={{ scale: 1.1, y: -5 }}
                 className={`${getSizeClass(framework.size)} ${getColorClass(framework.color)} 
                   border-2 rounded-full font-bold transition-all cursor-default
                   shadow-lg hover:shadow-xl`}
@@ -169,10 +161,6 @@ const Skills = () => {
             {tools.map((tool, idx) => (
               <motion.span
                 key={tool.name}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={inView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
-                transition={{ duration: 0.5, delay: idx * 0.1 }}
-                whileHover={{ scale: 1.1, y: -5 }}
                 className={`${getSizeClass(tool.size)} ${getColorClass(tool.color)} 
                   border-2 rounded-full font-bold transition-all cursor-default
                   shadow-lg hover:shadow-xl`}

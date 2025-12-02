@@ -28,6 +28,13 @@ const SudokuOCR = () => {
   const [debugImages, setDebugImages] = useState<string[]>([]);
   const [outputImage, setOutputImage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [samples, setSamples] = useState<string[]>([]);
+  const [parsedPredictions, setParsedPredictions] = useState<(null | {
+    empty: boolean;
+    top1?: { val: number; prob: number } | null;
+    top2?: { val: number; prob: number } | null;
+    top3?: { val: number; prob: number } | null;
+  })[][]>(() => Array.from({ length: 9 }, () => Array(9).fill(null)));
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -45,6 +52,18 @@ const SudokuOCR = () => {
     }
     };
     fetchProjectId();
+    // fetch sample images list from the backend
+    const fetchSamples = async () => {
+      try {
+        const res = await axios.get('/api/test-images-sudoku');
+        if (res.data && Array.isArray(res.data.images)) {
+          setSamples(res.data.images);
+        }
+      } catch (e) {
+        console.warn('Could not fetch sudoku test images', e);
+      }
+    };
+    fetchSamples();
   }, []);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -61,6 +80,40 @@ const SudokuOCR = () => {
         setError(null);
       };
       reader.readAsDataURL(uploadedFile);
+    }
+  };
+
+  const handleSampleClick = async (filename: string) => {
+    try {
+      const imagePath = `/test_images_sudoku/${filename}`;
+      const response = await fetch(imagePath);
+      if (!response.ok) throw new Error('Failed to load sample');
+      const blob = await response.blob();
+
+      // create a File object so handleSolve can use it
+      const fileObj = new File([blob], filename, { type: blob.type || 'image/png' });
+
+      // update the file input programmatically
+      const dataTransfer = new DataTransfer();
+      dataTransfer.items.add(fileObj);
+      if (fileInputRef.current) {
+        fileInputRef.current.files = dataTransfer.files;
+      }
+
+      // update local state for preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setSelectedImage(reader.result as string);
+        setFile(fileObj);
+        setResult(null);
+        setDebugImages([]);
+        setOutputImage(null);
+        setError(null);
+      };
+      reader.readAsDataURL(blob);
+    } catch (e) {
+      console.error('Error loading sample image', e);
+      setError('Impossible de charger l\'image d\'exemple');
     }
   };
 
@@ -84,6 +137,11 @@ const SudokuOCR = () => {
       });
 
       setResult(response.data);
+        // Try to parse raw predictions from solver stdout (if present)
+        if (response.data && response.data.stdout) {
+          const parsed = parseRawPredictions(response.data.stdout as string);
+          if (parsed) setParsedPredictions(parsed);
+        }
       
       // Fetch output image
       const timestamp = new Date().getTime(); // Cache busting
@@ -110,6 +168,61 @@ const SudokuOCR = () => {
     }
   };
 
+  // Parse the raw predictions table from solver logs into a 9x9 structure
+  function parseRawPredictions(stdout: string) {
+    const rows = Array.from({ length: 9 }, () => Array(9).fill(null));
+    const lines = stdout.split('\n');
+
+    for (const raw of lines) {
+      const line = raw.trim();
+      // match lines starting with a row number and a pipe
+      if (!/^\d+\s*\|/.test(line)) continue;
+      const parts = line.split('|').map(p => p.trim());
+      if (parts.length < 6) continue;
+      const row = parseInt(parts[0], 10);
+      const col = parseInt(parts[1], 10);
+      if (Number.isNaN(row) || Number.isNaN(col) || row < 0 || row > 8 || col < 0 || col > 8) continue;
+
+      const empty = /^YES$/i.test(parts[2]);
+
+      function parseTop(cellText: string) {
+        if (!cellText || /^-+$/.test(cellText) || cellText === '-') return null;
+        const m = cellText.match(/(\d+)\s*\(\s*([\d.]+)%\s*\)/);
+        if (m) return { val: parseInt(m[1], 10), prob: parseFloat(m[2]) };
+        return null;
+      }
+
+      const top1 = parseTop(parts[3]);
+      const top2 = parseTop(parts[4]);
+      const top3 = parseTop(parts[5]);
+
+      rows[row][col] = { empty, top1, top2, top3 };
+    }
+
+    // check if any cell was parsed
+    const any = rows.some(r => r.some(c => c !== null));
+    return any ? rows : null;
+  }
+
+  // Convert a probability (0-100) to a CSS style with gradient background and border color
+  function colorStyles(prob?: number) {
+    if (prob === undefined || prob === null || Number.isNaN(prob)) {
+      return {} as React.CSSProperties;
+    }
+    // Clamp
+    const p = Math.max(0, Math.min(100, prob));
+    // Map 0 -> red (0deg), 100 -> green (120deg)
+    const hue = Math.round((p / 100) * 120);
+    const borderColor = `hsl(${hue} 90% 50%)`;
+    const bgStart = `hsla(${hue} 90% 45% / 0.18)`; // translucent
+    const bgEnd = 'transparent';
+    const backgroundImage = `linear-gradient(180deg, ${bgStart}, ${bgEnd})`;
+    return {
+      borderColor,
+      backgroundImage,
+    } as React.CSSProperties;
+  }
+
   return (
     <div className="min-h-screen bg-dark text-white pt-24 pb-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
@@ -134,6 +247,43 @@ const SudokuOCR = () => {
             Upload une image de grille de Sudoku pour voir le pipeline de traitement étape par étape.
           </p>
         </motion.div>
+
+        <motion.div
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          className="mb-6 glass-effect p-3 rounded-xl border-2 border-red-500"
+        >
+          <div className="flex items-start gap-3">
+            <AlertTriangle className="text-orange-500 flex-shrink-0" size={24} />
+            <div>
+              <h3 className="font-bold text-orange-400 mb-1">
+                Information importante
+              </h3>
+              <p className="text-sm text-gray-300">
+                Vous pourrez parfois voir des prédictions incorrectes dues aux limitations du dataset du modèle d'OCR.
+                <strong className="block mt-1">N'hésitez pas à regarder la table des prédictions de l'OCR. Vous y trouverez la source des erreurs</strong>
+              </p>
+            </div>
+          </div>
+        </motion.div>
+
+        {samples.length > 0 && (
+          <div className="mb-8">
+            <h3 className="text-lg font-semibold mb-4">Images de test</h3>
+            <div className="flex gap-4 overflow-x-auto pb-2">
+              {samples.map((s) => (
+                <button
+                  key={s}
+                  onClick={() => handleSampleClick(s)}
+                  className="w-36 h-24 flex-shrink-0 rounded-lg overflow-hidden border border-gray-700 hover:border-primary transition-colors"
+                  title={s}
+                >
+                  <img src={`/test_images_sudoku/${s}`} alt={s} className="w-full h-full object-cover" />
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div className="grid lg:grid-cols-2 gap-8 mb-12">
           {/* Input Section */}
@@ -238,9 +388,6 @@ const SudokuOCR = () => {
                 </div>
                 <div className="bg-black/50 rounded-lg p-4 font-mono text-xs text-green-400 overflow-x-auto max-h-48 overflow-y-auto">
                   <pre>{result.stdout}</pre>
-                  {result.stderr && (
-                    <pre className="text-red-400 mt-2 border-t border-gray-700 pt-2">{result.stderr}</pre>
-                  )}
                 </div>
               </div>
             )}
@@ -273,6 +420,42 @@ const SudokuOCR = () => {
                 </div>
               ))}
             </div>
+          </motion.div>
+        )}
+
+        {/* Parsed OCR predictions table */}
+        {parsedPredictions.some(r => r.some(c => c !== null)) && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="glass-effect p-6 rounded-2xl mt-8"
+          >
+            <h2 className="text-2xl font-bold mb-4">Prédictions OCR (par case)</h2>
+            <div className="grid grid-cols-9 gap-2">
+              {parsedPredictions.map((row, rIdx) =>
+                row.map((cell, cIdx) => (
+                  <div
+                    key={`${rIdx}-${cIdx}`}
+                    className={`p-2 rounded-md border ${cell ? 'bg-black/20' : 'border-dashed border-gray-700 bg-black/10'}`}
+                    style={cell && cell.top1 ? colorStyles(cell.top1.prob) : undefined}
+                    title={cell ? `Top1: ${cell.top1?.val} (${cell.top1?.prob}%)\nTop2: ${cell.top2?.val} (${cell.top2?.prob}%)\nTop3: ${cell.top3?.val} (${cell.top3?.prob}%)` : 'Aucune prédiction'}
+                  >
+                    {cell ? (
+                      <div className="text-center">
+                        <div className="text-lg font-bold">{cell.top1 ? cell.top1.val : '-'}</div>
+                        <div className="text-xs text-gray-400">{cell.top1 ? `${cell.top1.prob}%` : ''}</div>
+                        <div className="text-[10px] text-gray-500 mt-1">{cell.empty ? 'Vide' : 'Détectée'}</div>
+                      </div>
+                    ) : (
+                      <div className="text-center text-gray-500 text-sm">-</div>
+                    )}
+                  </div>
+                ))
+              )}
+            </div>
+            <p className="text-sm text-gray-400 mt-3">Passe la souris sur une case pour voir Top2/Top3.<br />
+              Le dégradé de couleur indique la confiance.
+            </p>
           </motion.div>
         )}
       </div>
