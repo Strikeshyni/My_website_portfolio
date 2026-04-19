@@ -16,23 +16,23 @@ const About = () => {
         transition={{ duration: 0.8 }}
         className="max-w-4xl mx-auto"
       >
-        <h2 className="text-5xl font-bold mb-12 gradient-text">À propos</h2>
+        <h2 className="text-5xl font-bold mb-12 gradient-text">About</h2>
 
         <div className="space-y-6 text-lg text-gray-300">
           <p>
-            Étudiant ingénieur à EPITA Lyon, je me passionne pour l'algorithmie et l'intelligence 
-            artificielle. Mes études et projets personnels m'ont permis de développer des compétences 
-            solides dans de nombreux langages et technologies.
+            I am an engineering student at EPITA Lyon with a strong focus on algorithms and artificial
+            intelligence. Through coursework and personal projects, I have built solid skills across
+            multiple programming languages and modern technologies.
           </p>
           <p>
-            Mon expertise couvre le Machine Learning, Deep Learning, Reinforcement Learning, 
-            le traitement de données (Big Data, Data Visualization), ainsi que des domaines spécialisés comme 
-            l'OCR, le NLP, la détection d'anomalies et l'opérationnel (MLOps, DevOps)
+            My expertise spans Machine Learning, Deep Learning, Reinforcement Learning, and data work
+            (Big Data, analytics, and visualization), as well as specialized areas such as OCR, NLP,
+            anomaly detection, and operational workflows (MLOps, DevOps).
           </p>
           <p>
-            J'aime résoudre des problèmes complexes à travers l'algorithmie et créer des solutions 
-            innovantes. Mes projets vont de l'optimisation d'algorithmes aux applications d'IA.
-            J'aime également me challenger en réalisant des défis sur CodinGame, LeetCode ou encore LeekWars.
+            I enjoy solving complex problems through algorithm design and building practical, innovative
+            solutions. My projects range from algorithm optimization to end-to-end AI applications.
+            I also challenge myself regularly on CodinGame, LeetCode, and LeekWars.
           </p>
         </div>
 
@@ -42,7 +42,7 @@ const About = () => {
             className="glass-effect p-6 rounded-xl text-center"
           >
             <div className="text-4xl font-bold text-primary mb-2">15+</div>
-            <div className="text-gray-400">Projets réalisés en IA</div>
+            <div className="text-gray-400">Projects réalisés en IA</div>
           </motion.div>
           <motion.div
             whileHover={{ scale: 1.05 }}

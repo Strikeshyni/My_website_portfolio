@@ -260,7 +260,7 @@ const StockPrediction = () => {
       pollJobStatus(jobId);
     } catch (error) {
       console.error('Error starting training:', error);
-      alert('Erreur: Assurez-vous que l\'API Stock est lancée sur le port 8002');
+      alert('Error: Assurez-vous que l\'API Stock est lancée sur le port 8002');
       setIsTraining(false);
     }
   };
@@ -300,7 +300,7 @@ const StockPrediction = () => {
       setPredictions(response.data.predictions);
     } catch (error) {
       console.error('Error making predictions:', error);
-      alert('Erreur lors de la prédiction');
+      alert('Error lors de la prédiction');
     } finally {
       setPredicting(false);
     }
@@ -319,7 +319,7 @@ const StockPrediction = () => {
       pollSimulationStatus(simId);
     } catch (error) {
       console.error('Error starting simulation:', error);
-      alert('Erreur lors du démarrage de la simulation');
+      alert('Error lors du démarrage de la simulation');
       setSimulating(false);
     }
   };
@@ -376,7 +376,7 @@ const StockPrediction = () => {
   const formatDate = (dateStr: string | null) => {
     if (!dateStr) return '-';
     const date = new Date(dateStr);
-    return isNaN(date.getTime()) ? '-' : date.toLocaleString('fr-FR');
+    return isNaN(date.getTime()) ? '-' : date.toLocaleString('en-US');
   };
 
   const getStatusIcon = (status: string) => {
@@ -401,7 +401,7 @@ const StockPrediction = () => {
         className="inline-flex items-center gap-2 text-primary hover:text-secondary transition-colors mb-8"
       >
         <ArrowLeft size={20} />
-        Retour au projet
+        Back to project
       </Link>
 
       <motion.div
@@ -410,10 +410,10 @@ const StockPrediction = () => {
         className="max-w-7xl mx-auto"
       >
         <h1 className="text-4xl font-bold mb-4 gradient-text">
-          Prédiction de Prix d'Actions CAC40
+          CAC40 Stock Price Prediction
         </h1>
         <p className="text-gray-300 mb-8">
-          Entraînez des modèles LSTM pour prédire les prix d'actions et simulez des stratégies de trading
+          Train LSTM models to predict stock prices and simulate trading strategies
         </p>
 
         {/* Tabs */}
@@ -427,7 +427,7 @@ const StockPrediction = () => {
             }`}
           >
             <PlayCircle size={20} />
-            Entraînement
+            Training
           </button>
           <button
             onClick={() => setActiveTab('predict')}
@@ -438,7 +438,7 @@ const StockPrediction = () => {
             }`}
           >
             <TrendingUp size={20} />
-            Prédictions
+            Predictions
           </button>
           <button
             onClick={() => setActiveTab('simulate')}
@@ -460,7 +460,7 @@ const StockPrediction = () => {
             <div className="glass-effect p-6 rounded-2xl">
               <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
                 <PlayCircle className="text-primary" size={24} />
-                Configuration de l'entraînement
+                Training configuration
               </h2>
 
               <div className="space-y-4">
@@ -484,7 +484,7 @@ const StockPrediction = () => {
                 {/* Date Range */}
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium mb-2">Date de début</label>
+                    <label className="block text-sm font-medium mb-2">Start date</label>
                     <input
                       type="date"
                       value={config.from_date}
@@ -494,7 +494,7 @@ const StockPrediction = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-2">Date de fin</label>
+                    <label className="block text-sm font-medium mb-2">End date</label>
                     <input
                       type="date"
                       value={config.to_date}
@@ -552,12 +552,12 @@ const StockPrediction = () => {
                   {isTraining ? (
                     <>
                       <Loader className="animate-spin" size={20} />
-                      Entraînement en cours...
+                      Training en cours...
                     </>
                   ) : (
                     <>
                       <PlayCircle size={20} />
-                      Lancer l'entraînement
+                      Start training
                     </>
                   )}
                 </button>
@@ -568,13 +568,13 @@ const StockPrediction = () => {
             <div className="glass-effect p-6 rounded-2xl">
               <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
                 <BarChart3 className="text-secondary" size={24} />
-                Statut de l'entraînement
+                Training status
               </h2>
 
               {!jobStatus ? (
                 <div className="text-center py-12 text-gray-400">
                   <Info size={48} className="mx-auto mb-4 opacity-50" />
-                  <p>Aucun entraînement en cours</p>
+                  <p>No active training</p>
                   <p className="text-sm mt-2">
                     Configurez les paramètres et lancez l'entraînement
                   </p>
@@ -632,7 +632,7 @@ const StockPrediction = () => {
                   {/* Error */}
                   {jobStatus.error && (
                     <div className="p-4 bg-red-900/20 border border-red-500/30 rounded-lg">
-                      <p className="text-sm font-medium text-red-300 mb-1">Erreur:</p>
+                      <p className="text-sm font-medium text-red-300 mb-1">Error:</p>
                       <p className="text-sm text-white">{jobStatus.error}</p>
                     </div>
                   )}
@@ -667,9 +667,9 @@ const StockPrediction = () => {
               {!currentJobId || jobStatus?.status !== 'completed' ? (
                 <div className="text-center py-12 text-gray-400">
                   <Info size={48} className="mx-auto mb-4 opacity-50" />
-                  <p>Aucun modèle entraîné disponible</p>
+                  <p>No trained model available</p>
                   <p className="text-sm mt-2">
-                    Entraînez d'abord un modèle dans l'onglet "Entraînement"
+                    Entraînez d'abord un modèle dans l'onglet "Training"
                   </p>
                 </div>
               ) : (
@@ -708,7 +708,7 @@ const StockPrediction = () => {
                     {predicting ? (
                       <>
                         <Loader className="animate-spin" size={20} />
-                        Prédiction en cours...
+                        Predicting...
                       </>
                     ) : (
                       <>
@@ -728,7 +728,7 @@ const StockPrediction = () => {
               {!predictions ? (
                 <div className="text-center py-12 text-gray-400">
                   <TrendingUp size={48} className="mx-auto mb-4 opacity-50" />
-                  <p>Aucune prédiction disponible</p>
+                  <p>No prediction available</p>
                 </div>
               ) : (
                 <div className="space-y-3">
@@ -743,7 +743,7 @@ const StockPrediction = () => {
                           <p className="font-medium">Jour +{pred.day}</p>
                           <p className="text-xs text-gray-400">
                             {new Date(new Date(config.to_date).getTime() + pred.day * 86400000)
-                              .toLocaleDateString('fr-FR')}
+                              .toLocaleDateString('en-US')}
                           </p>
                         </div>
                       </div>
@@ -801,7 +801,7 @@ const StockPrediction = () => {
 
                   <div>
                     <label className="block text-sm font-medium mb-2 flex items-center gap-2">
-                      Date de début
+                      Start date
                       <Tooltip text="Début de la période de simulation. La simulation commencera à partir de cette date.">
                         <Info size={14} className="text-gray-400" />
                       </Tooltip>
@@ -817,7 +817,7 @@ const StockPrediction = () => {
 
                   <div>
                     <label className="block text-sm font-medium mb-2 flex items-center gap-2">
-                      Date de fin
+                      End date
                       <Tooltip text="Fin de la période de simulation. Plus la période est longue, plus la simulation prendra du temps.">
                         <Info size={14} className="text-gray-400" />
                       </Tooltip>
@@ -1147,12 +1147,12 @@ const StockPrediction = () => {
                 {simulating ? (
                   <>
                     <Loader className="animate-spin" size={20} />
-                    Simulation en cours...
+                    Simulation running...
                   </>
                 ) : (
                   <>
                     <PlayCircle size={20} />
-                    Lancer la simulation
+                    Start simulation
                   </>
                 )}
               </button>
@@ -1194,14 +1194,14 @@ const StockPrediction = () => {
                   {/* Current Details */}
                   <div className="grid md:grid-cols-2 gap-4">
                     <div className="p-4 bg-dark-light rounded-lg">
-                      <p className="text-xs text-gray-400 mb-1">Date en cours</p>
+                      <p className="text-xs text-gray-400 mb-1">Current date</p>
                       <p className="text-lg font-bold text-white flex items-center gap-2">
                         <Calendar size={16} className="text-primary" />
-                        {new Date(simulationStatus.current_date).toLocaleDateString('fr-FR')}
+                        {new Date(simulationStatus.current_date).toLocaleDateString('en-US')}
                       </p>
                     </div>
                     <div className="p-4 bg-dark-light rounded-lg">
-                      <p className="text-xs text-gray-400 mb-1">Temps restant</p>
+                      <p className="text-xs text-gray-400 mb-1">Time remaining</p>
                       <p className="text-lg font-bold text-white flex items-center gap-2">
                         <Clock size={16} className="text-secondary" />
                         {simulationStatus.estimated_time_remaining
@@ -1277,13 +1277,13 @@ const StockPrediction = () => {
                     </p>
                   </div>
                   <div className="glass-effect p-4 rounded-xl">
-                    <p className="text-sm text-gray-400 mb-1">Bénéfice</p>
+                    <p className="text-sm text-gray-400 mb-1">Profit</p>
                     <p className={`text-2xl font-bold ${simulationResult.benefit >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                       {simulationResult.benefit >= 0 ? '+' : ''}{simulationResult.benefit?.toFixed(2) || '0.00'}€
                     </p>
                   </div>
                   <div className="glass-effect p-4 rounded-xl">
-                    <p className="text-sm text-gray-400 mb-1">Rendement</p>
+                    <p className="text-sm text-gray-400 mb-1">Return</p>
                     <p className={`text-2xl font-bold ${simulationResult.benefit_percentage >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                       {simulationResult.benefit_percentage >= 0 ? '+' : ''}{simulationResult.benefit_percentage?.toFixed(1) || '0.0'}%
                     </p>
@@ -1304,7 +1304,7 @@ const StockPrediction = () => {
                         className="w-full h-auto object-contain"
                         onError={(e) => {
                           (e.target as HTMLImageElement).style.display = 'none';
-                          (e.target as HTMLImageElement).parentElement!.innerHTML = '<p class="p-4 text-center text-gray-400">Graphique non disponible</p>';
+                          (e.target as HTMLImageElement).parentElement!.innerHTML = '<p class="p-4 text-center text-gray-400">Chart unavailable</p>';
                         }}
                       />
                     </div>
@@ -1316,7 +1316,7 @@ const StockPrediction = () => {
                   <div className="glass-effect p-6 rounded-2xl">
                     <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
                       <Target size={20} className="text-primary" />
-                      Comparaison des stratégies
+                      Strategy comparison
                     </h3>
                     <div className="overflow-x-auto">
                       <table className="w-full text-sm text-left">
@@ -1324,8 +1324,8 @@ const StockPrediction = () => {
                           <tr>
                             <th className="px-4 py-3 rounded-l-lg">Stratégie</th>
                             <th className="px-4 py-3">Capital Final</th>
-                            <th className="px-4 py-3">Bénéfice</th>
-                            <th className="px-4 py-3">Rendement</th>
+                            <th className="px-4 py-3">Profit</th>
+                            <th className="px-4 py-3">Return</th>
                             <th className="px-4 py-3">Trades</th>
                             <th className="px-4 py-3 rounded-r-lg">Win Rate</th>
                           </tr>
@@ -1361,20 +1361,20 @@ const StockPrediction = () => {
 
                 {/* Trading Summary */}
                 <div className="glass-effect p-6 rounded-2xl">
-                  <h3 className="text-xl font-bold mb-4">Statistiques de trading</h3>
+                  <h3 className="text-xl font-bold mb-4">Trading statistics</h3>
                   <div className="grid md:grid-cols-3 gap-4">
                     <div className="p-3 bg-dark-light rounded-lg">
                       <p className="text-sm text-gray-400">Total trades</p>
                       <p className="text-xl font-bold">{simulationResult.summary.total_trades}</p>
                     </div>
                     <div className="p-3 bg-dark-light rounded-lg">
-                      <p className="text-sm text-gray-400">Achats / Ventes</p>
+                      <p className="text-sm text-gray-400">Buys / Sells</p>
                       <p className="text-xl font-bold">
                         {simulationResult.summary.buy_trades} / {simulationResult.summary.sell_trades}
                       </p>
                     </div>
                     <div className="p-3 bg-dark-light rounded-lg">
-                      <p className="text-sm text-gray-400">Taux de réussite</p>
+                      <p className="text-sm text-gray-400">Win rate</p>
                       <p className="text-xl font-bold text-primary">
                         {simulationResult.summary.win_rate.toFixed(1)}%
                       </p>
@@ -1386,11 +1386,11 @@ const StockPrediction = () => {
                 <div className="glass-effect p-6 rounded-2xl">
                   <div className="flex justify-between items-center mb-4">
                     <h3 className="text-xl font-bold">
-                      Résultats quotidiens (derniers 10 jours)
+                      Daily results (last 10 days)
                     </h3>
                     {simulationConfig.strategies.length > 1 && (
                       <div className="text-xs text-gray-400">
-                        Affichage: <span className="text-primary font-bold">{simulationConfig.strategies[0]}</span>
+                        View: <span className="text-primary font-bold">{simulationConfig.strategies[0]}</span>
                       </div>
                     )}
                   </div>
@@ -1402,10 +1402,10 @@ const StockPrediction = () => {
                             <div className="flex justify-between items-center">
                               <div>
                                 <p className="text-xs text-gray-400">Date</p>
-                                <p className="font-medium">{new Date(day.date).toLocaleDateString('fr-FR')}</p>
+                                <p className="font-medium">{new Date(day.date).toLocaleDateString('en-US')}</p>
                               </div>
                               <div className="text-red-400 italic flex-1 text-right">
-                                {day.error || "Données manquantes"}
+                                {day.error || "Missing data"}
                               </div>
                             </div>
                           </div>
@@ -1426,7 +1426,7 @@ const StockPrediction = () => {
                         <div key={idx} className="p-3 bg-dark-light rounded-lg grid grid-cols-7 gap-2 text-sm">
                           <div>
                             <p className="text-xs text-gray-400">Date</p>
-                            <p className="font-medium">{new Date(day.date).toLocaleDateString('fr-FR')}</p>
+                            <p className="font-medium">{new Date(day.date).toLocaleDateString('en-US')}</p>
                           </div>
                           <div>
                             <p className="text-xs text-gray-400">Prix réel</p>
@@ -1469,14 +1469,14 @@ const StockPrediction = () => {
                   <div className="glass-effect p-6 rounded-2xl">
                     <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
                       <History size={20} className="text-primary" />
-                      Historique des transactions
+                      Transaction history
                     </h3>
                     <div className="space-y-2 max-h-96 overflow-y-auto">
                       {simulationResult.transactions.slice().reverse().map((tx, idx) => (
                         <div key={idx} className="p-3 bg-dark-light rounded-lg grid grid-cols-7 gap-2 text-sm items-center">
                           <div>
                             <p className="text-xs text-gray-400">Date</p>
-                            <p className="font-medium">{new Date(tx.date).toLocaleDateString('fr-FR')}</p>
+                            <p className="font-medium">{new Date(tx.date).toLocaleDateString('en-US')}</p>
                           </div>
                           <div>
                             <p className="text-xs text-gray-400">Stratégie</p>
@@ -1489,7 +1489,7 @@ const StockPrediction = () => {
                             <span className={`px-2 py-1 rounded text-xs font-bold uppercase ${
                               tx.transaction_type === 'buy' ? 'bg-green-900/30 text-green-400' : 'bg-red-900/30 text-red-400'
                             }`}>
-                              {tx.transaction_type === 'buy' ? 'ACHAT' : 'VENTE'}
+                              {tx.transaction_type === 'buy' ? 'BUY' : 'SELL'}
                             </span>
                           </div>
                           <div>

@@ -64,13 +64,13 @@ const Projects = () => {
         setProjects(response.data);
       } catch (error) {
         console.error('Error fetching projects:', error);
-        // Fallback sur des données statiques en cas d'erreur
+        // Fallback to static data if API fails
         const demoProjects: Project[] = [
           {
             _id: '1',
-            title: 'Solveur de Sudoku Optimisé',
-            description: 'Algorithme avancé de résolution de Sudoku avec backtracking optimisé',
-            longDescription: 'Un solveur de Sudoku performant utilisant des techniques d\'optimisation avancées et du backtracking intelligent pour résoudre n\'importe quelle grille.',
+            title: 'Optimized Sudoku Solver',
+            description: 'Advanced Sudoku solving with optimized backtracking',
+            longDescription: 'A high-performance Sudoku solver using advanced optimization and intelligent backtracking to solve any valid grid.',
             technologies: ['Python', 'Algorithmes', 'Optimisation'],
             imageUrl: '/images/projects/sudoku.jpg',
             bannerUrl: '/images/projects/sudoku-banner.jpg',
@@ -85,9 +85,9 @@ const Projects = () => {
           },
           {
             _id: '2',
-            title: 'Chatbot IA',
-            description: 'Assistant conversationnel intelligent avec apprentissage automatique',
-            longDescription: 'Un chatbot IA capable de comprendre et répondre de manière contextuelle aux questions des utilisateurs.',
+            title: 'AI Chatbot',
+            description: 'Intelligent conversational assistant with machine learning',
+            longDescription: 'An AI chatbot that can understand and respond contextually to user questions.',
             technologies: ['Python', 'NLP', 'Machine Learning', 'React'],
             imageUrl: '/images/projects/chatbot.jpg',
             bannerUrl: '/images/projects/chatbot-banner.jpg',
@@ -101,9 +101,9 @@ const Projects = () => {
           },
           {
             _id: '4',
-            title: 'Classification de Champignons',
-            description: 'Modèle CNN avec prédiction conforme pour classifier 169 espèces de champignons',
-            longDescription: 'Projet de Deep Learning appliquant la prédiction conforme à la classification de champignons.',
+            title: 'Mushroom Classification',
+            description: 'CNN model with conformal prediction to classify 169 mushroom species',
+            longDescription: 'A deep learning project applying conformal prediction to mushroom classification.',
             technologies: ['Python', 'PyTorch', 'Deep Learning', 'React'],
             imageUrl: '/images/projects/mushroom.jpg',
             bannerUrl: '/images/projects/mushroom-banner.jpg',
@@ -117,9 +117,9 @@ const Projects = () => {
           },
           {
             _id: '3',
-            title: 'Portfolio Dynamique',
-            description: 'Site portfolio moderne avec animations et effets de scroll',
-            longDescription: 'Un portfolio moderne et performant avec des animations fluides et une architecture modulaire.',
+            title: 'Dynamic Portfolio',
+            description: 'Modern portfolio website with animations and scroll effects',
+            longDescription: 'A modern and performant portfolio with smooth animations and modular architecture.',
             technologies: ['React', 'TypeScript', 'TailwindCSS', 'Framer Motion'],
             imageUrl: '/images/projects/portfolio.jpg',
             bannerUrl: '/images/projects/portfolio-banner.jpg',
@@ -149,11 +149,11 @@ const Projects = () => {
       case 'stable':
         return <span className="absolute top-4 right-4 px-3 py-1 bg-green-500/80 text-white text-xs font-bold rounded-full backdrop-blur-sm">Stable</span>;
       case 'beta':
-        return <span className="absolute top-4 right-4 px-3 py-1 bg-yellow-500/80 text-white text-xs font-bold rounded-full backdrop-blur-sm">Bêta</span>;
+        return <span className="absolute top-4 right-4 px-3 py-1 bg-yellow-500/80 text-white text-xs font-bold rounded-full backdrop-blur-sm">Beta</span>;
       case 'alpha':
         return <span className="absolute top-4 right-4 px-3 py-1 bg-orange-500/80 text-white text-xs font-bold rounded-full backdrop-blur-sm">Alpha</span>;
       case 'deprecated':
-        return <span className="absolute top-4 right-4 px-3 py-1 bg-red-500/80 text-white text-xs font-bold rounded-full backdrop-blur-sm">Obsolète</span>;
+        return <span className="absolute top-4 right-4 px-3 py-1 bg-red-500/80 text-white text-xs font-bold rounded-full backdrop-blur-sm">Deprecated</span>;
       default:
         return null;
     }
@@ -168,26 +168,26 @@ const Projects = () => {
         transition={{ duration: 0.8 }}
         className="max-w-7xl mx-auto"
       >
-        <h2 className="text-5xl font-bold mb-12 gradient-text">Projets</h2>
+        <h2 className="text-5xl font-bold mb-12 gradient-text">Projects</h2>
 
         {/* Maturity Legend */}
         <div className="flex flex-wrap gap-4 mb-8 p-4 glass-effect rounded-lg">
-          <span className="text-sm text-gray-400 mr-2">Légende :</span>
+          <span className="text-sm text-gray-400 mr-2">Legend:</span>
           <div className="flex items-center gap-2">
             <span className="w-3 h-3 rounded-full bg-green-500"></span>
             <span className="text-xs text-gray-300">Stable (Production)</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="w-3 h-3 rounded-full bg-yellow-500"></span>
-            <span className="text-xs text-gray-300">Bêta (Test/Peu contenir des bugs)</span>
+            <span className="text-xs text-gray-300">Beta (Testing/Might contain bugs)</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="w-3 h-3 rounded-full bg-orange-500"></span>
-            <span className="text-xs text-gray-300">Alpha (Dev/Peu contenir des bugs/Projet volontairement incomplet)</span>
+            <span className="text-xs text-gray-300">Alpha (In development/Might contain bugs)</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="w-3 h-3 rounded-full bg-red-500"></span>
-            <span className="text-xs text-gray-300">Obsolète (Projet volontairement incomplet/Non maintenu)</span>
+            <span className="text-xs text-gray-300">Deprecated (Not maintained)</span>
           </div>
         </div>
 
@@ -196,7 +196,7 @@ const Projects = () => {
           <div className="mb-8 p-4 bg-red-900/20 border border-red-500/50 rounded-lg text-red-200 text-sm">
             <p className="flex items-center gap-2">
               <span className="text-xl">⚠️</span>
-              Les démos requièrent des serveurs pour tourner et certaines sont donc indisponibles pour le moment.
+              Demos require backend services and some of them are currently unavailable.
             </p>
           </div>
         )}
@@ -213,7 +213,7 @@ const Projects = () => {
                   : 'glass-effect hover:bg-white/10'
               }`}
             >
-              {cat === 'all' ? 'Tous' : cat.charAt(0).toUpperCase() + cat.slice(1)}
+              {cat === 'all' ? 'All' : cat.charAt(0).toUpperCase() + cat.slice(1)}
             </button>
           ))}
         </div>
@@ -247,7 +247,7 @@ const Projects = () => {
                   <div className="absolute inset-0 bg-gradient-to-t from-dark via-dark/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                   {healthStatus[project._id] === false && (
                     <span className="absolute top-4 left-4 px-3 py-1 bg-red-600/90 text-white text-xs font-bold rounded-full backdrop-blur-sm z-10">
-                      Démo Indisponible
+                      Demo Unavailable
                     </span>
                   )}
                   {getMaturityBadge(project.maturity)}
@@ -260,7 +260,7 @@ const Projects = () => {
                     <h3 className="text-2xl font-bold mb-2">{project.title}</h3>
                     <p className="text-gray-400 mb-2">{project.description}</p>
                     <p className="text-xs text-gray-500 mb-4">
-                      {new Date(project.createdAt).toLocaleDateString('fr-FR', {
+                      {new Date(project.createdAt).toLocaleDateString('en-US', {
                         year: 'numeric',
                         month: 'long'
                       })}
@@ -284,7 +284,7 @@ const Projects = () => {
                     to={`/project/${project._id}`}
                     className="flex-1 text-center px-4 py-2 bg-primary rounded-lg hover:bg-primary/80 transition-colors"
                   >
-                    Détails
+                    Details
                   </Link>
                   {project.githubUrl && (
                     <a

@@ -44,9 +44,9 @@ const Contact = () => {
 
         <div className="grid md:grid-cols-2 gap-8">
           <div>
-            <h3 className="text-2xl font-bold mb-4">N'hésitez pas à me contacter</h3>
+            <h3 className="text-2xl font-bold mb-4">Feel free to reach out</h3>
             <p className="text-gray-400 mb-6">
-              Si vous avez un projet en tête ou souhaitez simplement échanger sur un sujet qui pourrait m'intéresser, je serai ravi d'échanger avec vous.
+              If you have a project in mind or simply want to discuss ideas, I would be happy to connect with you.
             </p>
 
             <div className="space-y-4">

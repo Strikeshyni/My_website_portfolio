@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { apiUrl } from '../../lib/api';
 
-// Composant Confetti
+// Confetti component
 const Confetti = () => {
   const colors = ['#8B5CF6', '#06B6D4', '#10B981', '#F59E0B', '#EF4444', '#EC4899'];
   const confettiCount = 50;
@@ -52,15 +52,15 @@ const SudokuSolver = () => {
   const [grid, setGrid] = useState<number[][]>(
     Array(9).fill(null).map(() => Array(9).fill(0))
   );
-  // Grille des cases initiales (verrouillées)
+  // Grid of initial (locked) cells
   const [initialCells, setInitialCells] = useState<boolean[][]>(
     Array(9).fill(null).map(() => Array(9).fill(false))
   );
-  // Grille des cases remplies par indice
+  // Grid of hint-filled cells
   const [hintCells, setHintCells] = useState<boolean[][]>(
     Array(9).fill(null).map(() => Array(9).fill(false))
   );
-  // Lignes, colonnes et boîtes complétées
+  // Completed rows, columns, and boxes
   const [completedRows, setCompletedRows] = useState<Set<number>>(new Set());
   const [completedCols, setCompletedCols] = useState<Set<number>>(new Set());
   const [completedBoxes, setCompletedBoxes] = useState<Set<string>>(new Set());
@@ -83,7 +83,7 @@ const SudokuSolver = () => {
   
   const MAX_HINTS = 3;
 
-  // Vérifier si un nombre est valide selon les règles du Sudoku
+  // Check if a number is valid according to Sudoku rules
   const isValidMove = (row: number, col: number, num: number, currentGrid: number[][]): boolean => {
     if (num === 0) return true; // Effacer est toujours valide
     
@@ -111,7 +111,7 @@ const SudokuSolver = () => {
     return true;
   };
 
-  // Vérifier les complétions après chaque changement
+  // Check completions after each change
   const checkCompletions = (currentGrid: number[][]) => {
     const boxSize = Math.sqrt(gridSize);
     const newCompletedRows = new Set<number>();
@@ -171,7 +171,7 @@ const SudokuSolver = () => {
     }
   };
 
-  // Timer pour le temps de jeu
+  // Elapsed game timer
   useEffect(() => {
     let interval: ReturnType<typeof setInterval> | null = null;
     
@@ -186,7 +186,7 @@ const SudokuSolver = () => {
     };
   }, [startTime, isCompleted]);
 
-  // Formater le temps en mm:ss
+  // Format time as mm:ss
   const formatTime = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -227,14 +227,14 @@ const SudokuSolver = () => {
   }, []);
 
   const handleCellChange = (row: number, col: number, value: string) => {
-    // Ne pas modifier les cases initiales
+    // Do not allow changes to initial cells
     if (initialCells[row][col]) return;
     
     const num = parseInt(value) || 0;
     if (num >= 0 && num <= gridSize) {
-      // Vérifier si le mouvement est valide
+      // Check if move is valid
       if (num !== 0 && !isValidMove(row, col, num, grid)) {
-        // Mouvement invalide - afficher un feedback visuel
+        // Invalid move with visual feedback
         setInvalidMove({ row, col });
         setTimeout(() => setInvalidMove(null), 500);
         return;
@@ -244,14 +244,14 @@ const SudokuSolver = () => {
       newGrid[row][col] = num;
       setGrid(newGrid);
       
-      // Retirer le statut "hint" si l'utilisateur modifie la case
+      // Remove hint status if user edits the cell
       if (hintCells[row][col]) {
         const newHintCells = hintCells.map(r => [...r]);
         newHintCells[row][col] = false;
         setHintCells(newHintCells);
       }
       
-      // Vérifier les complétions
+      // Recompute completions
       checkCompletions(newGrid);
     }
   };
@@ -265,7 +265,7 @@ const SudokuSolver = () => {
   const generatePuzzle = async () => {
     setGenerating(true);
     
-    // Timeouts coordonnés avec le backend (+5s de marge pour laisser le backend répondre)
+    // Timeouts aligned with backend (+5s margin)
     // Backend: 10s/20s/35s -> Frontend: 15s/25s/40s
     const timeoutMs = gridSize === 25 ? 40000 : gridSize === 16 ? 25000 : 15000;
     const controller = new AbortController();
@@ -304,17 +304,17 @@ const SudokuSolver = () => {
         setSolvedBySolver(false);
         setSolverTime(null);
       } else if (data.error) {
-        alert(`Erreur: ${data.error}`);
+        alert(`Error: ${data.error}`);
       }
     } catch (error: any) {
       clearTimeout(timeoutId);
       if (error.name === 'AbortError') {
-        alert(`La génération de la grille ${gridSize}x${gridSize} a pris trop de temps. Essayez à nouveau ou choisissez une taille plus petite.`);
+        alert(`Generating the ${gridSize}x${gridSize} grid took too long. Please try again or choose a smaller size.`);
       } else if (error.message?.includes('timeout') || error.message?.includes('408')) {
-        alert(`Timeout: La génération a pris trop de temps. Réessayez.`);
+        alert('Timeout: generation took too long. Please retry.');
       } else {
         console.error('Error generating puzzle:', error);
-        alert('Erreur: Assurez-vous que l\'API Python est lancée');
+        alert('Error: make sure the Sudoku API is running.');
       }
     } finally {
       setGenerating(false);
@@ -325,7 +325,7 @@ const SudokuSolver = () => {
     setSolving(true);
     const solveStartTime = Date.now();
     
-    // Timeouts coordonnés avec le backend (+5s de marge pour laisser le backend répondre)
+    // Timeouts aligned with backend (+5s margin)
     // Backend: 10s/20s/50s -> Frontend: 15s/25s/60s
     const timeoutMs = gridSize === 25 ? 60000 : gridSize === 16 ? 25000 : 15000;
     const controller = new AbortController();
@@ -342,10 +342,10 @@ const SudokuSolver = () => {
       
       const data = await response.json();
       
-      // Vérifier si la réponse contient une erreur (timeout backend ou autre)
+      // Handle backend timeout or error responses
       if (!response.ok || data.error) {
-        const errorMessage = data.error || 'Erreur lors de la résolution';
-        alert(`Erreur: ${errorMessage}`);
+        const errorMessage = data.error || 'Error while solving the puzzle';
+        alert(`Error: ${errorMessage}`);
         return;
       }
       
@@ -359,10 +359,10 @@ const SudokuSolver = () => {
     } catch (error: any) {
       clearTimeout(timeoutId);
       if (error.name === 'AbortError' || error.name === 'TimeoutError') {
-        alert(`La résolution de la grille ${gridSize}x${gridSize} a pris trop de temps. Vous pouvez réessayer mais la grille est peut-être trop complexe pour les timeout setup.`);
+        alert(`Solving the ${gridSize}x${gridSize} grid took too long. You can retry, but the puzzle may be too complex for the current timeout.`);
       } else {
         console.error('Error solving sudoku:', error);
-        alert('Erreur: Assurez-vous que l\'API Python est lancée');
+        alert('Error: make sure the Sudoku API is running.');
       }
     } finally {
       setSolving(false);
@@ -371,12 +371,12 @@ const SudokuSolver = () => {
 
   const getHint = async () => {
     if (!gameId) {
-      alert('Générez d\'abord un puzzle pour obtenir des indices');
+      alert('Generate a puzzle first to request hints.');
       return;
     }
     
     if (hintsUsed >= MAX_HINTS) {
-      alert(`Vous avez utilisé tous vos indices (${MAX_HINTS}/${MAX_HINTS})`);
+      alert(`You already used all hints (${MAX_HINTS}/${MAX_HINTS}).`);
       return;
     }
 
@@ -393,18 +393,18 @@ const SudokuSolver = () => {
         newGrid[row][col] = value;
         setGrid(newGrid);
         
-        // Marquer cette case comme remplie par indice
+        // Mark cell as filled by hint
         const newHintCells = hintCells.map(r => [...r]);
         newHintCells[row][col] = true;
         setHintCells(newHintCells);
         
-        // Incrémenter le compteur d'indices
+        // Increase hint counter
         setHintsUsed(prev => prev + 1);
         
-        // Vérifier les complétions
+        // Recompute completions
         checkCompletions(newGrid);
       } else {
-        alert(data.message || 'Aucun indice disponible');
+        alert(data.message || 'No hint available.');
       }
     } catch (error) {
       console.error('Error getting hint:', error);
@@ -412,9 +412,9 @@ const SudokuSolver = () => {
   };
 
   const clearGrid = () => {
-    // Effacer seulement les cases non-initiales (entrées par l'utilisateur ou indices)
+    // Clear only non-initial cells (user or hint entries)
     if (!gameId) {
-      // Si pas de partie en cours, tout effacer
+      // If no game is active, clear everything
       setGrid(Array(gridSize).fill(null).map(() => Array(gridSize).fill(0)));
       setInitialCells(Array(gridSize).fill(null).map(() => Array(gridSize).fill(false)));
       setHintCells(Array(gridSize).fill(null).map(() => Array(gridSize).fill(false)));
@@ -423,7 +423,7 @@ const SudokuSolver = () => {
       setCompletedBoxes(new Set());
       setGameId(null);
     } else {
-      // Sinon, garder les cases initiales et effacer le reste
+      // Otherwise keep initial cells and clear the rest
       const newGrid = grid.map((row, i) => 
         row.map((cell, j) => initialCells[i][j] ? cell : 0)
       );
@@ -436,11 +436,11 @@ const SudokuSolver = () => {
       setCompletionTime(null);
       setSolvedBySolver(false);
       setSolverTime(null);
-      // Ne pas réinitialiser les indices utilisés ni le timer
+      // Keep hints counter and timer untouched
     }
   };
 
-  // Déterminer la couleur du texte selon le type de cellule
+  // Get text color based on cell type
   const getCellTextColor = (row: number, col: number, isSelected: boolean): string => {
     if (isSelected && !initialCells[row][col]) return 'text-primary';
     if (initialCells[row][col]) return 'text-white font-extrabold'; // Chiffres initiaux
@@ -448,7 +448,7 @@ const SudokuSolver = () => {
     return 'text-emerald-400'; // Chiffres entrés par l'utilisateur
   };
 
-  // Vérifier si une cellule est dans une zone complétée
+  // Check whether a cell belongs to a completed area
   const isCellCompleted = (row: number, col: number): boolean => {
     const boxSize = Math.sqrt(gridSize);
     const boxRow = Math.floor(row / boxSize);
@@ -461,10 +461,10 @@ const SudokuSolver = () => {
 
   return (
     <div className="min-h-screen bg-dark section-padding">
-      {/* Confettis */}
+      {/* Confetti */}
       {showConfetti && <Confetti />}
       
-      {/* Modal de victoire */}
+      {/* Victory modal */}
       <AnimatePresence>
         {isCompleted && (
           <motion.div
@@ -481,33 +481,33 @@ const SudokuSolver = () => {
               onClick={e => e.stopPropagation()}
             >
               <Trophy className="w-16 h-16 text-amber-400 mx-auto mb-4" />
-              <h2 className="text-3xl font-bold gradient-text mb-4">🎉 Bravo ! 🎉</h2>
+              <h2 className="text-3xl font-bold gradient-text mb-4">🎉 Great job! 🎉</h2>
               <p className="text-gray-300 mb-4">
-                Vous avez complété la grille {gridSize}x{gridSize} en difficulté {
-                  difficulty === 'easy' ? 'Facile' : 
-                  difficulty === 'medium' ? 'Moyen' : 
-                  difficulty === 'hard' ? 'Difficile' : 'Expert'
+                You completed the {gridSize}x{gridSize} grid on {
+                  difficulty === 'easy' ? 'Easy' : 
+                  difficulty === 'medium' ? 'Medium' : 
+                  difficulty === 'hard' ? 'Hard' : 'Expert'
                 } !
               </p>
               {solvedBySolver ? (
                 <p className="text-lg text-secondary font-bold">
-                  Résolu par l'algorithme en {solverTime}s
+                  Solved by the algorithm in {solverTime}s
                 </p>
               ) : (
                 <p className="text-lg text-emerald-400 font-bold">
-                  Votre temps : {formatTime(completionTime || elapsedTime)}
+                  Your time: {formatTime(completionTime || elapsedTime)}
                 </p>
               )}
               {hintsUsed > 0 && (
                 <p className="text-sm text-amber-400 mt-2">
-                  Indices utilisés : {hintsUsed}/{MAX_HINTS}
+                  Hints used: {hintsUsed}/{MAX_HINTS}
                 </p>
               )}
               <button
                 onClick={() => setIsCompleted(false)}
                 className="mt-6 px-6 py-3 bg-gradient-to-r from-primary to-secondary rounded-xl font-bold hover:scale-105 transition-transform"
               >
-                Continuer
+                Continue
               </button>
             </motion.div>
           </motion.div>
@@ -519,7 +519,7 @@ const SudokuSolver = () => {
         className="inline-flex items-center gap-2 text-primary hover:text-secondary transition-colors mb-8"
       >
         <ArrowLeft size={20} />
-        Retour au projet
+        Back to project
       </Link>
 
       <motion.div
@@ -529,32 +529,32 @@ const SudokuSolver = () => {
       >
         <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
           <h1 className="text-4xl font-bold gradient-text">
-            Jeu de Sudoku Interactif
+            Interactive Sudoku Game
           </h1>
           
-          {/* Timer et statistiques */}
+          {/* Timer and stats */}
           {startTime && (
             <div className="flex items-center gap-4 bg-dark-light/50 px-4 py-2 rounded-xl border border-gray-700">
               <div className="text-center">
                 <span className="text-2xl font-mono font-bold text-primary">{formatTime(elapsedTime)}</span>
-                <span className="text-xs text-gray-400 block">Temps</span>
+                <span className="text-xs text-gray-400 block">Time</span>
               </div>
               <div className="h-8 w-px bg-gray-700"></div>
               <div className="text-center">
                 <span className={`text-lg font-bold ${hintsUsed >= MAX_HINTS ? 'text-red-400' : 'text-amber-400'}`}>
                   {hintsUsed}/{MAX_HINTS}
                 </span>
-                <span className="text-xs text-gray-400 block">Indices</span>
+                <span className="text-xs text-gray-400 block">Hints</span>
               </div>
             </div>
           )}
         </div>
         
         <div className="glass-effect rounded-2xl p-8 mb-8">
-          {/* Sélection de difficulté et taille */}
+          {/* Difficulty and size */}
           <div className="mb-6 flex flex-wrap gap-6">
             <div>
-              <label className="block text-sm mb-3 text-gray-300">Difficulté</label>
+              <label className="block text-sm mb-3 text-gray-300">Difficulty</label>
               <div className="flex gap-2 flex-wrap">
                 {(['easy', 'medium', 'hard', 'expert'] as const).map((diff) => (
                   <button
@@ -566,9 +566,9 @@ const SudokuSolver = () => {
                         : 'bg-dark-light text-gray-400 hover:bg-gray-700'
                     }`}
                   >
-                    {diff === 'easy' && 'Facile'}
-                    {diff === 'medium' && 'Moyen'}
-                    {diff === 'hard' && 'Difficile'}
+                    {diff === 'easy' && 'Easy'}
+                    {diff === 'medium' && 'Medium'}
+                    {diff === 'hard' && 'Hard'}
                     {diff === 'expert' && 'Expert'}
                   </button>
                 ))}
@@ -576,7 +576,7 @@ const SudokuSolver = () => {
             </div>
             
             <div>
-              <label className="block text-sm mb-3 text-gray-300">Taille de la grille</label>
+              <label className="block text-sm mb-3 text-gray-300">Grid size</label>
               <div className="flex gap-2">
                 {([9, 16, 25] as const).map((size) => (
                   <button
@@ -598,7 +598,7 @@ const SudokuSolver = () => {
           {/* Layout principal: Grille + Sidebar */}
           <div className="flex flex-col xl:flex-row gap-8 items-start justify-center">
             
-            {/* Conteneur de la grille */}
+              {/* Grid container */}
             <div className="w-full xl:w-auto overflow-x-auto flex justify-center p-4">
               <div 
                 className="grid gap-0 bg-gray-700 border-2 border-gray-500 shadow-2xl"
@@ -647,13 +647,13 @@ const SudokuSolver = () => {
               </div>
             </div>
 
-            {/* Sidebar: Pavé numérique et Actions */}
+            {/* Sidebar: Number pad and actions */}
             <div className="w-full xl:w-80 flex flex-col gap-6 shrink-0">
               
-              {/* Pavé numérique */}
+              {/* Number pad */}
               <div className="bg-dark-light/30 p-5 rounded-xl border border-gray-700 shadow-lg">
                 <label className="block text-sm mb-4 text-gray-300 text-center font-medium uppercase tracking-wider">
-                  Pavé Numérique
+                  Number Pad
                 </label>
                 <div className="grid grid-cols-5 gap-2">
                   {Array.from({ length: gridSize }, (_, i) => i + 1).map((num) => (
@@ -668,7 +668,7 @@ const SudokuSolver = () => {
                   <button
                     onClick={() => handleNumberClick(0)}
                     className="aspect-square rounded-lg bg-red-900/30 hover:bg-red-600 hover:text-white transition-all font-bold text-red-400 border border-red-900/50 shadow-sm hover:shadow-md hover:-translate-y-0.5"
-                    title="Effacer la case"
+                    title="Clear cell"
                   >
                     X
                   </button>
@@ -683,7 +683,7 @@ const SudokuSolver = () => {
                   className="flex items-center justify-center gap-2 px-4 py-4 bg-gradient-to-r from-primary to-secondary rounded-xl hover:scale-[1.02] transition-transform disabled:opacity-50 font-bold shadow-lg"
                 >
                   <Play size={20} />
-                  {generating ? 'Génération...' : 'Nouvelle Partie'}
+                  {generating ? 'Generating...' : 'New Game'}
                 </button>
                 
                 <div className="grid grid-cols-2 gap-3">
@@ -692,7 +692,7 @@ const SudokuSolver = () => {
                     disabled={solving}
                     className="flex items-center justify-center gap-2 px-3 py-3 bg-primary rounded-xl hover:bg-primary/80 transition-colors disabled:opacity-50 font-medium shadow-md"
                   >
-                    {solving ? '...' : 'Résoudre'}
+                    {solving ? '...' : 'Solve'}
                   </button>
                   <button
                     onClick={getHint}

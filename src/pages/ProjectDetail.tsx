@@ -24,11 +24,11 @@ const ProjectDetail = () => {
       case 'stable':
         return <span className="absolute top-4 right-4 px-3 py-1 bg-green-500/80 text-white text-xs font-bold rounded-full backdrop-blur-sm">Stable</span>;
       case 'beta':
-        return <span className="absolute top-4 right-4 px-3 py-1 bg-yellow-500/80 text-white text-xs font-bold rounded-full backdrop-blur-sm">Bêta</span>;
+        return <span className="absolute top-4 right-4 px-3 py-1 bg-yellow-500/80 text-white text-xs font-bold rounded-full backdrop-blur-sm">Beta</span>;
       case 'alpha':
         return <span className="absolute top-4 right-4 px-3 py-1 bg-orange-500/80 text-white text-xs font-bold rounded-full backdrop-blur-sm">Alpha</span>;
       case 'deprecated':
-        return <span className="absolute top-4 right-4 px-3 py-1 bg-red-500/80 text-white text-xs font-bold rounded-full backdrop-blur-sm">Obsolète</span>;
+        return <span className="absolute top-4 right-4 px-3 py-1 bg-red-500/80 text-white text-xs font-bold rounded-full backdrop-blur-sm">Deprecated</span>;
       default:
         return null;
     }
@@ -83,9 +83,9 @@ const ProjectDetail = () => {
     return (
       <div className="min-h-screen bg-dark flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-4xl font-bold mb-4">Projet non trouvé</h1>
+          <h1 className="text-4xl font-bold mb-4">Project not found</h1>
           <Link to="/" className="text-primary hover:underline">
-            Retour à l'accueil
+            Back to home
           </Link>
         </div>
       </div>
@@ -100,7 +100,7 @@ const ProjectDetail = () => {
           className="inline-flex items-center gap-2 text-primary hover:text-secondary transition-colors mb-8 cursor-pointer bg-transparent border-none"
         >
           <ArrowLeft size={20} />
-          Retour aux projets
+          Back to projects
         </button>
 
         <motion.div
@@ -113,7 +113,7 @@ const ProjectDetail = () => {
             <div className="mb-8 p-4 bg-red-900/20 border border-red-500/50 rounded-lg text-red-200">
               <p className="flex items-center gap-2">
                 <span className="text-xl">⚠️</span>
-                La démo de ce projet nécessite des serveurs pour tourner et aucun serveur n'est disponible pour le moment. J'espère trouver une solution bientôt.
+                This project demo requires backend services, and none are currently available.
               </p>
             </div>
           )}
@@ -129,7 +129,7 @@ const ProjectDetail = () => {
             <div className="absolute bottom-0 left-0 p-8">
               <h1 className="text-5xl font-bold mb-2">{project.title}</h1>
               <p className="text-sm text-gray-300 mb-4">
-                {new Date(project.createdAt).toLocaleDateString('fr-FR', {
+                {new Date(project.createdAt).toLocaleDateString('en-US', {
                   year: 'numeric',
                   month: 'long',
                   day: 'numeric'
@@ -157,10 +157,10 @@ const ProjectDetail = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 px-4 py-2 bg-dark/80 backdrop-blur-sm border border-primary/50 rounded-lg hover:bg-primary/20 hover:border-primary transition-all"
-                  title="Code source"
+                  title="Source code"
                 >
                   <Github size={20} />
-                  <span className="hidden sm:inline">Code source</span>
+                  <span className="hidden sm:inline">Source code</span>
                 </a>
               )}
               {project.liveUrl && (
@@ -169,10 +169,10 @@ const ProjectDetail = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 px-4 py-2 bg-dark/80 backdrop-blur-sm border border-secondary/50 rounded-lg hover:bg-secondary/20 hover:border-secondary transition-all"
-                  title="Voir le projet"
+                  title="View project"
                 >
                   <ExternalLink size={20} />
-                  <span className="hidden sm:inline">Démo</span>
+                  <span className="hidden sm:inline">Demo</span>
                 </a>
               )}
               {project.interactive && project.interactivePath && (
@@ -180,19 +180,19 @@ const ProjectDetail = () => {
                   <button
                     disabled
                     className="flex items-center gap-2 px-4 py-2 bg-red-900/20 backdrop-blur-sm border border-red-500/50 rounded-lg cursor-not-allowed text-red-400"
-                    title="Démo indisponible"
+                    title="Demo unavailable"
                   >
                     <ExternalLink size={20} />
-                    <span className="hidden sm:inline">Démo Indisponible</span>
+                    <span className="hidden sm:inline">Demo Unavailable</span>
                   </button>
                 ) : (
                   <Link
                     to={project.interactivePath}
                     className="flex items-center gap-2 px-4 py-2 bg-dark/80 backdrop-blur-sm border border-secondary/50 rounded-lg hover:bg-secondary/20 hover:border-secondary transition-all"
-                    title="Démo interactive"
+                    title="Interactive demo"
                   >
                     <ExternalLink size={20} />
-                    <span className="hidden sm:inline">Démo</span>
+                    <span className="hidden sm:inline">Demo</span>
                   </Link>
                 )
               )}

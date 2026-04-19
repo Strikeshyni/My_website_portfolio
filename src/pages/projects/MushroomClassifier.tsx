@@ -25,7 +25,7 @@ const MushroomClassifier = () => {
   const [result, setResult] = useState<PredictionResult | null>(null);
   const [alpha, setAlpha] = useState(0.1);
   const [projectId, setProjectId] = useState<string | null>(null);
-  const [groundTruth, setGroundTruth] = useState<string | null>(null); // Vraie classe si connue
+  const [groundTruth, setGroundTruth] = useState<string | null>(null); // Ground-truth class if known
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -60,13 +60,13 @@ const MushroomClassifier = () => {
 
   const handleSampleClick = async (sampleFile: string) => {
     try {
-      // Trouver l'échantillon pour obtenir le ground truth
+      // Find sample metadata to get ground truth
       const sample = MUSHROOM_SAMPLES.find(s => s.file === sampleFile);
       if (sample) {
         setGroundTruth(sample.species);
       }
       
-      // Charger l'image depuis le dossier public
+      // Load image from public folder
       const imagePath = `/samples/${sampleFile}`;
       const response = await fetch(imagePath);
       
@@ -76,10 +76,10 @@ const MushroomClassifier = () => {
       
       const blob = await response.blob();
       
-      // Créer un File object avec le bon type MIME
+      // Create a File object with a MIME type
       const file = new File([blob], sampleFile, { type: 'image/jpeg' });
       
-      // Convertir en DataURL pour l'affichage
+      // Convert to DataURL for preview
       const reader = new FileReader();
       reader.onloadend = () => {
         setSelectedImage(reader.result as string);
@@ -87,7 +87,7 @@ const MushroomClassifier = () => {
       };
       reader.readAsDataURL(blob);
       
-      // Mettre à jour l'input file (pour le predict)
+      // Sync file input for prediction
       const dataTransfer = new DataTransfer();
       dataTransfer.items.add(file);
       if (fileInputRef.current) {
@@ -95,7 +95,7 @@ const MushroomClassifier = () => {
       }
     } catch (error) {
       console.error('Error loading sample:', error);
-      alert(`Erreur lors du chargement de l'image: ${error}`);
+      alert(`Error loading image: ${error}`);
     }
   };
 
@@ -123,7 +123,7 @@ const MushroomClassifier = () => {
       setResult(apiResponse.data);
     } catch (error) {
       console.error('Error predicting:', error);
-      alert('Erreur: Assurez-vous que l\'API Python est lancée sur le port 8001');
+      alert('Error: make sure the Mushroom API is running.');
     } finally {
       setPredicting(false);
     }
@@ -145,7 +145,7 @@ const MushroomClassifier = () => {
         className="inline-flex items-center gap-2 text-primary hover:text-secondary transition-colors mb-8"
       >
         <ArrowLeft size={20} />
-        Retour au projet
+        Back to project
       </Link>
 
       <motion.div
@@ -154,19 +154,19 @@ const MushroomClassifier = () => {
         className="max-w-6xl mx-auto"
       >
         <h1 className="text-4xl font-bold mb-4 gradient-text">
-          Classification de Champignons avec Prédiction Conforme
+          Mushroom Classification with Conformal Prediction
         </h1>
         
         <p className="text-gray-300 mb-8">
-          Sélectionnez une image d'exemple ci-dessous ou uploadez votre propre photo pour obtenir 
-          une prédiction avec ensemble de classes possibles et garantie de couverture statistique.
+          Select a sample image below or upload your own photo to get predictions with
+          a statistically guaranteed conformal prediction set.
         </p>
 
-        {/* Galerie d'exemples */}
+        {/* Sample gallery */}
         <div className="mb-8">
           <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
             <ImageIcon className="text-primary" size={24} />
-            Images d'exemple - Cliquez pour tester
+            Sample images - Click to test
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
             {MUSHROOM_SAMPLES.map((sample) => (
@@ -201,13 +201,13 @@ const MushroomClassifier = () => {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8">
-          {/* Section Upload et Prédiction */}
+            {/* Upload and prediction */}
           <div className="space-y-6">
             {/* Upload */}
             <div className="glass-effect p-6 rounded-2xl">
               <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
                 <Upload className="text-primary" size={24} />
-                Image de Champignon
+                Mushroom Image
               </h2>
 
               <div className="space-y-4">
@@ -229,7 +229,7 @@ const MushroomClassifier = () => {
                   >
                     <div className="text-center">
                       <Upload className="mx-auto mb-2 text-gray-400" size={48} />
-                      <p className="text-gray-400">Cliquez pour sélectionner une image</p>
+                      <p className="text-gray-400">Click to select an image</p>
                       <p className="text-xs text-gray-500 mt-1">JPG, PNG (max 5MB)</p>
                     </div>
                   </label>
@@ -245,7 +245,7 @@ const MushroomClassifier = () => {
                       className="absolute top-2 right-2 px-3 py-1 bg-red-500 text-white rounded-lg
                                hover:bg-red-600 transition-colors text-sm"
                     >
-                      Effacer
+                      Clear
                     </button>
                   </div>
                 )}
@@ -253,7 +253,7 @@ const MushroomClassifier = () => {
                 {/* Paramètres */}
                 <div className="space-y-2">
                   <label className="block text-sm font-medium">
-                    Niveau de confiance: {((1 - alpha) * 100).toFixed(0)}%
+                    Confidence level: {((1 - alpha) * 100).toFixed(0)}%
                   </label>
                   <input
                     type="range"
@@ -279,21 +279,21 @@ const MushroomClassifier = () => {
                            hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed
                            disabled:hover:scale-100 font-bold"
                 >
-                  {predicting ? 'Analyse en cours...' : 'Classifier'}
+                  {predicting ? 'Analyzing...' : 'Classify'}
                 </button>
               </div>
             </div>
 
-            {/* Info Prédiction Conforme */}
+            {/* Conformal prediction info */}
             <div className="glass-effect p-4 rounded-xl">
               <h3 className="font-bold flex items-center gap-2 mb-2">
                 <Info className="text-blue-400" size={20} />
-                Qu'est-ce que la Prédiction Conforme ?
+                What is Conformal Prediction?
               </h3>
               <p className="text-sm text-gray-300">
-                Au lieu d'une seule prédiction, vous obtenez un <strong>ensemble de classes possibles</strong> 
-                avec une garantie statistique que la vraie espèce est dans cet ensemble 
-                avec probabilité ≥ {((1 - alpha) * 100).toFixed(0)}%.
+                Instead of a single class, you get a <strong>set of plausible classes</strong>
+                with a statistical guarantee that the true species is included with
+                probability ≥ {((1 - alpha) * 100).toFixed(0)}%.
               </p>
             </div>
           </div>
@@ -302,7 +302,7 @@ const MushroomClassifier = () => {
           <div className="space-y-6">
             {result ? (
               <>
-                {/* Alerte Toxicité */}
+                {/* Toxicity warning */}
                 {result.has_toxic && (
                   <motion.div
                     initial={{ scale: 0.9, opacity: 0 }}
@@ -313,11 +313,11 @@ const MushroomClassifier = () => {
                       <AlertTriangle className="text-red-500 flex-shrink-0" size={24} />
                       <div>
                         <h3 className="font-bold text-red-400 mb-1">
-                          Espèce Toxique Détectée
+                          Toxic Species Detected
                         </h3>
                         <p className="text-sm text-gray-300">
-                          L'ensemble de prédiction contient des espèces potentiellement toxiques.
-                          <strong className="block mt-1">NE PAS CONSOMMER sans expertise mycologique.</strong>
+                          The prediction set contains potentially toxic species.
+                          <strong className="block mt-1">DO NOT CONSUME without expert mycological guidance.</strong>
                         </p>
                       </div>
                     </div>
@@ -326,23 +326,23 @@ const MushroomClassifier = () => {
 
                 {/* Statistiques */}
                 <div className="glass-effect p-6 rounded-2xl">
-                  <h2 className="text-2xl font-bold mb-4">Résultats</h2>
+                  <h2 className="text-2xl font-bold mb-4">Results</h2>
                   
                   <div className="grid grid-cols-2 gap-4 mb-6">
                     <div className="bg-dark-light p-4 rounded-lg">
-                      <p className="text-sm text-gray-400">Prédiction Top-1</p>
+                      <p className="text-sm text-gray-400">Top-1 prediction</p>
                       <p className="text-lg font-bold text-primary truncate" title={result.top1_class}>
                         {result.top1_class}
                       </p>
                       <p className="text-xs text-gray-500">
-                        Confiance: {(result.top1_prob * 100).toFixed(1)}%
+                        Confidence: {(result.top1_prob * 100).toFixed(1)}%
                       </p>
                     </div>
                     
                     <div className="bg-dark-light p-4 rounded-lg">
-                      <p className="text-sm text-gray-400">Taille Ensemble</p>
+                      <p className="text-sm text-gray-400">Set size</p>
                       <p className="text-lg font-bold text-secondary">
-                        {result.set_size} classe{result.set_size > 1 ? 's' : ''}
+                        {result.set_size} class{result.set_size > 1 ? 'es' : ''}
                       </p>
                       <p className="text-xs text-gray-500">
                         sur 169 total ({((result.set_size / 169) * 100).toFixed(1)}%)
@@ -350,7 +350,7 @@ const MushroomClassifier = () => {
                     </div>
                   </div>
 
-                  {/* Ground Truth et Couverture */}
+                      {/* Ground truth and coverage */}
                   {groundTruth && (
                     <div className={`mb-4 p-4 rounded-lg border-2 ${
                       result.predicted_classes.includes(groundTruth)
@@ -359,34 +359,34 @@ const MushroomClassifier = () => {
                     }`}>
                       <p className="font-bold mb-2 flex items-center gap-2">
                         {result.predicted_classes.includes(groundTruth) ? (
-                          <span className="text-green-400">✓ Couverture réussie</span>
+                            <span className="text-green-400">✓ Coverage success</span>
                         ) : (
-                          <span className="text-red-400">✗ Couverture échouée</span>
+                            <span className="text-red-400">✗ Coverage miss</span>
                         )}
                       </p>
                       <p className="text-sm text-gray-300">
-                        <strong>Vraie classe:</strong> {groundTruth}
+                        <strong>Ground truth:</strong> {groundTruth}
                       </p>
                       {result.predicted_classes.includes(groundTruth) ? (
                         <p className="text-xs text-green-300 mt-1">
-                          La vraie classe est bien dans l'ensemble de prédiction conforme.
+                          The true class is included in the conformal prediction set.
                         </p>
                       ) : (
                         <p className="text-xs text-red-300 mt-1">
-                          ⚠️ La vraie classe n'est PAS dans l'ensemble. Cela peut arriver dans {((1 - result.coverage) * 100).toFixed(0)}% des cas avec α={alpha}.
+                          ⚠️ The true class is NOT in the set. This can happen in {((1 - result.coverage) * 100).toFixed(0)}% of cases with α={alpha}.
                         </p>
                       )}
                     </div>
                   )}
 
-                  {/* Info si ensemble très petit */}
+                  {/* Note when set is very small */}
                   {result.set_size === 1 && result.top1_prob < 0.5 && (
                     <div className="mb-4 p-3 bg-yellow-900/20 border border-yellow-500/30 rounded-lg">
                       <p className="text-sm text-yellow-300 flex items-center gap-2">
                         <Info size={16} />
                         <span>
-                          <strong>Ensemble minimal:</strong> Le modèle est très incertain ou la probabilité de la classe la plus probable est assez forte. 
-                          Seule la classe la plus probable est incluse (garantie min=1).
+                          <strong>Minimal set:</strong> The model uncertainty and threshold lead to a very small set.
+                          Only the top class is included (minimum size guarantee).
                         </span>
                       </p>
                     </div>
@@ -395,7 +395,7 @@ const MushroomClassifier = () => {
                   {/* Top Classes */}
                   <div>
                     <h3 className="font-bold mb-3 flex items-center justify-between">
-                      <span>Classes Prédites (triées par confiance)</span>
+                      <span>Predicted classes (sorted by confidence)</span>
                       <span className="text-sm text-gray-400 font-normal">
                         Affichage: Top {Math.min(20, result.all_classes.length)}
                       </span>
@@ -476,7 +476,7 @@ const MushroomClassifier = () => {
                     </div>
 
                     <div className="mt-4 p-3 bg-dark-light rounded-lg text-sm space-y-2">
-                      <p className="text-gray-300 font-bold mb-2">Légende:</p>
+                      <p className="text-gray-300 font-bold mb-2">Legend:</p>
                       {groundTruth && (
                         <>
                           <p className="text-green-300 flex items-center gap-2">
@@ -519,7 +519,7 @@ const MushroomClassifier = () => {
 
         {/* Documentation */}
         <div className="mt-12 glass-effect p-8 rounded-2xl">
-          <h2 className="text-3xl font-bold mb-6">À Propos du Projet</h2>
+          <h2 className="text-3xl font-bold mb-6">About this project</h2>
           
           <div className="grid md:grid-cols-2 gap-8">
             <div>
@@ -545,9 +545,9 @@ const MushroomClassifier = () => {
 
           <div className="mt-6 p-4 bg-blue-900/20 border border-blue-500/30 rounded-lg">
             <p className="text-sm text-gray-300">
-              <strong className="text-blue-400">Note importante:</strong> Cette démo est à but éducatif.
-              Ne jamais consommer de champignons sans l'avis d'un mycologue expert. Certaines espèces toxiques
-              peuvent être mortelles même en petites quantités.
+              <strong className="text-blue-400">Important note:</strong> This demo is educational only.
+              Never consume mushrooms without expert mycologist advice. Some toxic species can be lethal,
+              even in small quantities.
             </p>
           </div>
         </div>

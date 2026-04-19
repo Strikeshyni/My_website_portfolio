@@ -11,12 +11,12 @@ interface SolveResult {
 }
 
 const DEBUG_IMAGES = [
-  { name: "debug_1_gray.png", label: "1. Niveaux de gris" },
-  { name: "debug_2_blurred.png", label: "2. Flou Gaussien" },
-  { name: "debug_3_binary.png", label: "3. Binarisation" },
-  { name: "debug_4_grid_detected.png", label: "4. Détection Grille" },
+  { name: "debug_1_gray.png", label: "1. Grayscale" },
+  { name: "debug_2_blurred.png", label: "2. Gaussian Blur" },
+  { name: "debug_3_binary.png", label: "3. Binarization" },
+  { name: "debug_4_grid_detected.png", label: "4. Grid Detection" },
   { name: "debug_5_rectified.png", label: "5. Perspective" },
-  { name: "debug_6_cells.png", label: "6. Extraction Cases" }
+  { name: "debug_6_cells.png", label: "6. Cell Extraction" }
 ];
 
 const SudokuOCR = () => {
@@ -113,7 +113,7 @@ const SudokuOCR = () => {
       reader.readAsDataURL(blob);
     } catch (e) {
       console.error('Error loading sample image', e);
-      setError('Impossible de charger l\'image d\'exemple');
+      setError('Unable to load sample image');
     }
   };
 
@@ -162,7 +162,7 @@ const SudokuOCR = () => {
 
     } catch (err: any) {
       console.error('Error solving sudoku:', err);
-      setError(err.response?.data?.detail || 'Erreur lors du traitement du Sudoku');
+      setError(err.response?.data?.detail || 'Error while processing Sudoku');
     } finally {
       setProcessing(false);
     }
@@ -231,7 +231,7 @@ const SudokuOCR = () => {
             className="inline-flex items-center gap-2 text-primary hover:text-secondary transition-colors mb-8"
         >
             <ArrowLeft size={20} />
-            Retour au projet
+            Back to project
         </Link>
 
         <motion.div
@@ -244,7 +244,7 @@ const SudokuOCR = () => {
           </h1>
           <p className="text-xl text-gray-400 max-w-3xl">
             Reconnaissance optique de caractères et résolution de Sudoku utilisant un CNN personnalisé en C.
-            Upload une image de grille de Sudoku pour voir le pipeline de traitement étape par étape.
+            Upload a Sudoku image to see the full processing pipeline step by step.
           </p>
         </motion.div>
 
@@ -257,11 +257,11 @@ const SudokuOCR = () => {
             <AlertTriangle className="text-orange-500 flex-shrink-0" size={24} />
             <div>
               <h3 className="font-bold text-orange-400 mb-1">
-                Information importante
+                Important information
               </h3>
               <p className="text-sm text-gray-300">
-                Vous pourrez parfois voir des prédictions incorrectes dues aux limitations du dataset du modèle d'OCR.
-                <strong className="block mt-1">N'hésitez pas à regarder la table des prédictions de l'OCR. Vous y trouverez la source des erreurs</strong>
+                You may occasionally see incorrect predictions due to OCR training dataset limitations.
+                <strong className="block mt-1">Check the OCR prediction table below to understand where errors come from.</strong>
               </p>
             </div>
           </div>
@@ -269,7 +269,7 @@ const SudokuOCR = () => {
 
         {samples.length > 0 && (
           <div className="mb-8">
-            <h3 className="text-lg font-semibold mb-4">Images de test</h3>
+            <h3 className="text-lg font-semibold mb-4">Test images</h3>
             <div className="flex gap-4 overflow-x-auto pb-2">
               {samples.map((s) => (
                 <button
@@ -311,8 +311,8 @@ const SudokuOCR = () => {
               ) : (
                 <div className="text-gray-400">
                   <ImageIcon size={48} className="mx-auto mb-4 opacity-50" />
-                  <p>Cliquez ou glissez une image ici</p>
-                  <p className="text-sm mt-2 text-gray-500">JPG, PNG supportés</p>
+                  <p>Click or drop an image here</p>
+                  <p className="text-sm mt-2 text-gray-500">JPG and PNG supported</p>
                 </div>
               )}
               <input
@@ -336,12 +336,12 @@ const SudokuOCR = () => {
               {processing ? (
                 <>
                   <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white mr-3"></div>
-                  Traitement en cours...
+                  Processing...
                 </>
               ) : (
                 <>
                   <Play className="mr-2" />
-                  Lancer la Résolution
+                  Run Solver
                 </>
               )}
             </button>
@@ -375,7 +375,7 @@ const SudokuOCR = () => {
                 />
               ) : (
                 <div className="text-center text-gray-500">
-                  <p>Le résultat s'affichera ici</p>
+                  <p>Result will appear here</p>
                 </div>
               )}
             </div>
@@ -384,7 +384,7 @@ const SudokuOCR = () => {
               <div className="mt-6">
                 <div className="flex items-center mb-2">
                   <Terminal className="mr-2 text-gray-400" size={16} />
-                  <span className="text-sm text-gray-400">Logs du solveur</span>
+                  <span className="text-sm text-gray-400">Solver logs</span>
                 </div>
                 <div className="bg-black/50 rounded-lg p-4 font-mono text-xs text-green-400 overflow-x-auto max-h-48 overflow-y-auto">
                   <pre>{result.stdout}</pre>
@@ -402,7 +402,7 @@ const SudokuOCR = () => {
             transition={{ delay: 0.4 }}
             className="glass-effect p-8 rounded-2xl"
           >
-            <h2 className="text-2xl font-bold mb-8">Pipeline de Traitement</h2>
+            <h2 className="text-2xl font-bold mb-8">Processing Pipeline</h2>
             <div className="grid md:grid-cols-3 gap-6">
               {debugImages.map((imgSrc, idx) => (
                 <div key={idx} className="space-y-2">
@@ -430,7 +430,7 @@ const SudokuOCR = () => {
             animate={{ opacity: 1, y: 0 }}
             className="glass-effect p-6 rounded-2xl mt-8"
           >
-            <h2 className="text-2xl font-bold mb-4">Prédictions OCR (par case)</h2>
+            <h2 className="text-2xl font-bold mb-4">OCR Predictions (per cell)</h2>
             <div className="grid grid-cols-9 gap-2">
               {parsedPredictions.map((row, rIdx) =>
                 row.map((cell, cIdx) => (
@@ -438,13 +438,13 @@ const SudokuOCR = () => {
                     key={`${rIdx}-${cIdx}`}
                     className={`p-2 rounded-md border ${cell ? 'bg-black/20' : 'border-dashed border-gray-700 bg-black/10'}`}
                     style={cell && cell.top1 ? colorStyles(cell.top1.prob) : undefined}
-                    title={cell ? `Top1: ${cell.top1?.val} (${cell.top1?.prob}%)\nTop2: ${cell.top2?.val} (${cell.top2?.prob}%)\nTop3: ${cell.top3?.val} (${cell.top3?.prob}%)` : 'Aucune prédiction'}
+                    title={cell ? `Top1: ${cell.top1?.val} (${cell.top1?.prob}%)\nTop2: ${cell.top2?.val} (${cell.top2?.prob}%)\nTop3: ${cell.top3?.val} (${cell.top3?.prob}%)` : 'No prediction'}
                   >
                     {cell ? (
                       <div className="text-center">
                         <div className="text-lg font-bold">{cell.top1 ? cell.top1.val : '-'}</div>
                         <div className="text-xs text-gray-400">{cell.top1 ? `${cell.top1.prob}%` : ''}</div>
-                        <div className="text-[10px] text-gray-500 mt-1">{cell.empty ? 'Vide' : 'Détectée'}</div>
+                        <div className="text-[10px] text-gray-500 mt-1">{cell.empty ? 'Empty' : 'Detected'}</div>
                       </div>
                     ) : (
                       <div className="text-center text-gray-500 text-sm">-</div>
@@ -453,8 +453,8 @@ const SudokuOCR = () => {
                 ))
               )}
             </div>
-            <p className="text-sm text-gray-400 mt-3">Passe la souris sur une case pour voir Top2/Top3.<br />
-              Le dégradé de couleur indique la confiance.
+            <p className="text-sm text-gray-400 mt-3">Hover a cell to view Top2/Top3.<br />
+              The color gradient indicates confidence.
             </p>
           </motion.div>
         )}

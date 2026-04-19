@@ -16,10 +16,10 @@ const Header = () => {
   }, []);
 
   const menuItems = [
-    { label: 'Accueil', href: '#hero' },
-    { label: 'À propos', href: '#about' },
-    { label: 'Compétences', href: '#skills' },
-    { label: 'Projets', href: '#projects' },
+    { label: 'Home', href: '#home' },
+    { label: 'About', href: '#about' },
+    { label: 'Skills', href: '#skills' },
+    { label: 'Projects', href: '#projects' },
     { label: 'Contact', href: '#contact' },
   ];
 
@@ -34,7 +34,7 @@ const Header = () => {
     >
       <nav className="section-padding py-4">
         <div className="flex items-center justify-between">
-          <a href="#hero" className="text-2xl font-bold gradient-text">
+          <a href="#home" className="text-2xl font-bold gradient-text">
             Abel Aubron
           </a>
 

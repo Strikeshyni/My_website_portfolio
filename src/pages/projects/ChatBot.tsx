@@ -15,7 +15,7 @@ const ChatBot = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: 'Bonjour ! Je suis un chatbot IA. Comment puis-je vous aider ?',
+      content: 'Hi! I am an AI chatbot. How can I help you today?',
       timestamp: new Date(),
     },
   ]);
@@ -82,7 +82,7 @@ const ChatBot = () => {
       
       const assistantMessage: Message = {
         role: 'assistant',
-        content: data.response || 'Désolé, je n\'ai pas pu traiter votre message.',
+        content: data.response || 'Sorry, I could not process your message.',
         timestamp: new Date(),
       };
 
@@ -91,7 +91,7 @@ const ChatBot = () => {
       console.error('Error sending message:', error);
       const errorMessage: Message = {
         role: 'assistant',
-        content: 'Une erreur est survenue. Assurez-vous que le serveur chatbot est démarré sur le port 8000 avec CORS activé.',
+        content: 'An error occurred. Please make sure the chatbot server is running and reachable.',
         timestamp: new Date(),
       };
       setMessages(prev => [...prev, errorMessage]);
@@ -114,7 +114,7 @@ const ChatBot = () => {
         className="inline-flex items-center gap-2 text-primary hover:text-secondary transition-colors mb-8"
       >
         <ArrowLeft size={20} />
-        Retour au projet
+        Back to project
       </Link>
 
       <motion.div
@@ -123,7 +123,7 @@ const ChatBot = () => {
         className="max-w-4xl mx-auto"
       >
         <h1 className="text-4xl font-bold mb-8 gradient-text">
-          Chatbot IA
+          AI Chatbot
         </h1>
 
         <div className="glass-effect rounded-2xl p-6 h-[600px] flex flex-col">
@@ -143,7 +143,7 @@ const ChatBot = () => {
                 >
                   <p className="whitespace-pre-wrap">{message.content}</p>
                   <span className="text-xs opacity-70 mt-1 block">
-                    {message.timestamp.toLocaleTimeString('fr-FR', {
+                    {message.timestamp.toLocaleTimeString('en-US', {
                       hour: '2-digit',
                       minute: '2-digit',
                     })}
@@ -172,7 +172,7 @@ const ChatBot = () => {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="Écrivez votre message..."
+              placeholder="Write your message..."
               className="flex-1 px-4 py-3 bg-dark-light border border-gray-700 rounded-lg focus:border-primary focus:outline-none"
               disabled={loading}
             />
@@ -187,15 +187,15 @@ const ChatBot = () => {
         </div>
 
         <div className="mt-6 text-gray-400 text-sm">
-          <p>Ce chatbot utilise un model llama open source et des techniques de NLP pour répondre à vos questions de manière contextuelle.</p>
+          <p>This chatbot uses an open-source Llama model and NLP techniques to provide contextual answers.</p>
           <p className="mt-2">
-            💡 Le chatbot garde l'historique de la conversation et peut effectuer des recherches sémantiques.
+            💡 The chatbot keeps conversation history and can perform semantic retrieval.
             <br />
-            Le temps de réponse peut varier en fonction de la charge du serveur et de la complexité de la requête.
+            Response time may vary depending on server load and query complexity.
           </p>
           <p className="mt-1 text-xs text-gray-500">
-            Auteur: Abel AUBRON<br />
-            Date: Novembre 2025
+            Author: Abel AUBRON<br />
+            Date: November 2025
           </p>
         </div>
       </motion.div>

@@ -3,7 +3,7 @@ import { Github, Linkedin, Mail, ArrowDown, Code2, Trophy } from 'lucide-react';
 
 const Hero = () => {
   return (
-    <section id="hero" className="min-h-screen flex items-center justify-center section-padding">
+    <section id="home" className="min-h-screen flex items-center justify-center section-padding">
       <div className="max-w-5xl mx-auto text-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -14,11 +14,11 @@ const Hero = () => {
             Abel Aubron
           </h1>
           <p className="text-2xl md:text-3xl text-gray-300 mb-8">
-            Étudiant Ingénieur à EPITA Lyon
+            Engineering Student at EPITA Lyon
           </p>
           <p className="text-lg text-gray-400 mb-12 max-w-2xl mx-auto">
-            Passionné par l'algorithmie, l'IA et les nouvelles technologies.
-            Solides bases en développement et expertise en traitement de données et Machine Learning.
+            Passionate about algorithms, AI, and emerging technologies.
+            Strong software fundamentals with hands-on expertise in data engineering and machine learning.
           </p>
 
           <div className="flex justify-center gap-6 mb-12">
@@ -87,7 +87,7 @@ const Hero = () => {
             className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-primary to-secondary rounded-full text-lg font-semibold hover:scale-105 transition-transform"
             whileHover={{ scale: 1.05 }}
           >
-            Découvrir mes projets
+            Explore my projects
             <ArrowDown size={20} />
           </motion.a>
         </motion.div>
