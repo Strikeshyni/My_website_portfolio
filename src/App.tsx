@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Analytics } from '@vercel/analytics/react';
 import Home from './pages/Home';
 import ProjectDetail from './pages/ProjectDetail';
 import SudokuSolver from './pages/projects/SudokuSolver';
@@ -19,6 +20,7 @@ function App() {
         <Route path="/projects/stock-prediction" element={<StockPrediction />} />
         <Route path="/projects/ocr-sudoku" element={<SudokuOCR />} />
       </Routes>
+      <Analytics />
     </Router>
   );
 }
