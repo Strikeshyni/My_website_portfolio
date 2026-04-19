@@ -5,3 +5,7 @@ httpx
 flask
 flask-cors
 pymongo
+numpy
+pillow
+torch
+torchvision
