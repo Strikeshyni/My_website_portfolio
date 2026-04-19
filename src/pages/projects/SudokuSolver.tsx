@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Lightbulb, Play, RotateCcw, Trophy } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { apiUrl } from '../../lib/api';
 
 // Composant Confetti
 const Confetti = () => {
@@ -271,7 +272,7 @@ const SudokuSolver = () => {
     const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
     
     try {
-      const response = await fetch('/sudoku/api/sudoku/generate', {
+      const response = await fetch(apiUrl('/sudoku/api/sudoku/generate'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ difficulty, size: gridSize }),
@@ -331,7 +332,7 @@ const SudokuSolver = () => {
     const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
     
     try {
-      const response = await fetch('/sudoku/api/sudoku/solve', {
+      const response = await fetch(apiUrl('/sudoku/api/sudoku/solve'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ grid }),
@@ -380,7 +381,7 @@ const SudokuSolver = () => {
     }
 
     try {
-      const response = await fetch('/sudoku/api/sudoku/hint', {
+      const response = await fetch(apiUrl('/sudoku/api/sudoku/hint'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ gameId, currentGrid: grid }),

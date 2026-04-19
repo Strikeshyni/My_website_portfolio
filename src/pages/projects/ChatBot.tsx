@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, Send } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { apiUrl } from '../../lib/api';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -59,10 +60,10 @@ const ChatBot = () => {
     setInput('');
     setLoading(true);
 
-    const apiUrl = import.meta.env.VITE_CHATBOT_API_URL || '/chatbot';
+    const chatbotApiUrl = import.meta.env.VITE_CHATBOT_API_URL || apiUrl('/chatbot');
 
     try {
-      const response = await fetch(`${apiUrl}/chat`, {
+      const response = await fetch(`${chatbotApiUrl}/chat`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',

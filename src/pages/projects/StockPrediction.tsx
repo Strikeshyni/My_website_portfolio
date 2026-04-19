@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
   ArrowLeft, TrendingUp, PlayCircle, BarChart3, 
@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { apiUrl } from '../../lib/api';
 
 // Types
 interface TrainingConfig {
@@ -203,7 +204,6 @@ const StockPrediction = () => {
   const [currentJobId, setCurrentJobId] = useState<string | null>(null);
   const [jobStatus, setJobStatus] = useState<JobStatus | null>(null);
   const [isTraining, setIsTraining] = useState(false);
-  const wsRef = useRef<WebSocket | null>(null);
   
   // Prediction states
   const [nDays, setNDays] = useState(5);
@@ -229,7 +229,6 @@ const StockPrediction = () => {
   const [simulationStatus, setSimulationStatus] = useState<SimulationStatus | null>(null);
   const [simulationResult, setSimulationResult] = useState<SimulationResult | null>(null);
   const [simulating, setSimulating] = useState(false);
-  const simWsRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
     const fetchProjectId = async () => {
@@ -247,14 +246,7 @@ const StockPrediction = () => {
     };
     fetchProjectId();
     
-    return () => {
-      if (wsRef.current) {
-        wsRef.current.close();
-      }
-      if (simWsRef.current) {
-        simWsRef.current.close();
-      }
-    };
+    return undefined;
   }, []);
 
   // Start training
@@ -265,24 +257,7 @@ const StockPrediction = () => {
       const jobId = response.data.job_id;
       setCurrentJobId(jobId);
       
-      // Connect WebSocket for real-time updates
-      const ws = new WebSocket(`ws://localhost:8002/ws/training/${jobId}`);
-      wsRef.current = ws;
-      
-      ws.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        setJobStatus(data);
-        
-        if (data.status === 'completed' || data.status === 'failed') {
-          ws.close();
-          setIsTraining(false);
-        }
-      };
-      
-      ws.onerror = () => {
-        // Fallback to polling
-        pollJobStatus(jobId);
-      };
+      pollJobStatus(jobId);
     } catch (error) {
       console.error('Error starting training:', error);
       alert('Erreur: Assurez-vous que l\'API Stock est lancée sur le port 8002');
@@ -341,27 +316,7 @@ const StockPrediction = () => {
       const response = await axios.post('/stock/api/simulate', simulationConfig);
       const simId = response.data.sim_id;
       
-      // Connect WebSocket for real-time updates
-      const ws = new WebSocket(`ws://localhost:8002/ws/simulation/${simId}`);
-      simWsRef.current = ws;
-      
-      ws.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        setSimulationStatus(data);
-        
-        if (data.status === 'completed') {
-          ws.close();
-          fetchSimulationResults(simId);
-        } else if (data.status === 'failed') {
-          ws.close();
-          setSimulating(false);
-        }
-      };
-      
-      ws.onerror = () => {
-        // Fallback to polling
-        pollSimulationStatus(simId);
-      };
+      pollSimulationStatus(simId);
     } catch (error) {
       console.error('Error starting simulation:', error);
       alert('Erreur lors du démarrage de la simulation');
@@ -1344,7 +1299,7 @@ const StockPrediction = () => {
                     </h3>
                     <div className="w-full bg-dark-light rounded-lg overflow-hidden border border-gray-700">
                       <img 
-                        src={`/stock/api/simulate/${simulationStatus.sim_id}/plot`} 
+                        src={apiUrl(`/stock/api/simulate/${simulationStatus.sim_id}/plot`)} 
                         alt="Graphique de la simulation" 
                         className="w-full h-auto object-contain"
                         onError={(e) => {

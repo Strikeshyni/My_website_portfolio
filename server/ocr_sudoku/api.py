@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import subprocess
 import os
 import shutil
+from pathlib import Path
 
 app = FastAPI(title="OCR Sudoku API")
 
@@ -16,8 +17,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-UPLOAD_DIR = "data"
-OUTPUT_IMAGE = "output_api.png"
+BASE_DIR = Path(__file__).resolve().parent
+UPLOAD_DIR = BASE_DIR / "data"
+OUTPUT_IMAGE = BASE_DIR / "output_api.png"
+SOLVER_BINARY = BASE_DIR / "build" / "sudoku_solver"
 DEBUG_IMAGES = [
     "debug_1_gray.png",
     "debug_2_blurred.png",
@@ -36,7 +39,7 @@ async def solve_sudoku(file: UploadFile = File(...)):
     # Ensure data directory exists
     os.makedirs(UPLOAD_DIR, exist_ok=True)
     
-    file_location = os.path.join(UPLOAD_DIR, "api_upload.png")
+    file_location = UPLOAD_DIR / "api_upload.png"
     
     # Save uploaded file
     with open(file_location, "wb") as buffer:
@@ -45,7 +48,7 @@ async def solve_sudoku(file: UploadFile = File(...)):
     # Run C program
     # Assuming running from root: ./build/sudoku_solver
     # Usage: ./build/sudoku_solver <input_image> <output_image>
-    command = ["./build/sudoku_solver", file_location, OUTPUT_IMAGE]
+    command = [str(SOLVER_BINARY), str(file_location), str(OUTPUT_IMAGE)]
     
     try:
         # Run with timeout to prevent infinite loops if they still exist
@@ -71,18 +74,19 @@ async def solve_sudoku(file: UploadFile = File(...)):
 @app.get("/debug-images")
 def list_debug_images():
     # Check which exist
-    existing = [img for img in DEBUG_IMAGES if os.path.exists(img)]
+    existing = [img for img in DEBUG_IMAGES if (BASE_DIR / img).exists()]
     return {"images": existing}
 
 @app.get("/debug-images/{image_name}")
 def get_debug_image(image_name: str):
     # Allow getting debug images and the output image
-    allowed = DEBUG_IMAGES + [OUTPUT_IMAGE]
+    allowed = DEBUG_IMAGES + [OUTPUT_IMAGE.name]
     
     if image_name not in allowed:
         raise HTTPException(status_code=404, detail="Image not found or not allowed")
     
-    if not os.path.exists(image_name):
+    file_path = BASE_DIR / image_name
+    if not file_path.exists():
         raise HTTPException(status_code=404, detail="Image file does not exist")
         
-    return FileResponse(image_name)
+    return FileResponse(str(file_path))
