@@ -1,18 +1,214 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { ArrowLeft, Lightbulb, Play, RotateCcw } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowLeft, Lightbulb, Play, RotateCcw, Trophy } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
+// Composant Confetti
+const Confetti = () => {
+  const colors = ['#8B5CF6', '#06B6D4', '#10B981', '#F59E0B', '#EF4444', '#EC4899'];
+  const confettiCount = 50;
+  
+  return (
+    <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
+      {Array.from({ length: confettiCount }).map((_, i) => {
+        const left = Math.random() * 100;
+        const animationDelay = Math.random() * 2;
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const size = Math.random() * 10 + 5;
+        
+        return (
+          <motion.div
+            key={i}
+            initial={{ y: -20, x: `${left}vw`, opacity: 1, rotate: 0 }}
+            animate={{ 
+              y: '100vh', 
+              opacity: 0, 
+              rotate: Math.random() * 720 - 360,
+              x: `${left + (Math.random() * 20 - 10)}vw`
+            }}
+            transition={{ 
+              duration: 3 + Math.random() * 2, 
+              delay: animationDelay,
+              ease: 'easeOut'
+            }}
+            className="absolute"
+            style={{
+              width: size,
+              height: size,
+              backgroundColor: color,
+              borderRadius: Math.random() > 0.5 ? '50%' : '0%',
+            }}
+          />
+        );
+      })}
+    </div>
+  );
+};
+
 const SudokuSolver = () => {
+  const [gridSize, setGridSize] = useState<9 | 16 | 25>(9);
   const [grid, setGrid] = useState<number[][]>(
     Array(9).fill(null).map(() => Array(9).fill(0))
   );
+  // Grille des cases initiales (verrouillées)
+  const [initialCells, setInitialCells] = useState<boolean[][]>(
+    Array(9).fill(null).map(() => Array(9).fill(false))
+  );
+  // Grille des cases remplies par indice
+  const [hintCells, setHintCells] = useState<boolean[][]>(
+    Array(9).fill(null).map(() => Array(9).fill(false))
+  );
+  // Lignes, colonnes et boîtes complétées
+  const [completedRows, setCompletedRows] = useState<Set<number>>(new Set());
+  const [completedCols, setCompletedCols] = useState<Set<number>>(new Set());
+  const [completedBoxes, setCompletedBoxes] = useState<Set<string>>(new Set());
+  
   const [gameId, setGameId] = useState<string | null>(null);
   const [solving, setSolving] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [difficulty, setDifficulty] = useState<'easy' | 'medium' | 'hard' | 'expert'>('medium');
   const [projectId, setProjectId] = useState<string | null>(null);
+  const [selectedCell, setSelectedCell] = useState<{row: number, col: number} | null>(null);
+  const [invalidMove, setInvalidMove] = useState<{row: number, col: number} | null>(null);
+  const [hintsUsed, setHintsUsed] = useState(0);
+  const [startTime, setStartTime] = useState<number | null>(null);
+  const [elapsedTime, setElapsedTime] = useState(0);
+  const [isCompleted, setIsCompleted] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [completionTime, setCompletionTime] = useState<number | null>(null);
+  const [solvedBySolver, setSolvedBySolver] = useState(false);
+  const [solverTime, setSolverTime] = useState<number | null>(null);
+  
+  const MAX_HINTS = 3;
+
+  // Vérifier si un nombre est valide selon les règles du Sudoku
+  const isValidMove = (row: number, col: number, num: number, currentGrid: number[][]): boolean => {
+    if (num === 0) return true; // Effacer est toujours valide
+    
+    // Vérifier la ligne
+    for (let j = 0; j < gridSize; j++) {
+      if (j !== col && currentGrid[row][j] === num) return false;
+    }
+    
+    // Vérifier la colonne
+    for (let i = 0; i < gridSize; i++) {
+      if (i !== row && currentGrid[i][col] === num) return false;
+    }
+    
+    // Vérifier la boîte
+    const boxSize = Math.sqrt(gridSize);
+    const startRow = Math.floor(row / boxSize) * boxSize;
+    const startCol = Math.floor(col / boxSize) * boxSize;
+    
+    for (let i = startRow; i < startRow + boxSize; i++) {
+      for (let j = startCol; j < startCol + boxSize; j++) {
+        if (i !== row && j !== col && currentGrid[i][j] === num) return false;
+      }
+    }
+    
+    return true;
+  };
+
+  // Vérifier les complétions après chaque changement
+  const checkCompletions = (currentGrid: number[][]) => {
+    const boxSize = Math.sqrt(gridSize);
+    const newCompletedRows = new Set<number>();
+    const newCompletedCols = new Set<number>();
+    const newCompletedBoxes = new Set<string>();
+    
+    // Vérifier les lignes
+    for (let i = 0; i < gridSize; i++) {
+      const rowSet = new Set(currentGrid[i]);
+      if (!rowSet.has(0) && rowSet.size === gridSize) {
+        newCompletedRows.add(i);
+      }
+    }
+    
+    // Vérifier les colonnes
+    for (let j = 0; j < gridSize; j++) {
+      const colValues = currentGrid.map(row => row[j]);
+      const colSet = new Set(colValues);
+      if (!colSet.has(0) && colSet.size === gridSize) {
+        newCompletedCols.add(j);
+      }
+    }
+    
+    // Vérifier les boîtes
+    for (let boxRow = 0; boxRow < boxSize; boxRow++) {
+      for (let boxCol = 0; boxCol < boxSize; boxCol++) {
+        const boxValues: number[] = [];
+        for (let i = 0; i < boxSize; i++) {
+          for (let j = 0; j < boxSize; j++) {
+            boxValues.push(currentGrid[boxRow * boxSize + i][boxCol * boxSize + j]);
+          }
+        }
+        const boxSet = new Set(boxValues);
+        if (!boxSet.has(0) && boxSet.size === gridSize) {
+          newCompletedBoxes.add(`${boxRow}-${boxCol}`);
+        }
+      }
+    }
+    
+    setCompletedRows(newCompletedRows);
+    setCompletedCols(newCompletedCols);
+    setCompletedBoxes(newCompletedBoxes);
+    
+    // Vérifier si la grille est complète
+    const isGridComplete = newCompletedRows.size === gridSize && 
+                           newCompletedCols.size === gridSize && 
+                           newCompletedBoxes.size === gridSize;
+    
+    if (isGridComplete && !isCompleted) {
+      setIsCompleted(true);
+      setShowConfetti(true);
+      if (!solvedBySolver && startTime) {
+        setCompletionTime(Math.floor((Date.now() - startTime) / 1000));
+      }
+      // Arrêter les confettis après 5 secondes
+      setTimeout(() => setShowConfetti(false), 5000);
+    }
+  };
+
+  // Timer pour le temps de jeu
+  useEffect(() => {
+    let interval: ReturnType<typeof setInterval> | null = null;
+    
+    if (startTime && !isCompleted) {
+      interval = setInterval(() => {
+        setElapsedTime(Math.floor((Date.now() - startTime) / 1000));
+      }, 1000);
+    }
+    
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [startTime, isCompleted]);
+
+  // Formater le temps en mm:ss
+  const formatTime = (seconds: number): string => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  useEffect(() => {
+    setGrid(Array(gridSize).fill(null).map(() => Array(gridSize).fill(0)));
+    setInitialCells(Array(gridSize).fill(null).map(() => Array(gridSize).fill(false)));
+    setHintCells(Array(gridSize).fill(null).map(() => Array(gridSize).fill(false)));
+    setCompletedRows(new Set());
+    setCompletedCols(new Set());
+    setCompletedBoxes(new Set());
+    setGameId(null);
+    setSelectedCell(null);
+    setHintsUsed(0);
+    setStartTime(null);
+    setElapsedTime(0);
+    setIsCompleted(false);
+    setCompletionTime(null);
+    setSolvedBySolver(false);
+    setSolverTime(null);
+  }, [gridSize]);
 
   useEffect(() => {
     const fetchProjectId = async () => {
@@ -30,30 +226,95 @@ const SudokuSolver = () => {
   }, []);
 
   const handleCellChange = (row: number, col: number, value: string) => {
+    // Ne pas modifier les cases initiales
+    if (initialCells[row][col]) return;
+    
     const num = parseInt(value) || 0;
-    if (num >= 0 && num <= 9) {
+    if (num >= 0 && num <= gridSize) {
+      // Vérifier si le mouvement est valide
+      if (num !== 0 && !isValidMove(row, col, num, grid)) {
+        // Mouvement invalide - afficher un feedback visuel
+        setInvalidMove({ row, col });
+        setTimeout(() => setInvalidMove(null), 500);
+        return;
+      }
+      
       const newGrid = grid.map(r => [...r]);
       newGrid[row][col] = num;
       setGrid(newGrid);
+      
+      // Retirer le statut "hint" si l'utilisateur modifie la case
+      if (hintCells[row][col]) {
+        const newHintCells = hintCells.map(r => [...r]);
+        newHintCells[row][col] = false;
+        setHintCells(newHintCells);
+      }
+      
+      // Vérifier les complétions
+      checkCompletions(newGrid);
+    }
+  };
+
+  const handleNumberClick = (num: number) => {
+    if (selectedCell && !initialCells[selectedCell.row][selectedCell.col]) {
+      handleCellChange(selectedCell.row, selectedCell.col, num.toString());
     }
   };
 
   const generatePuzzle = async () => {
     setGenerating(true);
+    
+    // Timeouts coordonnés avec le backend (+5s de marge pour laisser le backend répondre)
+    // Backend: 10s/20s/35s -> Frontend: 15s/25s/40s
+    const timeoutMs = gridSize === 25 ? 40000 : gridSize === 16 ? 25000 : 15000;
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+    
     try {
       const response = await fetch('/sudoku/api/sudoku/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ difficulty }),
+        body: JSON.stringify({ difficulty, size: gridSize }),
+        signal: controller.signal,
       });
+      clearTimeout(timeoutId);
+      
       const data = await response.json();
       if (data.success) {
         setGrid(data.puzzle);
         setGameId(data.gameId);
+        
+        // Marquer les cases non-vides comme initiales (verrouillées)
+        const newInitialCells = data.puzzle.map((row: number[]) => 
+          row.map((cell: number) => cell !== 0)
+        );
+        setInitialCells(newInitialCells);
+        setHintCells(Array(gridSize).fill(null).map(() => Array(gridSize).fill(false)));
+        setCompletedRows(new Set());
+        setCompletedCols(new Set());
+        setCompletedBoxes(new Set());
+        
+        // Réinitialiser les états de jeu
+        setHintsUsed(0);
+        setStartTime(Date.now());
+        setElapsedTime(0);
+        setIsCompleted(false);
+        setCompletionTime(null);
+        setSolvedBySolver(false);
+        setSolverTime(null);
+      } else if (data.error) {
+        alert(`Erreur: ${data.error}`);
       }
-    } catch (error) {
-      console.error('Error generating puzzle:', error);
-      alert('Erreur: Assurez-vous que l\'API Python est lancée (python server/sudoku_api.py)');
+    } catch (error: any) {
+      clearTimeout(timeoutId);
+      if (error.name === 'AbortError') {
+        alert(`La génération de la grille ${gridSize}x${gridSize} a pris trop de temps. Essayez à nouveau ou choisissez une taille plus petite.`);
+      } else if (error.message?.includes('timeout') || error.message?.includes('408')) {
+        alert(`Timeout: La génération a pris trop de temps. Réessayez.`);
+      } else {
+        console.error('Error generating puzzle:', error);
+        alert('Erreur: Assurez-vous que l\'API Python est lancée');
+      }
     } finally {
       setGenerating(false);
     }
@@ -61,19 +322,47 @@ const SudokuSolver = () => {
 
   const solveSudoku = async () => {
     setSolving(true);
+    const solveStartTime = Date.now();
+    
+    // Timeouts coordonnés avec le backend (+5s de marge pour laisser le backend répondre)
+    // Backend: 10s/20s/50s -> Frontend: 15s/25s/60s
+    const timeoutMs = gridSize === 25 ? 60000 : gridSize === 16 ? 25000 : 15000;
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+    
     try {
       const response = await fetch('/sudoku/api/sudoku/solve', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ grid }),
+        signal: controller.signal,
       });
+      clearTimeout(timeoutId);
+      
       const data = await response.json();
-      if (data.solution) {
-        setGrid(data.solution);
+      
+      // Vérifier si la réponse contient une erreur (timeout backend ou autre)
+      if (!response.ok || data.error) {
+        const errorMessage = data.error || 'Erreur lors de la résolution';
+        alert(`Erreur: ${errorMessage}`);
+        return;
       }
-    } catch (error) {
-      console.error('Error solving sudoku:', error);
-      alert('Erreur: Assurez-vous que l\'API Python est lancée (python server/sudoku_api.py)');
+      
+      if (data.solution) {
+        const solveEndTime = Date.now();
+        setSolverTime(Math.round((solveEndTime - solveStartTime) / 10) / 100); // En secondes avec 2 décimales
+        setSolvedBySolver(true);
+        setGrid(data.solution);
+        checkCompletions(data.solution);
+      }
+    } catch (error: any) {
+      clearTimeout(timeoutId);
+      if (error.name === 'AbortError' || error.name === 'TimeoutError') {
+        alert(`La résolution de la grille ${gridSize}x${gridSize} a pris trop de temps. Vous pouvez réessayer mais la grille est peut-être trop complexe pour les timeout setup.`);
+      } else {
+        console.error('Error solving sudoku:', error);
+        alert('Erreur: Assurez-vous que l\'API Python est lancée');
+      }
     } finally {
       setSolving(false);
     }
@@ -82,6 +371,11 @@ const SudokuSolver = () => {
   const getHint = async () => {
     if (!gameId) {
       alert('Générez d\'abord un puzzle pour obtenir des indices');
+      return;
+    }
+    
+    if (hintsUsed >= MAX_HINTS) {
+      alert(`Vous avez utilisé tous vos indices (${MAX_HINTS}/${MAX_HINTS})`);
       return;
     }
 
@@ -97,7 +391,17 @@ const SudokuSolver = () => {
         const newGrid = grid.map(r => [...r]);
         newGrid[row][col] = value;
         setGrid(newGrid);
-        alert(`Indice: Case (${row + 1}, ${col + 1}) = ${value}`);
+        
+        // Marquer cette case comme remplie par indice
+        const newHintCells = hintCells.map(r => [...r]);
+        newHintCells[row][col] = true;
+        setHintCells(newHintCells);
+        
+        // Incrémenter le compteur d'indices
+        setHintsUsed(prev => prev + 1);
+        
+        // Vérifier les complétions
+        checkCompletions(newGrid);
       } else {
         alert(data.message || 'Aucun indice disponible');
       }
@@ -107,12 +411,108 @@ const SudokuSolver = () => {
   };
 
   const clearGrid = () => {
-    setGrid(Array(9).fill(null).map(() => Array(9).fill(0)));
-    setGameId(null);
+    // Effacer seulement les cases non-initiales (entrées par l'utilisateur ou indices)
+    if (!gameId) {
+      // Si pas de partie en cours, tout effacer
+      setGrid(Array(gridSize).fill(null).map(() => Array(gridSize).fill(0)));
+      setInitialCells(Array(gridSize).fill(null).map(() => Array(gridSize).fill(false)));
+      setHintCells(Array(gridSize).fill(null).map(() => Array(gridSize).fill(false)));
+      setCompletedRows(new Set());
+      setCompletedCols(new Set());
+      setCompletedBoxes(new Set());
+      setGameId(null);
+    } else {
+      // Sinon, garder les cases initiales et effacer le reste
+      const newGrid = grid.map((row, i) => 
+        row.map((cell, j) => initialCells[i][j] ? cell : 0)
+      );
+      setGrid(newGrid);
+      setHintCells(Array(gridSize).fill(null).map(() => Array(gridSize).fill(false)));
+      setCompletedRows(new Set());
+      setCompletedCols(new Set());
+      setCompletedBoxes(new Set());
+      setIsCompleted(false);
+      setCompletionTime(null);
+      setSolvedBySolver(false);
+      setSolverTime(null);
+      // Ne pas réinitialiser les indices utilisés ni le timer
+    }
+  };
+
+  // Déterminer la couleur du texte selon le type de cellule
+  const getCellTextColor = (row: number, col: number, isSelected: boolean): string => {
+    if (isSelected && !initialCells[row][col]) return 'text-primary';
+    if (initialCells[row][col]) return 'text-white font-extrabold'; // Chiffres initiaux
+    if (hintCells[row][col]) return 'text-amber-400'; // Chiffres donnés par indice
+    return 'text-emerald-400'; // Chiffres entrés par l'utilisateur
+  };
+
+  // Vérifier si une cellule est dans une zone complétée
+  const isCellCompleted = (row: number, col: number): boolean => {
+    const boxSize = Math.sqrt(gridSize);
+    const boxRow = Math.floor(row / boxSize);
+    const boxCol = Math.floor(col / boxSize);
+    
+    return completedRows.has(row) || 
+           completedCols.has(col) || 
+           completedBoxes.has(`${boxRow}-${boxCol}`);
   };
 
   return (
     <div className="min-h-screen bg-dark section-padding">
+      {/* Confettis */}
+      {showConfetti && <Confetti />}
+      
+      {/* Modal de victoire */}
+      <AnimatePresence>
+        {isCompleted && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            className="fixed inset-0 z-40 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+            onClick={() => setIsCompleted(false)}
+          >
+            <motion.div
+              initial={{ y: 50 }}
+              animate={{ y: 0 }}
+              className="bg-dark-light border border-primary/30 rounded-2xl p-8 max-w-md mx-4 text-center shadow-2xl"
+              onClick={e => e.stopPropagation()}
+            >
+              <Trophy className="w-16 h-16 text-amber-400 mx-auto mb-4" />
+              <h2 className="text-3xl font-bold gradient-text mb-4">🎉 Bravo ! 🎉</h2>
+              <p className="text-gray-300 mb-4">
+                Vous avez complété la grille {gridSize}x{gridSize} en difficulté {
+                  difficulty === 'easy' ? 'Facile' : 
+                  difficulty === 'medium' ? 'Moyen' : 
+                  difficulty === 'hard' ? 'Difficile' : 'Expert'
+                } !
+              </p>
+              {solvedBySolver ? (
+                <p className="text-lg text-secondary font-bold">
+                  Résolu par l'algorithme en {solverTime}s
+                </p>
+              ) : (
+                <p className="text-lg text-emerald-400 font-bold">
+                  Votre temps : {formatTime(completionTime || elapsedTime)}
+                </p>
+              )}
+              {hintsUsed > 0 && (
+                <p className="text-sm text-amber-400 mt-2">
+                  Indices utilisés : {hintsUsed}/{MAX_HINTS}
+                </p>
+              )}
+              <button
+                onClick={() => setIsCompleted(false)}
+                className="mt-6 px-6 py-3 bg-gradient-to-r from-primary to-secondary rounded-xl font-bold hover:scale-105 transition-transform"
+              >
+                Continuer
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      
       <Link
         to={projectId ? `/project/${projectId}` : '/#projects'}
         className="inline-flex items-center gap-2 text-primary hover:text-secondary transition-colors mb-8"
@@ -124,99 +524,208 @@ const SudokuSolver = () => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="max-w-4xl mx-auto"
+        className="max-w-[1600px] mx-auto"
       >
-        <h1 className="text-4xl font-bold mb-8 gradient-text">
-          Jeu de Sudoku Interactif
-        </h1>
+        <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
+          <h1 className="text-4xl font-bold gradient-text">
+            Jeu de Sudoku Interactif
+          </h1>
+          
+          {/* Timer et statistiques */}
+          {startTime && (
+            <div className="flex items-center gap-4 bg-dark-light/50 px-4 py-2 rounded-xl border border-gray-700">
+              <div className="text-center">
+                <span className="text-2xl font-mono font-bold text-primary">{formatTime(elapsedTime)}</span>
+                <span className="text-xs text-gray-400 block">Temps</span>
+              </div>
+              <div className="h-8 w-px bg-gray-700"></div>
+              <div className="text-center">
+                <span className={`text-lg font-bold ${hintsUsed >= MAX_HINTS ? 'text-red-400' : 'text-amber-400'}`}>
+                  {hintsUsed}/{MAX_HINTS}
+                </span>
+                <span className="text-xs text-gray-400 block">Indices</span>
+              </div>
+            </div>
+          )}
+        </div>
         
         <div className="glass-effect rounded-2xl p-8 mb-8">
-          {/* Sélection de difficulté */}
-          <div className="mb-6">
-            <label className="block text-sm mb-3 text-gray-300">Difficulté</label>
-            <div className="flex gap-2 flex-wrap">
-              {(['easy', 'medium', 'hard', 'expert'] as const).map((diff) => (
-                <button
-                  key={diff}
-                  onClick={() => setDifficulty(diff)}
-                  className={`px-4 py-2 rounded-lg transition-colors ${
-                    difficulty === diff
-                      ? 'bg-primary text-white'
-                      : 'bg-dark-light text-gray-400 hover:bg-gray-700'
-                  }`}
-                >
-                  {diff === 'easy' && 'Facile'}
-                  {diff === 'medium' && 'Moyen'}
-                  {diff === 'hard' && 'Difficile'}
-                  {diff === 'expert' && 'Expert'}
-                </button>
-              ))}
+          {/* Sélection de difficulté et taille */}
+          <div className="mb-6 flex flex-wrap gap-6">
+            <div>
+              <label className="block text-sm mb-3 text-gray-300">Difficulté</label>
+              <div className="flex gap-2 flex-wrap">
+                {(['easy', 'medium', 'hard', 'expert'] as const).map((diff) => (
+                  <button
+                    key={diff}
+                    onClick={() => setDifficulty(diff)}
+                    className={`px-4 py-2 rounded-lg transition-colors ${
+                      difficulty === diff
+                        ? 'bg-primary text-white'
+                        : 'bg-dark-light text-gray-400 hover:bg-gray-700'
+                    }`}
+                  >
+                    {diff === 'easy' && 'Facile'}
+                    {diff === 'medium' && 'Moyen'}
+                    {diff === 'hard' && 'Difficile'}
+                    {diff === 'expert' && 'Expert'}
+                  </button>
+                ))}
+              </div>
+            </div>
+            
+            <div>
+              <label className="block text-sm mb-3 text-gray-300">Taille de la grille</label>
+              <div className="flex gap-2">
+                {([9, 16, 25] as const).map((size) => (
+                  <button
+                    key={size}
+                    onClick={() => setGridSize(size)}
+                    className={`px-4 py-2 rounded-lg transition-colors ${
+                      gridSize === size
+                        ? 'bg-secondary text-white'
+                        : 'bg-dark-light text-gray-400 hover:bg-gray-700'
+                    }`}
+                  >
+                    {size}x{size}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
-          {/* Grille de Sudoku */}
-          <div className="grid grid-cols-9 gap-1 mb-8 max-w-xl mx-auto">
-            {grid.map((row, i) => (
-              row.map((cell, j) => (
-                <input
-                  key={`${i}-${j}`}
-                  type="number"
-                  min="0"
-                  max="9"
-                  value={cell || ''}
-                  onChange={(e) => handleCellChange(i, j, e.target.value)}
-                  className={`w-12 h-12 text-center bg-dark-light border ${
-                    (Math.floor(i / 3) + Math.floor(j / 3)) % 2 === 0
-                      ? 'border-gray-600'
-                      : 'border-gray-700'
-                  } focus:border-primary focus:outline-none rounded font-bold text-lg`}
-                />
-              ))
-            ))}
-          </div>
+          {/* Layout principal: Grille + Sidebar */}
+          <div className="flex flex-col xl:flex-row gap-8 items-start justify-center">
+            
+            {/* Conteneur de la grille */}
+            <div className="w-full xl:w-auto overflow-x-auto flex justify-center p-4">
+              <div 
+                className="grid gap-0 bg-gray-700 border-2 border-gray-500 shadow-2xl"
+                style={{ 
+                  gridTemplateColumns: `repeat(${gridSize}, minmax(${gridSize > 16 ? '2rem' : '3rem'}, 1fr))`,
+                  width: 'fit-content',
+                }}
+              >
+                {grid.map((row, i) => (
+                  row.map((cell, j) => {
+                    const boxSize = Math.sqrt(gridSize);
+                    const isRightBorder = (j + 1) % boxSize === 0 && j !== gridSize - 1;
+                    const isBottomBorder = (i + 1) % boxSize === 0 && i !== gridSize - 1;
+                    const isSelected = selectedCell?.row === i && selectedCell?.col === j;
+                    const isInitial = initialCells[i][j];
+                    const isCompleted = isCellCompleted(i, j);
+                    const isInvalid = invalidMove?.row === i && invalidMove?.col === j;
+                    
+                    return (
+                      <input
+                        key={`${i}-${j}`}
+                        type="number"
+                        min="0"
+                        max={gridSize}
+                        value={cell || ''}
+                        readOnly={isInitial}
+                        onFocus={() => setSelectedCell({row: i, col: j})}
+                        onChange={(e) => handleCellChange(i, j, e.target.value)}
+                        className={`
+                          w-full h-full aspect-square text-center 
+                          border-gray-700 focus:outline-none font-bold no-spinner
+                          ${gridSize > 16 ? 'text-xs sm:text-sm' : 'text-lg'}
+                          ${isRightBorder ? 'border-r-2 border-r-gray-400' : 'border-r border-r-gray-700'}
+                          ${isBottomBorder ? 'border-b-2 border-b-gray-400' : 'border-b border-b-gray-700'}
+                          ${isSelected && !isInitial ? 'bg-primary/20' : ''}
+                          ${isInitial ? 'bg-gray-800 cursor-not-allowed' : 'bg-dark-light hover:bg-gray-700'}
+                          ${isCompleted ? 'animate-completed' : ''}
+                          ${isInvalid ? 'bg-red-500/50 animate-shake' : ''}
+                          ${getCellTextColor(i, j, isSelected)}
+                          transition-colors
+                        `}
+                      />
+                    );
+                  })
+                ))}
+              </div>
+            </div>
 
-          {/* Boutons d'action */}
-          <div className="flex gap-4 justify-center flex-wrap">
-            <button
-              onClick={generatePuzzle}
-              disabled={generating}
-              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary to-secondary rounded-lg hover:scale-105 transition-transform disabled:opacity-50"
-            >
-              <Play size={20} />
-              {generating ? 'Génération...' : 'Nouvelle Partie'}
-            </button>
-            <button
-              onClick={solveSudoku}
-              disabled={solving}
-              className="flex items-center gap-2 px-6 py-3 bg-primary rounded-lg hover:bg-primary/80 transition-colors disabled:opacity-50"
-            >
-              {solving ? 'Résolution...' : 'Résoudre'}
-            </button>
-            <button
-              onClick={getHint}
-              disabled={!gameId}
-              className="flex items-center gap-2 px-6 py-3 bg-secondary rounded-lg hover:bg-secondary/80 transition-colors disabled:opacity-50"
-            >
-              <Lightbulb size={20} />
-              Indice
-            </button>
-            <button
-              onClick={clearGrid}
-              className="flex items-center gap-2 px-6 py-3 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors"
-            >
-              <RotateCcw size={20} />
-              Effacer
-            </button>
+            {/* Sidebar: Pavé numérique et Actions */}
+            <div className="w-full xl:w-80 flex flex-col gap-6 shrink-0">
+              
+              {/* Pavé numérique */}
+              <div className="bg-dark-light/30 p-5 rounded-xl border border-gray-700 shadow-lg">
+                <label className="block text-sm mb-4 text-gray-300 text-center font-medium uppercase tracking-wider">
+                  Pavé Numérique
+                </label>
+                <div className="grid grid-cols-5 gap-2">
+                  {Array.from({ length: gridSize }, (_, i) => i + 1).map((num) => (
+                    <button
+                      key={num}
+                      onClick={() => handleNumberClick(num)}
+                      className="aspect-square rounded-lg bg-dark-light hover:bg-primary hover:text-white transition-all font-bold text-gray-300 border border-gray-600 text-sm sm:text-base shadow-sm hover:shadow-md hover:-translate-y-0.5"
+                    >
+                      {num}
+                    </button>
+                  ))}
+                  <button
+                    onClick={() => handleNumberClick(0)}
+                    className="aspect-square rounded-lg bg-red-900/30 hover:bg-red-600 hover:text-white transition-all font-bold text-red-400 border border-red-900/50 shadow-sm hover:shadow-md hover:-translate-y-0.5"
+                    title="Effacer la case"
+                  >
+                    X
+                  </button>
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="flex flex-col gap-3">
+                <button
+                  onClick={generatePuzzle}
+                  disabled={generating}
+                  className="flex items-center justify-center gap-2 px-4 py-4 bg-gradient-to-r from-primary to-secondary rounded-xl hover:scale-[1.02] transition-transform disabled:opacity-50 font-bold shadow-lg"
+                >
+                  <Play size={20} />
+                  {generating ? 'Génération...' : 'Nouvelle Partie'}
+                </button>
+                
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    onClick={solveSudoku}
+                    disabled={solving}
+                    className="flex items-center justify-center gap-2 px-3 py-3 bg-primary rounded-xl hover:bg-primary/80 transition-colors disabled:opacity-50 font-medium shadow-md"
+                  >
+                    {solving ? '...' : 'Résoudre'}
+                  </button>
+                  <button
+                    onClick={getHint}
+                    disabled={!gameId || hintsUsed >= MAX_HINTS}
+                    className={`flex items-center justify-center gap-2 px-3 py-3 rounded-xl transition-colors font-medium shadow-md ${
+                      hintsUsed >= MAX_HINTS 
+                        ? 'bg-gray-600 text-gray-400 cursor-not-allowed' 
+                        : 'bg-secondary hover:bg-secondary/80 disabled:opacity-50'
+                    }`}
+                  >
+                    <Lightbulb size={18} />
+                    {hintsUsed}/{MAX_HINTS}
+                  </button>
+                </div>
+                
+                <button
+                  onClick={clearGrid}
+                  className="flex items-center justify-center gap-2 px-4 py-3 bg-gray-700 rounded-xl hover:bg-gray-600 transition-colors text-sm font-medium shadow-md"
+                >
+                  <RotateCcw size={18} />
+                  Effacer la grille
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
         <div className="text-gray-400 space-y-3">
-          <p className="font-bold text-white">🎮 Comment jouer :</p>
+          <p className="font-bold text-white">Comment jouer :</p>
           <ol className="list-decimal list-inside space-y-2 ml-4">
             <li>Choisissez une difficulté et cliquez sur "Nouvelle Partie"</li>
             <li>Remplissez la grille en respectant les règles du Sudoku</li>
-            <li>Utilisez "Indice" si vous êtes bloqué</li>
-            <li>Cliquez sur "Résoudre" pour voir la solution</li>
+            <li>Vous avez droit à <span className="text-amber-400 font-bold">{MAX_HINTS} indices</span> par partie</li>
+            <li>Cliquez sur "Résoudre" pour voir la solution (avec le temps du solveur)</li>
           </ol>
         </div>
       </motion.div>
