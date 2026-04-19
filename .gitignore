@@ -5,3 +5,6 @@ dist
 .DS_Store
 *.log
 *.txt
+!requirements.txt
+__pycache__
+*.pyc
