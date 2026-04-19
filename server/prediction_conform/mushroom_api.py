@@ -15,7 +15,9 @@ import io
 import os
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": ["http://localhost:5173"]}})
+cors_origins = os.getenv("CORS_ORIGINS", "http://localhost:5173")
+allowed_origins = [origin.strip() for origin in cors_origins.split(",") if origin.strip()]
+CORS(app, resources={r"/*": {"origins": allowed_origins}})
 
 # Configuration
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))

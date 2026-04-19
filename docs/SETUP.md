@@ -156,7 +156,7 @@ Accéder aux services:
 - Frontend: http://localhost:5173
 - Backend API: http://localhost:3001
 - Chatbot API: http://localhost:8000/docs
-- Sudoku API: http://localhost:5000
+- Sudoku API: http://localhost:8004
 - Mushroom API: http://localhost:8001
 - Stock API: http://localhost:8002/docs
 - OCR Sudoku API: http://localhost:8003/docs

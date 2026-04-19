@@ -58,28 +58,28 @@ sleep 2
 echo ""
 
 # Démarrer l'API Chatbot Python
-echo -e "${GREEN}4. Chatbot API Python (port 8000)${NC}"
-if [ -f "/home/abel/personnal_projects/chatbot_simple/main.py" ]; then
-    python3 /home/abel/personnal_projects/chatbot_simple/main.py &
-    CHATBOT_PID=$!
-    echo "Chatbot API démarrée (PID: $CHATBOT_PID)"
-else
-    echo -e "${YELLOW}  /home/abel/personnal_projects/chatbot_simple/main.py non trouvé${NC}"
-fi
-sleep 2
-echo ""
+# echo -e "${GREEN}4. Chatbot API Python (port 8000)${NC}"
+# if [ -f "/home/abel/personnal_projects/chatbot_simple/main.py" ]; then
+#     python3 /home/abel/personnal_projects/chatbot_simple/main.py &
+#     CHATBOT_PID=$!
+#     echo "Chatbot API démarrée (PID: $CHATBOT_PID)"
+# else
+#     echo -e "${YELLOW}  /home/abel/personnal_projects/chatbot_simple/main.py non trouvé${NC}"
+# fi
+# sleep 2
+# echo ""
 
 # Démarrer l'API Mushroom Python
-echo -e "${GREEN}5. Mushroom Classification API (port 8001)${NC}"
-if [ -f "server/prediction_conform/mushroom_api.py" ]; then
-    python3 server/prediction_conform/mushroom_api.py &
-    MUSHROOM_PID=$!
-    echo "Mushroom API démarrée (PID: $MUSHROOM_PID)"
-else
-    echo -e "${YELLOW}  server/prediction_conform/mushroom_api.py non trouvé${NC}"
-fi
-sleep 2
-echo ""
+# echo -e "${GREEN}5. Mushroom Classification API (port 8001)${NC}"
+# if [ -f "server/prediction_conform/mushroom_api.py" ]; then
+#     python3 server/prediction_conform/mushroom_api.py &
+#     MUSHROOM_PID=$!
+#     echo "Mushroom API démarrée (PID: $MUSHROOM_PID)"
+# else
+#     echo -e "${YELLOW}  server/prediction_conform/mushroom_api.py non trouvé${NC}"
+# fi
+# sleep 2
+# echo ""
 
 # Démarrer l'API Stock Python
 echo -e "${GREEN}6. Stock Prediction API (port 8002)${NC}"
@@ -98,22 +98,22 @@ sleep 2
 echo ""
 
 # Démarrer l'API OCR Sudoku
-echo -e "${GREEN}7. OCR Sudoku API (port 8003)${NC}"
-OCR_DIR="server/ocr_sudoku"
-if [ -d "$OCR_DIR" ] && [ -f "$OCR_DIR/api.py" ]; then
-    cd "$OCR_DIR"
-    # On suppose que l'environnement virtuel est déjà créé ou on utilise python3 direct
-    # Idéalement: source venv/bin/activate
-    python3 -m uvicorn api:app --host 0.0.0.0 --port 8003 &
-    OCR_PID=$!
-    cd - > /dev/null
-    echo "OCR Sudoku API démarrée (PID: $OCR_PID)"
-else
-    echo -e "${YELLOW}  $OCR_DIR/api.py non trouvé${NC}"
-    OCR_PID=""
-fi
-sleep 2
-echo ""
+# echo -e "${GREEN}7. OCR Sudoku API (port 8003)${NC}"
+# OCR_DIR="server/ocr_sudoku"
+# if [ -d "$OCR_DIR" ] && [ -f "$OCR_DIR/api.py" ]; then
+#     cd "$OCR_DIR"
+#     # On suppose que l'environnement virtuel est déjà créé ou on utilise python3 direct
+#     # Idéalement: source venv/bin/activate
+#     python3 -m uvicorn api:app --host 0.0.0.0 --port 8003 &
+#     OCR_PID=$!
+#     cd - > /dev/null
+#     echo "OCR Sudoku API démarrée (PID: $OCR_PID)"
+# else
+#     echo -e "${YELLOW}  $OCR_DIR/api.py non trouvé${NC}"
+#     OCR_PID=""
+# fi
+# sleep 2
+# echo ""
 
 # Démarrer Vite
 echo -e "${GREEN}8. Frontend Vite (port 5173)${NC}"

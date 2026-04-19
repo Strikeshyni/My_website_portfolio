@@ -226,7 +226,6 @@ const StockPrediction = () => {
     min_profit_percentage: 1.0,
     max_loss_percentage: 1.0,
   });
-  const [currentSimId, setCurrentSimId] = useState<string | null>(null);
   const [simulationStatus, setSimulationStatus] = useState<SimulationStatus | null>(null);
   const [simulationResult, setSimulationResult] = useState<SimulationResult | null>(null);
   const [simulating, setSimulating] = useState(false);
@@ -341,7 +340,6 @@ const StockPrediction = () => {
     try {
       const response = await axios.post('/stock/api/simulate', simulationConfig);
       const simId = response.data.sim_id;
-      setCurrentSimId(simId);
       
       // Connect WebSocket for real-time updates
       const ws = new WebSocket(`ws://localhost:8002/ws/simulation/${simId}`);
@@ -402,26 +400,6 @@ const StockPrediction = () => {
       console.error('Error fetching simulation results:', error);
     } finally {
       setSimulating(false);
-    }
-  };
-
-  // Estimate simulation time
-  const estimateSimulationTime = () => {
-    const fromDate = new Date(simulationConfig.from_date);
-    const toDate = new Date(simulationConfig.to_date);
-    const days = Math.ceil((toDate.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24));
-    
-    // Estimation: ~2-3 secondes par jour (entraînement d'un modèle par jour)
-    const estimatedSeconds = days * 2.5;
-    
-    if (estimatedSeconds < 60) {
-      return `~${Math.ceil(estimatedSeconds)} secondes`;
-    } else if (estimatedSeconds < 3600) {
-      return `~${Math.ceil(estimatedSeconds / 60)} minutes`;
-    } else {
-      const hours = Math.floor(estimatedSeconds / 3600);
-      const minutes = Math.ceil((estimatedSeconds % 3600) / 60);
-      return `~${hours}h ${minutes}min`;
     }
   };
 
@@ -1398,7 +1376,7 @@ const StockPrediction = () => {
                           </tr>
                         </thead>
                         <tbody>
-                          {Object.entries(simulationResult.strategies_results).map(([name, result], idx) => (
+                          {Object.entries(simulationResult.strategies_results).map(([name, result]) => (
                             <tr key={name} className="border-b border-gray-700 last:border-0 hover:bg-white/5 transition-colors">
                               <td className="px-4 py-3 font-medium text-white capitalize">
                                 {STRATEGY_INFO[name]?.name || name}
@@ -1413,7 +1391,7 @@ const StockPrediction = () => {
                                 {result.benefit_percentage?.toFixed(2) || '0.00'}%
                               </td>
                               <td className="px-4 py-3 text-gray-300">
-                                {result.trades}
+                                {result.total_trades}
                               </td>
                               <td className="px-4 py-3 text-primary font-bold">
                                 {result.win_rate?.toFixed(1) || '0.0'}%

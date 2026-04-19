@@ -11,7 +11,9 @@ const sampleProjects = [
     longDescription: `Un jeu de Sudoku complet développé en Python avec génération automatique de grilles et résolution optimisée.
     
     Fonctionnalités :
+    - Support des grilles 9x9, 16x16 et 25x25
     - Génération de grilles avec 4 niveaux de difficulté (facile, moyen, difficile, expert)
+    - Interface moderne avec pavé numérique et saisie intuitive
     - Résolution ultra-rapide avec backtracking optimisé
     - Système d'indices intelligent
     - Validation en temps réel des coups
@@ -23,7 +25,7 @@ const sampleProjects = [
     - Flask pour l'API REST
     - React + TypeScript pour l'interface
     
-    L'algorithme peut générer et résoudre n'importe quelle grille de Sudoku en quelques millisecondes grâce à des optimisations avancées.`,
+    L'algorithme peut générer et résoudre n'importe quelle grille de Sudoku (jusqu'à 25x25) en quelques millisecondes grâce à des optimisations avancées.`,
     technologies: ['Python', 'Flask', 'Algorithmes', 'React', 'TypeScript'],
     imageUrl: '/images/projects/sudoku.jpg',
     bannerUrl: '/images/projects/sudoku-banner.jpg',
@@ -196,7 +198,7 @@ const sampleProjects = [
     featured: true,
     interactive: true,
     interactivePath: '/projects/ocr-sudoku',
-    healthCheckUrl: '/ocr/api/health',
+    healthCheckUrl: '/ocr-sudoku/health',
     maturity: 'beta',
     createdAt: new Date('2022-09-10'),
   },

@@ -4,88 +4,127 @@ Créé pour le portfolio d'Abel Aubron
 """
 
 import random
+import math
+import time
 from typing import List, Optional, Tuple
 
 
 class SudokuGame:
     """Classe pour générer, résoudre et gérer des grilles de Sudoku"""
     
-    def __init__(self):
-        self.grid: List[List[int]] = [[0 for _ in range(9)] for _ in range(9)]
-        self.solution: List[List[int]] = [[0 for _ in range(9)] for _ in range(9)]
+    def __init__(self, size: int = 9, timeout: float = 20.0):
+        self.size = size
+        self.box_size = int(math.sqrt(size))
+        self.grid: List[List[int]] = [[0 for _ in range(size)] for _ in range(size)]
+        self.solution: List[List[int]] = [[0 for _ in range(size)] for _ in range(size)]
+        self.timeout = timeout
+        self.start_time: float = 0
     
     def is_valid(self, grid: List[List[int]], row: int, col: int, num: int) -> bool:
         """Vérifie si placer un nombre est valide"""
         # Vérifier la ligne
+        # Optimisation: boucle explicite souvent plus rapide que 'in' pour les petits tableaux
+        # mais 'in' est très optimisé en C. Gardons 'in' pour la ligne.
         if num in grid[row]:
             return False
         
         # Vérifier la colonne
-        if num in [grid[i][col] for i in range(9)]:
-            return False
+        # Optimisation: éviter la création de liste avec [grid[i][col]...]
+        for i in range(self.size):
+            if grid[i][col] == num:
+                return False
         
-        # Vérifier le carré 3x3
-        start_row, start_col = 3 * (row // 3), 3 * (col // 3)
-        for i in range(start_row, start_row + 3):
-            for j in range(start_col, start_col + 3):
+        # Vérifier le carré box_size x box_size
+        start_row = self.box_size * (row // self.box_size)
+        start_col = self.box_size * (col // self.box_size)
+        
+        for i in range(start_row, start_row + self.box_size):
+            for j in range(start_col, start_col + self.box_size):
                 if grid[i][j] == num:
                     return False
         
         return True
     
-    def solve(self, grid: List[List[int]]) -> bool:
-        """Résout une grille de Sudoku avec backtracking"""
-        for row in range(9):
-            for col in range(9):
-                if grid[row][col] == 0:
-                    # Essayer les chiffres de 1 à 9 dans un ordre aléatoire pour plus de variété
-                    numbers = list(range(1, 10))
-                    random.shuffle(numbers)
+    def solve(self, grid: List[List[int]], use_timeout: bool = True) -> bool:
+        """Résout une grille de Sudoku avec backtracking optimisé"""
+        self.start_time = time.time()
+        return self._solve_from(grid, 0, 0, use_timeout)
+
+    def _solve_from(self, grid: List[List[int]], row: int, col: int, use_timeout: bool = True) -> bool:
+        """Fonction récursive interne qui garde la trace de la position"""
+        # Vérifier le timeout
+        if use_timeout and time.time() - self.start_time > self.timeout:
+            raise TimeoutError("Sudoku generation timed out")
+        
+        # Trouver la prochaine case vide à partir de la position actuelle
+        while row < self.size and grid[row][col] != 0:
+            col += 1
+            if col == self.size:
+                col = 0
+                row += 1
+        
+        # Si on a dépassé la dernière ligne, on a fini
+        if row == self.size:
+            return True
+            
+        # Essayer les chiffres
+        numbers = list(range(1, self.size + 1))
+        random.shuffle(numbers)
+        
+        for num in numbers:
+            if self.is_valid(grid, row, col, num):
+                grid[row][col] = num
+                
+                # Appel récursif
+                next_col = col + 1
+                next_row = row
+                if next_col == self.size:
+                    next_col = 0
+                    next_row += 1
                     
-                    for num in numbers:
-                        if self.is_valid(grid, row, col, num):
-                            grid[row][col] = num
-                            
-                            if self.solve(grid):
-                                return True
-                            
-                            grid[row][col] = 0
-                    
-                    return False
-        return True
+                if self._solve_from(grid, next_row, next_col, use_timeout):
+                    return True
+                
+                grid[row][col] = 0
+                
+        return False
     
     def generate_complete_grid(self) -> List[List[int]]:
         """Génère une grille complète et valide"""
-        grid = [[0 for _ in range(9)] for _ in range(9)]
+        grid = [[0 for _ in range(self.size)] for _ in range(self.size)]
         
-        # Remplir la diagonale (3 carrés 3x3 indépendants)
-        for box in range(0, 9, 3):
-            nums = list(range(1, 10))
+        # Remplir la diagonale (box_size carrés indépendants)
+        for box in range(0, self.size, self.box_size):
+            nums = list(range(1, self.size + 1))
             random.shuffle(nums)
             idx = 0
-            for i in range(box, box + 3):
-                for j in range(box, box + 3):
+            for i in range(box, box + self.box_size):
+                for j in range(box, box + self.box_size):
                     grid[i][j] = nums[idx]
                     idx += 1
         
-        # Résoudre le reste
-        self.solve(grid)
+        # Résoudre le reste avec timeout
+        self.solve(grid, use_timeout=True)
         return grid
     
     def remove_numbers(self, grid: List[List[int]], difficulty: str = 'medium') -> List[List[int]]:
         """Retire des nombres pour créer le puzzle"""
-        # Nombre de cases à retirer selon la difficulté
-        cells_to_remove = {
-            'easy': 30,
-            'medium': 40,
-            'hard': 50,
-            'expert': 55
+        total_cells = self.size * self.size
+        
+        # Pourcentage de cases à retirer selon la difficulté
+        remove_ratios = {
+            'easy': 0.35,   # ~30/81
+            'medium': 0.45, # ~36/81
+            'hard': 0.55,   # ~45/81
+            'expert': 0.65  # ~53/81
         }
         
-        num_to_remove = cells_to_remove.get(difficulty, 40)
+        ratio = remove_ratios.get(difficulty, 0.45)
+        num_to_remove = int(total_cells * ratio)
+        
         puzzle = [row[:] for row in grid]  # Copie profonde
         
-        positions = [(i, j) for i in range(9) for j in range(9)]
+        positions = [(i, j) for i in range(self.size) for j in range(self.size)]
         random.shuffle(positions)
         
         removed = 0
@@ -93,11 +132,7 @@ class SudokuGame:
             if removed >= num_to_remove:
                 break
             
-            backup = puzzle[row][col]
             puzzle[row][col] = 0
-            
-            # Vérifier si la grille a toujours une solution unique
-            # (simplification: on suppose que oui pour la performance)
             removed += 1
         
         return puzzle
@@ -116,8 +151,8 @@ class SudokuGame:
                 return False
         
         # Vérifier toutes les règles du Sudoku
-        for i in range(9):
-            for j in range(9):
+        for i in range(self.size):
+            for j in range(self.size):
                 num = user_solution[i][j]
                 user_solution[i][j] = 0  # Temporairement vide pour vérifier
                 
@@ -131,7 +166,7 @@ class SudokuGame:
     
     def get_hint(self, puzzle: List[List[int]], current: List[List[int]], solution: List[List[int]]) -> Optional[Tuple[int, int, int]]:
         """Retourne un indice (ligne, colonne, valeur)"""
-        empty_cells = [(i, j) for i in range(9) for j in range(9) if current[i][j] == 0]
+        empty_cells = [(i, j) for i in range(self.size) for j in range(self.size) if current[i][j] == 0]
         
         if not empty_cells:
             return None

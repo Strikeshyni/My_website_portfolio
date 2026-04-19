@@ -43,7 +43,7 @@ my_website/
 | Frontend | 5173 | Vite | Application React |
 | Backend | 3001 | Express | API principale + MongoDB |
 | Chatbot | 8000 | FastAPI | IA conversationnelle RAG |
-| Sudoku | 5000 | Flask | Solveur de grilles |
+| Sudoku | 8004 | Flask | Solveur de grilles |
 | Mushroom | 8001 | Flask | Classification conforme |
 | Stock | 8002 | FastAPI | Prediction LSTM + Trading |
 

@@ -26,4 +26,37 @@
   .section-padding {
     @apply px-6 md:px-12 lg:px-24 py-20;
   }
+
+  /* Hide number input arrows */
+  .no-spinner::-webkit-inner-spin-button,
+  .no-spinner::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  .no-spinner {
+    -moz-appearance: textfield;
+  }
+
+  /* Animation shake pour les coups invalides */
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
+    20%, 40%, 60%, 80% { transform: translateX(2px); }
+  }
+  
+  .animate-shake {
+    animation: shake 0.5s ease-in-out;
+  }
+
+  /* Animation de complétion (une seule fois) */
+  @keyframes completion-flash {
+    0% { background-color: rgba(16, 185, 129, 0.1); }
+    50% { background-color: rgba(16, 185, 129, 0.4); }
+    100% { background-color: rgba(16, 185, 129, 0.15); }
+  }
+  
+  .animate-completed {
+    animation: completion-flash 0.6s ease-out forwards;
+    background-color: rgba(16, 185, 129, 0.15);
+  }
 }

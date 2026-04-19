@@ -1,0 +1,28 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "https://portfolio-api.onrender.com/api/$1"
+    },
+    {
+      "source": "/sudoku/(.*)",
+      "destination": "https://sudoku-api.onrender.com/$1"
+    },
+    {
+      "source": "/mushroom/(.*)",
+      "destination": "https://mushroom-api.onrender.com/$1"
+    },
+    {
+      "source": "/ocr-sudoku/(.*)",
+      "destination": "https://ocr-sudoku-api.onrender.com/$1"
+    },
+    {
+      "source": "/chatbot/(.*)",
+      "destination": "https://YOUR-CHATBOT-RENDER-URL.onrender.com/$1"
+    },
+    {
+      "source": "/stock/(.*)",
+      "destination": "https://YOUR-STOCK-RENDER-URL.onrender.com/$1"
+    }
+  ]
+}

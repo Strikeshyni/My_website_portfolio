@@ -22,29 +22,57 @@ def generate_puzzle():
     """Génère une nouvelle grille de Sudoku"""
     data = request.get_json()
     difficulty = data.get('difficulty', 'medium')
+    size = data.get('size', 9)
     
     if difficulty not in ['easy', 'medium', 'hard', 'expert']:
         return jsonify({'error': 'Invalid difficulty'}), 400
     
-    puzzle, solution = sudoku.generate_puzzle(difficulty)
+    if size not in [9, 16, 25]:
+        return jsonify({'error': 'Invalid size. Must be 9, 16, or 25'}), 400
     
-    # Générer un ID unique pour cette partie
-    import uuid
-    game_id = str(uuid.uuid4())
+    # Timeouts coordonnés avec le frontend (frontend = backend + 5s de marge)
+    # 9x9: 10s, 16x16: 20s, 25x25: 35s
+    timeout = 10.0 if size == 9 else 20.0 if size == 16 else 35.0
     
-    # Stocker la solution
-    active_games[game_id] = {
-        'puzzle': puzzle,
-        'solution': solution,
-        'difficulty': difficulty
-    }
+    # Pour les grilles 25x25, faire plusieurs tentatives
+    max_attempts = 1 if size <= 16 else 3
+    
+    for attempt in range(max_attempts):
+        try:
+            game = SudokuGame(size=size, timeout=timeout)
+            puzzle, solution = game.generate_puzzle(difficulty)
+            
+            # Générer un ID unique pour cette partie
+            import uuid
+            game_id = str(uuid.uuid4())
+            
+            # Stocker la solution
+            active_games[game_id] = {
+                'puzzle': puzzle,
+                'solution': solution,
+                'difficulty': difficulty,
+                'size': size
+            }
+            
+            return jsonify({
+                'gameId': game_id,
+                'puzzle': puzzle,
+                'difficulty': difficulty,
+                'size': size,
+                'success': True
+            })
+        except TimeoutError:
+            if attempt == max_attempts - 1:
+                return jsonify({
+                    'error': f'La génération de la grille {size}x{size} a pris trop de temps. Réessayez.',
+                    'success': False
+                }), 408
+            continue
     
     return jsonify({
-        'gameId': game_id,
-        'puzzle': puzzle,
-        'difficulty': difficulty,
-        'success': True
-    })
+        'error': 'Échec de la génération',
+        'success': False
+    }), 500
 
 
 @app.route('/api/sudoku/solve', methods=['POST'])
@@ -53,23 +81,37 @@ def solve_puzzle():
     data = request.get_json()
     grid = data.get('grid')
     
-    if not grid or len(grid) != 9 or any(len(row) != 9 for row in grid):
+    if not grid:
         return jsonify({'error': 'Invalid grid format'}), 400
+        
+    size = len(grid)
+    if size not in [9, 16, 25] or any(len(row) != size for row in grid):
+        return jsonify({'error': f'Invalid grid size. Must be {size}x{size}'}), 400
     
     # Créer une copie pour ne pas modifier l'original
     grid_copy = [row[:] for row in grid]
     
-    game = SudokuGame()
-    if game.solve(grid_copy):
+    # Timeouts coordonnés avec le frontend (frontend = backend + 5s de marge)
+    # 9x9: 10s, 16x16: 20s, 25x25: 50s
+    timeout = 10.0 if size == 9 else 20.0 if size == 16 else 50.0
+    
+    try:
+        game = SudokuGame(size=size, timeout=timeout)
+        if game.solve(grid_copy, use_timeout=True):
+            return jsonify({
+                'solution': grid_copy,
+                'success': True
+            })
+        else:
+            return jsonify({
+                'error': 'Aucune solution trouvée pour cette grille',
+                'success': False
+            }), 400
+    except TimeoutError:
         return jsonify({
-            'solution': grid_copy,
-            'success': True
-        })
-    else:
-        return jsonify({
-            'error': 'No solution exists',
+            'error': f'La résolution de la grille {size}x{size} a pris trop de temps. La grille est peut-être invalide ou trop complexe.',
             'success': False
-        }), 400
+        }), 408
 
 
 @app.route('/api/sudoku/check', methods=['POST'])
@@ -84,8 +126,9 @@ def check_solution():
     
     game_data = active_games[game_id]
     puzzle = game_data['puzzle']
+    size = game_data.get('size', 9)
     
-    game = SudokuGame()
+    game = SudokuGame(size=size)
     is_correct = game.check_solution(puzzle, user_solution)
     
     return jsonify({
@@ -107,8 +150,9 @@ def get_hint():
     game_data = active_games[game_id]
     puzzle = game_data['puzzle']
     solution = game_data['solution']
+    size = game_data.get('size', 9)
     
-    game = SudokuGame()
+    game = SudokuGame(size=size)
     hint = game.get_hint(puzzle, current_grid, solution)
     
     if hint:
@@ -137,7 +181,11 @@ def validate_move():
     col = data.get('col')
     value = data.get('value')
     
-    game = SudokuGame()
+    if not grid:
+        return jsonify({'error': 'Invalid grid'}), 400
+        
+    size = len(grid)
+    game = SudokuGame(size=size)
     is_valid = game.is_valid(grid, row, col, value)
     
     return jsonify({
