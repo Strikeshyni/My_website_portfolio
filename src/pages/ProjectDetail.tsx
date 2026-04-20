@@ -112,8 +112,7 @@ const ProjectDetail = () => {
           {isHealthy === false && (
             <div className="mb-8 p-4 bg-red-900/20 border border-red-500/50 rounded-lg text-red-200">
               <p className="flex items-center gap-2">
-                <span className="text-xl">⚠️</span>
-                This project demo requires backend services, and none are currently available.
+                This project demo needs a backend GPU, and sadly my wallet is still in beta mode :)
               </p>
             </div>
           )}

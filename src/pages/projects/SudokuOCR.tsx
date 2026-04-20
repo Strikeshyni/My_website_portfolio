@@ -8,6 +8,8 @@ interface SolveResult {
   message: string;
   stdout: string;
   stderr: string;
+  outputImageDataUrl?: string | null;
+  debugImages?: Array<{ name: string; dataUrl: string }>;
 }
 
 const DEBUG_IMAGES = [
@@ -25,7 +27,7 @@ const SudokuOCR = () => {
   const [file, setFile] = useState<File | null>(null);
   const [processing, setProcessing] = useState(false);
   const [result, setResult] = useState<SolveResult | null>(null);
-  const [debugImages, setDebugImages] = useState<string[]>([]);
+  const [debugImages, setDebugImages] = useState<Array<{ name: string; dataUrl: string }>>([]);
   const [outputImage, setOutputImage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [samples, setSamples] = useState<string[]>([]);
@@ -142,23 +144,9 @@ const SudokuOCR = () => {
           const parsed = parseRawPredictions(response.data.stdout as string);
           if (parsed) setParsedPredictions(parsed);
         }
-      
-      // Fetch output image
-      const timestamp = new Date().getTime(); // Cache busting
-      setOutputImage(`/ocr-sudoku/debug-images/output_api.png?t=${timestamp}`);
 
-      // Check for debug images
-      const availableDebugImages = [];
-      for (const img of DEBUG_IMAGES) {
-        try {
-          // Just check if we can load it, or assume it exists if success
-          // We'll just construct the URL
-          availableDebugImages.push(`/ocr-sudoku/debug-images/${img.name}?t=${timestamp}`);
-        } catch (e) {
-          console.warn(`Debug image ${img.name} not found`);
-        }
-      }
-      setDebugImages(availableDebugImages);
+      setOutputImage(response.data?.outputImageDataUrl || null);
+      setDebugImages(Array.isArray(response.data?.debugImages) ? response.data.debugImages : []);
 
     } catch (err: any) {
       console.error('Error solving sudoku:', err);
@@ -404,21 +392,23 @@ const SudokuOCR = () => {
           >
             <h2 className="text-2xl font-bold mb-8">Processing Pipeline</h2>
             <div className="grid md:grid-cols-3 gap-6">
-              {debugImages.map((imgSrc, idx) => (
-                <div key={idx} className="space-y-2">
+              {debugImages.map((img, idx) => {
+                const label = DEBUG_IMAGES.find((d) => d.name === img.name)?.label || img.name;
+                return (
+                <div key={`${img.name}-${idx}`} className="space-y-2">
                   <div className="aspect-square bg-black/20 rounded-xl overflow-hidden relative group">
                     <img 
-                      src={imgSrc} 
-                      alt={DEBUG_IMAGES[idx].label}
+                      src={img.dataUrl} 
+                      alt={label}
                       className="w-full h-full object-contain"
                     />
                     <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                      <span className="text-white font-medium">{DEBUG_IMAGES[idx].label}</span>
+                      <span className="text-white font-medium">{label}</span>
                     </div>
                   </div>
-                  <p className="text-center text-sm text-gray-400">{DEBUG_IMAGES[idx].label}</p>
+                  <p className="text-center text-sm text-gray-400">{label}</p>
                 </div>
-              ))}
+              )})}
             </div>
           </motion.div>
         )}

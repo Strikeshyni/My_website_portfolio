@@ -19,7 +19,7 @@ const About = () => {
         <h2 className="text-5xl font-bold mb-12 gradient-text">About</h2>
 
         <div className="space-y-6 text-lg text-gray-300">
-          <p>
+          {/* <p>
             I am an engineering student at EPITA Lyon with a strong focus on algorithms and artificial
             intelligence. Through coursework and personal projects, I have built solid skills across
             multiple programming languages and modern technologies.
@@ -33,6 +33,19 @@ const About = () => {
             I enjoy solving complex problems through algorithm design and building practical, innovative
             solutions. My projects range from algorithm optimization to end-to-end AI applications.
             I also challenge myself regularly on CodinGame, LeetCode, and LeekWars.
+          </p> */}
+          <p>
+            I am an engineering student at EPITA Lyon, specialized in AI and graph-based systems.
+            What drives me is a deep curiosity about the underlying logic of the world. How complex systems behave, how patterns emerge, and how intelligence can be modeled and replicated.
+          </p>
+          <p>
+            Through my work, I explore how artificial intelligence can go beyond predictions and become a powerful tool to help humans understand problems, anticipate outcomes, and make better decisions.
+            I learn by building. From machine learning models and optimization algorithms to full-stack AI applications, I constantly develop small and large projects to experiment, fail, and improve. This portfolio itself is part of that process.
+          </p>
+
+          <p>
+            My interests span across machine learning, deep learning, NLP, computer vision, and data engineering, with a particular focus on designing end-to-end systems that are both robust and practical.
+            I am especially interested in the future of AI systems that can reason, adapt, and assist humans in solving complex real-world challenges.
           </p>
         </div>
 

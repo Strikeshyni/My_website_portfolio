@@ -1,8 +1,9 @@
 import os
 import sys
+import importlib
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Set
 from urllib.parse import unquote, urlparse
 
 import httpx
@@ -22,11 +23,47 @@ sys.path.append(str(BASE_DIR / "sudoku"))
 sys.path.append(str(BASE_DIR / "prediction_conform"))
 sys.path.append(str(BASE_DIR / "ocr_sudoku"))
 
-from sudoku_api import app as sudoku_flask_app  # type: ignore  # noqa: E402
-from mushroom_api import app as mushroom_flask_app  # type: ignore  # noqa: E402
-from api import app as ocr_fastapi_app  # type: ignore  # noqa: E402
-
 app = FastAPI(title="Portfolio Unified API", version="1.0.0")
+
+
+def _normalize_demo_name(name: str) -> str:
+    normalized = name.strip().lower().replace("_", "-")
+    aliases = {
+        "ocr": "ocr-sudoku",
+        "ocrsudoku": "ocr-sudoku",
+    }
+    return aliases.get(normalized, normalized)
+
+
+def _get_enabled_demos() -> Set[str]:
+    all_demos = {"sudoku", "mushroom", "ocr-sudoku", "chatbot", "stock"}
+    raw = (os.getenv("ENABLED_DEMOS") or os.getenv("DEMOS_TO_LOAD") or "").strip()
+    if not raw:
+        return all_demos
+
+    requested = {
+        _normalize_demo_name(name)
+        for name in raw.split(",")
+        if name.strip()
+    }
+    return requested & all_demos
+
+
+ENABLED_DEMOS = _get_enabled_demos()
+print(f"Enabled demos: {sorted(ENABLED_DEMOS)}")
+
+
+def _is_demo_enabled(name: str) -> bool:
+    return _normalize_demo_name(name) in ENABLED_DEMOS
+
+
+def _require_demo_enabled(name: str) -> None:
+    canonical = _normalize_demo_name(name)
+    if canonical not in ENABLED_DEMOS:
+        raise HTTPException(
+            status_code=503,
+            detail=f"Demo '{canonical}' is disabled by ENABLED_DEMOS/DEMOS_TO_LOAD.",
+        )
 
 allowed_origins = [
     origin.strip()
@@ -120,7 +157,11 @@ def serialize_project(doc: Dict[str, Any]) -> Dict[str, Any]:
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "service": "unified-api"}
+    return {
+        "status": "ok",
+        "service": "unified-api",
+        "enabledDemos": sorted(ENABLED_DEMOS),
+    }
 
 
 @app.get("/api/health")
@@ -173,6 +214,8 @@ def list_test_images_sudoku():
 
 @app.post("/chatbot/chat")
 async def chatbot_chat(payload: Dict[str, Any]):
+    _require_demo_enabled("chatbot")
+
     message = (payload.get("message") or "").strip().lower()
     if not message:
         raise HTTPException(status_code=400, detail="message is required")
@@ -208,6 +251,7 @@ async def chatbot_chat(payload: Dict[str, Any]):
 
 @app.get("/chatbot/health")
 def chatbot_health():
+    _require_demo_enabled("chatbot")
     return {"status": "ok", "service": "chatbot"}
 
 
@@ -248,10 +292,19 @@ async def _proxy_stock_request(request: Request, path: str) -> Response:
 
 @app.api_route("/stock/{path:path}", methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"])
 async def stock_proxy(path: str, request: Request):
+    _require_demo_enabled("stock")
     return await _proxy_stock_request(request, path)
 
 
 # Keep existing frontend routes working by mounting legacy services under their current prefixes.
-app.mount("/sudoku", WSGIMiddleware(sudoku_flask_app))
-app.mount("/mushroom", WSGIMiddleware(mushroom_flask_app))
-app.mount("/ocr-sudoku", ocr_fastapi_app)
+if _is_demo_enabled("sudoku"):
+    sudoku_flask_app = importlib.import_module("sudoku_api").app
+    app.mount("/sudoku", WSGIMiddleware(sudoku_flask_app))
+
+if _is_demo_enabled("mushroom"):
+    mushroom_flask_app = importlib.import_module("mushroom_api").app
+    app.mount("/mushroom", WSGIMiddleware(mushroom_flask_app))
+
+if _is_demo_enabled("ocr-sudoku"):
+    ocr_fastapi_app = importlib.import_module("api").app
+    app.mount("/ocr-sudoku", ocr_fastapi_app)

@@ -48,6 +48,8 @@ const Confetti = () => {
 };
 
 const SudokuSolver = () => {
+  type Difficulty = 'easy' | 'medium' | 'hard' | 'expert';
+
   const [gridSize, setGridSize] = useState<9 | 16 | 25>(9);
   const [grid, setGrid] = useState<number[][]>(
     Array(9).fill(null).map(() => Array(9).fill(0))
@@ -68,7 +70,7 @@ const SudokuSolver = () => {
   const [gameId, setGameId] = useState<string | null>(null);
   const [solving, setSolving] = useState(false);
   const [generating, setGenerating] = useState(false);
-  const [difficulty, setDifficulty] = useState<'easy' | 'medium' | 'hard' | 'expert'>('medium');
+  const [difficulty, setDifficulty] = useState<Difficulty>('medium');
   const [projectId, setProjectId] = useState<string | null>(null);
   const [selectedCell, setSelectedCell] = useState<{row: number, col: number} | null>(null);
   const [invalidMove, setInvalidMove] = useState<{row: number, col: number} | null>(null);
@@ -82,6 +84,13 @@ const SudokuSolver = () => {
   const [solverTime, setSolverTime] = useState<number | null>(null);
   
   const MAX_HINTS = 3;
+
+  const availableDifficulties: Difficulty[] =
+    gridSize === 9
+      ? ['easy', 'medium', 'hard', 'expert']
+      : gridSize === 16
+        ? ['easy', 'medium']
+        : ['easy'];
 
   // Check if a number is valid according to Sudoku rules
   const isValidMove = (row: number, col: number, num: number, currentGrid: number[][]): boolean => {
@@ -210,6 +219,12 @@ const SudokuSolver = () => {
     setSolvedBySolver(false);
     setSolverTime(null);
   }, [gridSize]);
+
+  useEffect(() => {
+    if (!availableDifficulties.includes(difficulty)) {
+      setDifficulty(availableDifficulties[0]);
+    }
+  }, [gridSize, difficulty, availableDifficulties]);
 
   useEffect(() => {
     const fetchProjectId = async () => {
@@ -485,7 +500,7 @@ const SudokuSolver = () => {
               <p className="text-gray-300 mb-4">
                 You completed the {gridSize}x{gridSize} grid on {
                   difficulty === 'easy' ? 'Easy' : 
-                  difficulty === 'medium' ? 'Medium' : 
+                  difficulty === 'medium' ? 'Medium' :
                   difficulty === 'hard' ? 'Hard' : 'Expert'
                 } !
               </p>
@@ -556,7 +571,7 @@ const SudokuSolver = () => {
             <div>
               <label className="block text-sm mb-3 text-gray-300">Difficulty</label>
               <div className="flex gap-2 flex-wrap">
-                {(['easy', 'medium', 'hard', 'expert'] as const).map((diff) => (
+                {availableDifficulties.map((diff) => (
                   <button
                     key={diff}
                     onClick={() => setDifficulty(diff)}

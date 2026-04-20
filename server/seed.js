@@ -30,27 +30,27 @@ function getMongoDbName(uri) {
 
 const sampleProjects = [
   {
-    title: 'Solveur et Jeu de Sudoku',
-    description: 'Générateur et solveur de Sudoku avec algorithme d\'optimisation avancé en Python',
-    longDescription: `Un jeu de Sudoku complet développé en Python avec génération automatique de grilles et résolution optimisée.
+    title: 'Sudoku Solver and Game',
+    description: 'Sudoku generator and solver with advanced optimization algorithms in Python',
+    longDescription: `A complete Sudoku game developed in Python with automatic grid generation and optimized solving.
     
-    Fonctionnalités :
-    - Support des grilles 9x9, 16x16 et 25x25
-    - Génération de grilles avec 4 niveaux de difficulté (facile, moyen, difficile, expert)
-    - Interface moderne avec pavé numérique et saisie intuitive
-    - Résolution ultra-rapide avec backtracking optimisé
-    - Système d'indices intelligent
-    - Validation en temps réel des coups
-    - API REST pour intégration frontend
+    Features:
+    - Support for 9x9, 16x16, and 25x25 grids
+    - Grid generation with 4 difficulty levels (easy, medium, hard, expert)
+    - Modern interface with a numeric keypad and intuitive input
+    - Ultra-fast solving with optimized backtracking
+    - Smart hint system
+    - Real-time move validation
+    - REST API for frontend integration
     
-    Technologies :
-    - Python pour la logique du jeu
-    - Algorithme de backtracking avec heuristiques
-    - Flask pour l'API REST
-    - React + TypeScript pour l'interface
+    Technologies:
+    - Python for game logic
+    - Backtracking algorithm with heuristics
+    - Flask for the REST API
+    - React + TypeScript for the interface
     
-    L'algorithme peut générer et résoudre n'importe quelle grille de Sudoku (jusqu'à 25x25) en quelques millisecondes grâce à des optimisations avancées.`,
-    technologies: ['Python', 'Flask', 'Algorithmes', 'React', 'TypeScript'],
+    The algorithm can generate and solve any Sudoku grid (up to 25x25) in just a few milliseconds thanks to advanced optimizations.`,
+    technologies: ['Python', 'Flask', 'Algorithms', 'React', 'TypeScript'],
     imageUrl: '/images/projects/sudoku.jpg',
     bannerUrl: '/images/projects/sudoku-banner.jpg',
     githubUrl: 'https://github.com/Strikeshyni/SudokuSolver_optimisation',
@@ -59,21 +59,21 @@ const sampleProjects = [
     interactive: true,
     interactivePath: '/projects/sudoku-solver',
     healthCheckUrl: '/sudoku/api/sudoku/health',
-    maturity: 'alpha',
+    maturity: 'stable',
     createdAt: new Date('2025-11-20'),
   },
   {
-    title: 'Chatbot IA Conversationnel',
-    description: 'Assistant intelligent avec traitement du langage naturel',
-    longDescription: `Un chatbot IA capable de comprendre et répondre de manière contextuelle aux questions des utilisateurs.
+    title: 'Conversational AI Chatbot',
+    description: 'Intelligent assistant with natural language processing',
+    longDescription: `An AI chatbot able to understand and answer user questions contextually.
     
-    Fonctionnalités :
-    - Compréhension du langage naturel
-    - Réponses contextuelles intelligentes
-    - Interface conversationnelle moderne
-    - Historique des conversations
+    Features:
+    - Natural language understanding
+    - Smart contextual responses
+    - Modern conversational interface
+    - Conversation history
     
-    Le chatbot peut être entraîné sur des domaines spécifiques pour fournir des réponses personnalisées et pertinentes.`,
+    The chatbot can be trained on specific domains to provide personalized and relevant responses.`,
     technologies: ['Python', 'NLP', 'Machine Learning', 'React', 'TypeScript'],
     imageUrl: '/images/projects/chatbot.jpg',
     bannerUrl: '/images/projects/chatbot-banner.jpg',
@@ -86,27 +86,27 @@ const sampleProjects = [
     createdAt: new Date('2025-03-15'),
   },
   {
-    title: 'Classification de Champignons avec Prédiction Conforme',
-    description: 'Modèle CNN avec prédiction conforme pour classifier 169 espèces de champignons',
-    longDescription: `Projet de Deep Learning appliquant la prédiction conforme à la classification de champignons.
+    title: 'Mushroom Classification with Conformal Prediction',
+    description: 'CNN model with conformal prediction to classify 169 mushroom species',
+    longDescription: `A Deep Learning project applying conformal prediction to mushroom classification.
     
-    Problématique :
-    La classification des champignons est critique (risque d'intoxication). La prédiction conforme quantifie l'incertitude en fournissant des ensembles de classes possibles avec garanties de couverture statistique.
+    Challenge:
+    Mushroom classification is critical (risk of poisoning). Conformal prediction quantifies uncertainty by returning sets of possible classes with statistical coverage guarantees.
     
-    Architecture technique :
-    - CNN personnalisé (4 blocs conv, 256 filtres, dropout 0.5)
-    - 169 classes de champignons du dataset Kaggle Mushroom Classification
-    - Split Conformal Prediction avec garantie de couverture ≥ 1-α
-    - Ensembles de prédiction adaptatifs selon l'incertitude
+    Technical architecture:
+    - Custom CNN (4 conv blocks, 256 filters, dropout 0.5)
+    - 169 mushroom classes from the Kaggle Mushroom Classification dataset
+    - Split Conformal Prediction with coverage guarantee >= 1-alpha
+    - Adaptive prediction sets based on uncertainty
     
-    Résultats :
-    - Couverture empirique : ~90% (α=0.1)
-    - Ensemble moyen : ~8 classes sur 169 (4.7%)
-    - Accuracy top-1 : 53.02%
-    - Trade-off ajustable : confiance vs taille de l'ensemble
+    Results:
+    - Empirical coverage: ~90% (alpha=0.1)
+    - Average set size: ~8 classes out of 169 (4.7%)
+    - Top-1 accuracy: 53.02%
+    - Adjustable trade-off: confidence vs set size
     
-    Application pratique :
-    Upload d'images pour obtenir un ensemble de prédictions avec niveau de confiance configurable. Alerte si espèce toxique détectée dans l'ensemble.`,
+    Practical use:
+    Upload images to receive a prediction set with configurable confidence. A warning is triggered if a toxic species appears in the set.`,
     technologies: ['Python', 'PyTorch', 'Deep Learning', 'Conformal Prediction', 'CNN', 'React'],
     imageUrl: '/images/projects/mushroom.jpg',
     bannerUrl: '/images/projects/mushroom-banner.jpg',
@@ -120,45 +120,50 @@ const sampleProjects = [
     createdAt: new Date('2025-10-15'),
   },
   {
-    title: 'Prédiction de Prix d\'Actions CAC40',
-    description: 'Modèle LSTM pour prédire les prix d\'actions et simuler des stratégies de trading',
-    longDescription: `Système complet de prédiction de prix d'actions utilisant des réseaux de neurones LSTM avec optimisation des hyperparamètres et simulation de trading.
+    title: 'CAC40 Stock Price Prediction',
+    description: 'LSTM model to predict stock prices and simulate trading strategies',
+    longDescription: `
+    New version in progress:
+    A new version of this project is currently being developed to push the technique further and handle global markets using graph neural networks.
+   
+    Complete stock price prediction system using LSTM neural networks with hyperparameter optimization and trading simulation.
     
-    Fonctionnalités principales :
-    - Entraînement de modèles LSTM sur données historiques Yahoo Finance
-    - Optimisation automatique des hyperparamètres avec Keras Tuner
-    - Prédictions multi-jours avec fenêtre temporelle configurable
-    - Simulation historique de stratégies de trading (backtesting)
-    - Suivi en temps réel de l'entraînement via WebSocket
+    Main features:
+    - Training LSTM models on Yahoo Finance historical data
+    - Automatic hyperparameter optimization with Keras Tuner
+    - Multi-day predictions with configurable time window
+    - Historical simulation of trading strategies (backtesting)
+    - Real-time training monitoring via WebSocket
     
-    Architecture technique :
-    - Modèle LSTM avec couches denses et dropout pour régularisation
-    - Prétraitement : normalisation MinMaxScaler, séquences temporelles
-    - Optimisation : Random Search sur learning rate, units, dropout
-    - API REST FastAPI avec jobs asynchrones en arrière-plan
-    - Frontend React avec interface à onglets (entraînement/prédiction/simulation)
+    Technical architecture:
+    - LSTM model with dense layers and dropout for regularization
+    - Preprocessing: MinMaxScaler normalization, time sequences
+    - Optimization: Random Search over learning rate, units, dropout
+    - FastAPI REST API with asynchronous background jobs
+    - React frontend with tabbed interface (training/prediction/simulation)
     
-    Données et couverture :
-    - Actions CAC40 : Engie, TotalEnergies, Airbus, BNP Paribas, Sanofi, LVMH, L'Oréal, Schneider Electric
-    - Historique : jusqu'à 20 ans de données quotidiennes
-    - Fenêtre temporelle : 10-500 jours pour prédire le jour suivant
+    Data and coverage:
+    - CAC40 stocks: Engie, TotalEnergies, Airbus, BNP Paribas, Sanofi, LVMH, L'Oreal, Schneider Electric
+    - History: up to 20 years of daily data
+    - Time window: 10-500 days to predict the next day
     
-    Stratégie de trading simulée :
-    - Achat si prédiction > prix actuel (tendance haussière)
-    - Vente si prédiction < prix actuel (tendance baissière)
-    - Métriques : rendement %, taux de réussite, nombre de trades
-    - Visualisation jour par jour des décisions et de la balance
+    Simulated trading strategy:
+    - Buy if prediction > current price (uptrend)
+    - Sell if prediction < current price (downtrend)
+    - Metrics: return %, win rate, number of trades
+    - Day-by-day visualization of decisions and account balance
     
-    Performance et limites :
-    - Les marchés financiers sont hautement stochastiques et difficiles à prédire
-    - Les résultats passés ne garantissent pas les performances futures
-    - L'objectif est pédagogique : démontrer l'application du Deep Learning aux séries temporelles
-    - La simulation permet de comparer prédictions vs réalité sur données historiques
+    Performance and limitations:
+    - Financial markets are highly stochastic and hard to predict
+    - Past results do not guarantee future performance
+    - The goal is educational: demonstrate Deep Learning for time series
+    - Simulation enables comparison of predictions vs reality on historical data
     
-    Interface utilisateur :
-    - Onglet Entraînement : configuration complète, barre de progression temps réel
-    - Onglet Prédictions : prédire les N prochains jours après entraînement
-    - Onglet Simulation : backtesting sur période passée avec bilan détaillé`,
+    User interface:
+    - Training tab: full configuration, real-time progress bar
+    - Predictions tab: predict the next N days after training
+    - Simulation tab: backtesting on past periods with detailed reports`,
+
     technologies: ['Python', 'TensorFlow', 'LSTM', 'Keras Tuner', 'FastAPI', 'WebSocket', 'React', 'TypeScript', 'Yahoo Finance'],
     imageUrl: '/images/projects/stock.jpg',
     bannerUrl: '/images/projects/stock-banner.jpg',
@@ -172,18 +177,18 @@ const sampleProjects = [
     createdAt: new Date('2024-10-10'),
   },
   {
-    title: 'Portfolio Dynamique',
-    description: 'Site portfolio moderne avec animations et architecture modulaire',
-    longDescription: `Un portfolio moderne et performant avec des animations fluides et une architecture complète.
+    title: 'Dynamic Portfolio',
+    description: 'Modern portfolio website with animations and modular architecture',
+    longDescription: `A modern and high-performance portfolio with smooth animations and a complete architecture.
     
-    Points clés :
-    - React + TypeScript pour la type-safety
-    - TailwindCSS pour un design responsive
-    - Framer Motion pour des animations fluides
-    - MongoDB + Express pour le backend
-    - Projets interactifs intégrés
+    Key points:
+    - React + TypeScript for type safety
+    - TailwindCSS for responsive design
+    - Framer Motion for smooth animations
+    - MongoDB + Express for the backend
+    - Integrated interactive projects
     
-    Le site est optimisé pour les performances et le SEO, avec un design moderne et élégant.`,
+    The website is optimized for performance and SEO, with a modern and elegant design.`,
     technologies: ['React', 'TypeScript', 'TailwindCSS', 'Framer Motion', 'MongoDB', 'Node.js'],
     imageUrl: '/images/projects/portfolio.png',
     bannerUrl: '/images/projects/portfolio-banner.jpg',
@@ -196,24 +201,24 @@ const sampleProjects = [
   },
   {
     title: 'OCR Sudoku Solver',
-    description: 'Solveur de Sudoku en C avec OCR et CNN from scratch',
-    longDescription: `Solveur de Sudoku complet en C pur avec reconnaissance optique de caractères (OCR) basée sur un réseau de neurones convolutif (CNN) implémenté from scratch.
+    description: 'Sudoku solver in C with OCR and a CNN built from scratch',
+    longDescription: `Complete Sudoku solver in pure C with optical character recognition (OCR) based on a convolutional neural network (CNN) implemented from scratch.
 
-    Fonctionnalités :
-    - Prétraitement d'image : conversion en niveaux de gris, binarisation Otsu, débruitage
-    - Détection de grille : détection des lignes via transformée de Hough
-    - Extraction de cases : découpage de la grille en 81 cases
-    - Reconnaissance de chiffres : CNN implémenté en C (backpropagation, SGD/Adam)
-    - Résolution : algorithme de backtracking optimisé avec heuristique MRV
-    - Reconstruction : génération de l'image finale avec les chiffres complétés
+    Features:
+    - Image preprocessing: grayscale conversion, Otsu binarization, denoising
+    - Grid detection: line detection using the Hough transform
+    - Cell extraction: splitting the grid into 81 cells
+    - Digit recognition: CNN implemented in C (backpropagation, SGD/Adam)
+    - Solving: optimized backtracking algorithm with MRV heuristic
+    - Reconstruction: generation of the final image with completed digits
     
-    Performance :
-    - Précision OCR > 98.3% sur chiffres manuscrits
-    - Temps résolution < 100ms par grille
+    Performance:
+    - OCR accuracy > 98.3% on handwritten digits
+    - Solving time < 100ms per grid
     
-    Architecture :
-    - C99 standard sans dépendances lourdes (pas d'OpenCV/TensorFlow)
-    - Entraînement sur dataset MNIST`,
+    Architecture:
+    - Standard C99 with no heavy dependencies (no OpenCV/TensorFlow)
+    - Training on the MNIST dataset`,
     technologies: ['C', 'CNN', 'OCR', 'Image Processing', 'Make'],
     imageUrl: '/images/projects/ocr-sudoku.png',
     bannerUrl: '/images/projects/ocr-sudoku-banner.png',

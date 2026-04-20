@@ -46,7 +46,7 @@ const Contact = () => {
           <div>
             <h3 className="text-2xl font-bold mb-4">Feel free to reach out</h3>
             <p className="text-gray-400 mb-6">
-              If you have a project in mind or simply want to discuss ideas, I would be happy to connect with you.
+              I'm always open to discussing new projects, creative ideas or opportunities to be part of your vision.
             </p>
 
             <div className="space-y-4">
@@ -56,8 +56,8 @@ const Contact = () => {
                 </div>
                 <div>
                   <p className="text-sm text-gray-400">Email</p>
-                  <a href="mailto:abelpong@gmail.com" className="text-white hover:text-primary">
-                    abelpong@gmail.com
+                  <a href="mailto:abel.aubron@epita.fr" className="text-white hover:text-primary">
+                    abel.aubron@epita.fr
                   </a>
                 </div>
               </div>

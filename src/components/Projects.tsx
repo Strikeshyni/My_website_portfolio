@@ -152,8 +152,6 @@ const Projects = () => {
         return <span className="absolute top-4 right-4 px-3 py-1 bg-yellow-500/80 text-white text-xs font-bold rounded-full backdrop-blur-sm">Beta</span>;
       case 'alpha':
         return <span className="absolute top-4 right-4 px-3 py-1 bg-orange-500/80 text-white text-xs font-bold rounded-full backdrop-blur-sm">Alpha</span>;
-      case 'deprecated':
-        return <span className="absolute top-4 right-4 px-3 py-1 bg-red-500/80 text-white text-xs font-bold rounded-full backdrop-blur-sm">Deprecated</span>;
       default:
         return null;
     }
@@ -175,7 +173,7 @@ const Projects = () => {
           <span className="text-sm text-gray-400 mr-2">Legend:</span>
           <div className="flex items-center gap-2">
             <span className="w-3 h-3 rounded-full bg-green-500"></span>
-            <span className="text-xs text-gray-300">Stable (Production)</span>
+            <span className="text-xs text-gray-300">Stable</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="w-3 h-3 rounded-full bg-yellow-500"></span>
@@ -185,18 +183,13 @@ const Projects = () => {
             <span className="w-3 h-3 rounded-full bg-orange-500"></span>
             <span className="text-xs text-gray-300">Alpha (In development/Might contain bugs)</span>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full bg-red-500"></span>
-            <span className="text-xs text-gray-300">Deprecated (Not maintained)</span>
-          </div>
         </div>
 
         {/* Global Health Warning */}
         {Object.values(healthStatus).some(status => status === false) && (
           <div className="mb-8 p-4 bg-red-900/20 border border-red-500/50 rounded-lg text-red-200 text-sm">
             <p className="flex items-center gap-2">
-              <span className="text-xl">⚠️</span>
-              Demos require backend services and some of them are currently unavailable.
+              Demos require backend services and some of them are currently unavailable. You can still explore the project details and source code.
             </p>
           </div>
         )}

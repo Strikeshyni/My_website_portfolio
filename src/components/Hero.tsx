@@ -14,11 +14,10 @@ const Hero = () => {
             Abel Aubron
           </h1>
           <p className="text-2xl md:text-3xl text-gray-300 mb-8">
-            Engineering Student at EPITA Lyon
+            AI Engineer | EPITA Lyon
           </p>
           <p className="text-lg text-gray-400 mb-12 max-w-2xl mx-auto">
-            Passionate about algorithms, AI, and emerging technologies.
-            Strong software fundamentals with hands-on expertise in data engineering and machine learning.
+            Interested in the logic of complex systems and the use of AI to understand and solve real-world problems.
           </p>
 
           <div className="flex justify-center gap-6 mb-12">
