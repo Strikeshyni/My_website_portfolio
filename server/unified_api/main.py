@@ -3,17 +3,23 @@ import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, Optional
+from urllib.parse import unquote, urlparse
 
 import httpx
 from bson import ObjectId
+from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.wsgi import WSGIMiddleware
 from fastapi.responses import JSONResponse, Response
 from pymongo import MongoClient
+from pymongo.errors import PyMongoError
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 ROOT_DIR = BASE_DIR.parent
+
+# Ensure local development picks variables from the repo root .env file.
+load_dotenv(ROOT_DIR / ".env")
 
 # Make sibling service modules importable.
 sys.path.append(str(BASE_DIR / "sudoku"))
@@ -31,6 +37,7 @@ allowed_origins = [
     for origin in os.getenv("CORS_ORIGINS", "http://localhost:5173").split(",")
     if origin.strip()
 ]
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
@@ -39,16 +46,51 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-MONGODB_URI = os.getenv("MONGODB_URI", "mongodb://localhost:27017/portfolio")
-MONGODB_DB = os.getenv("MONGODB_DB", "portfolio")
+def _get_mongodb_uri() -> str:
+    uri = (os.getenv("MONGODB_URI") or "").strip()
+    if uri:
+        return uri
+
+    # In production (Render), fail fast with an explicit error instead of
+    # silently trying localhost, which is unavailable.
+    if os.getenv("RENDER") or os.getenv("NODE_ENV") == "production":
+        raise HTTPException(
+            status_code=500,
+            detail="MONGODB_URI is not configured on the server.",
+        )
+
+    return "mongodb://localhost:27017/portfolio"
+
+
 PROJECTS_COLLECTION = os.getenv("PROJECTS_COLLECTION", "projects")
+
+
+def _get_mongodb_db_name(uri: str) -> str:
+    explicit_db = (os.getenv("MONGODB_DB") or "").strip()
+    if explicit_db:
+        return explicit_db
+
+    parsed = urlparse(uri)
+    path_db = parsed.path.lstrip("/").split("/", 1)[0].strip()
+    if path_db:
+        return unquote(path_db)
+
+    return "portfolio"
 
 
 def get_projects_collection():
     try:
-        client = MongoClient(MONGODB_URI, serverSelectionTimeoutMS=3000)
-        db = client[MONGODB_DB]
+        mongodb_uri = _get_mongodb_uri()
+        mongodb_db = _get_mongodb_db_name(mongodb_uri)
+
+        client = MongoClient(mongodb_uri, serverSelectionTimeoutMS=3000)
+        client.admin.command("ping")
+        db = client[mongodb_db]
         return db[PROJECTS_COLLECTION]
+    except HTTPException:
+        raise
+    except PyMongoError as exc:
+        raise HTTPException(status_code=503, detail=f"MongoDB is unreachable: {exc}")
     except Exception as exc:
         raise HTTPException(status_code=500, detail=f"Mongo connection error: {exc}")
 

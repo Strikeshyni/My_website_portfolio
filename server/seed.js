@@ -4,6 +4,30 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+function getMongoUri() {
+  const uri = (process.env.MONGODB_URI || '').trim();
+  return uri || 'mongodb://localhost:27017';
+}
+
+function getMongoDbName(uri) {
+  const explicitDb = (process.env.MONGODB_DB || '').trim();
+  if (explicitDb) {
+    return explicitDb;
+  }
+
+  try {
+    const parsed = new URL(uri);
+    const pathDb = decodeURIComponent(parsed.pathname.replace(/^\//, '').split('/')[0] || '').trim();
+    if (pathDb) {
+      return pathDb;
+    }
+  } catch {
+    // Ignore parse errors and fallback to default database name.
+  }
+
+  return 'portfolio';
+}
+
 const sampleProjects = [
   {
     title: 'Solveur et Jeu de Sudoku',
@@ -206,8 +230,12 @@ const sampleProjects = [
 
 async function seedDatabase() {
   try {
-    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/portfolio');
-    console.log('Connected to MongoDB');
+    const mongoUri = getMongoUri();
+    const mongoDbName = getMongoDbName(mongoUri);
+
+    await mongoose.connect(mongoUri, { dbName: mongoDbName });
+    console.log('Connected to MongoDB:', mongoUri);
+    console.log('Using database:', mongoDbName);
 
     // Clear existing projects
     await Project.deleteMany({});
