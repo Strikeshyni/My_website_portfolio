@@ -27,15 +27,14 @@ def generate_puzzle():
     if difficulty not in ['easy', 'medium', 'hard', 'expert']:
         return jsonify({'error': 'Invalid difficulty'}), 400
     
-    if size not in [9, 16, 25]:
-        return jsonify({'error': 'Invalid size. Must be 9, 16, or 25'}), 400
+    if size not in [9, 16]:
+        return jsonify({'error': 'Invalid size. Must be 9 or 16'}), 400
     
     # Timeouts coordonnés avec le frontend (frontend = backend + 5s de marge)
-    # 9x9: 10s, 16x16: 20s, 25x25: 35s
-    timeout = 10.0 if size == 9 else 20.0 if size == 16 else 35.0
-    
-    # Pour les grilles 25x25, faire plusieurs tentatives
-    max_attempts = 1 if size <= 16 else 3
+    # 9x9: 10s, 16x16: 20s
+    timeout = 10.0 if size == 9 else 20.0
+
+    max_attempts = 1
     
     for attempt in range(max_attempts):
         try:
@@ -85,15 +84,15 @@ def solve_puzzle():
         return jsonify({'error': 'Invalid grid format'}), 400
         
     size = len(grid)
-    if size not in [9, 16, 25] or any(len(row) != size for row in grid):
+    if size not in [9, 16] or any(len(row) != size for row in grid):
         return jsonify({'error': f'Invalid grid size. Must be {size}x{size}'}), 400
     
     # Créer une copie pour ne pas modifier l'original
     grid_copy = [row[:] for row in grid]
     
     # Timeouts coordonnés avec le frontend (frontend = backend + 5s de marge)
-    # 9x9: 10s, 16x16: 20s, 25x25: 50s
-    timeout = 10.0 if size == 9 else 20.0 if size == 16 else 50.0
+    # 9x9: 10s, 16x16: 20s
+    timeout = 10.0 if size == 9 else 20.0
     
     try:
         game = SudokuGame(size=size, timeout=timeout)

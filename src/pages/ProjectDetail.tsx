@@ -112,22 +112,22 @@ const ProjectDetail = () => {
           {isHealthy === false && (
             <div className="mb-8 p-4 bg-red-900/20 border border-red-500/50 rounded-lg text-red-200">
               <p className="flex items-center gap-2">
-                This project demo needs a backend GPU, and sadly my wallet is still in beta mode :)
+                This project demo needs a GPU, and sadly my wallet is still in beta mode :)
               </p>
             </div>
           )}
 
           {/* Banner */}
-          <div className="relative h-96 rounded-2xl overflow-hidden mb-12">
+          <div className="relative h-64 sm:h-80 md:h-96 rounded-2xl overflow-hidden mb-12">
             <img
               src={project.bannerUrl || project.imageUrl}
               alt={project.title}
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-dark via-dark/50 to-transparent" />
-            <div className="absolute bottom-0 left-0 p-8">
-              <h1 className="text-5xl font-bold mb-2">{project.title}</h1>
-              <p className="text-sm text-gray-300 mb-4">
+            <div className="absolute bottom-0 left-0 p-4 sm:p-8">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-2">{project.title}</h1>
+              <p className="text-xs sm:text-sm text-gray-300 mb-3 sm:mb-4">
                 {new Date(project.createdAt).toLocaleDateString('en-US', {
                   year: 'numeric',
                   month: 'long',
@@ -149,7 +149,7 @@ const ProjectDetail = () => {
             {getMaturityBadge(project.maturity)}
             
             {/* Boutons en bas à droite */}
-            <div className="absolute bottom-8 right-8 flex gap-3">
+            <div className="absolute bottom-4 sm:bottom-8 right-4 sm:right-8 left-4 sm:left-auto flex flex-wrap justify-end gap-3">
               {project.githubUrl && (
                 <a
                   href={project.githubUrl}
@@ -201,7 +201,7 @@ const ProjectDetail = () => {
           {/* Content */}
           <div className="max-w-4xl mx-auto">
             <div className="prose prose-invert max-w-none">
-              <p className="text-xl text-gray-300 leading-relaxed whitespace-pre-line">
+              <p className="text-base sm:text-lg lg:text-xl text-gray-300 leading-relaxed whitespace-pre-line">
                 {project.longDescription}
               </p>
             </div>

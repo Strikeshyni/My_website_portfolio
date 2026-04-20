@@ -166,7 +166,7 @@ const Projects = () => {
         transition={{ duration: 0.8 }}
         className="max-w-7xl mx-auto"
       >
-        <h2 className="text-5xl font-bold mb-12 gradient-text">Projects</h2>
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-8 sm:mb-12 gradient-text">Projects</h2>
 
         {/* Maturity Legend */}
         <div className="flex flex-wrap gap-4 mb-8 p-4 glass-effect rounded-lg">
@@ -200,7 +200,7 @@ const Projects = () => {
             <button
               key={cat}
               onClick={() => setFilter(cat)}
-              className={`px-6 py-2 rounded-full transition-all ${
+              className={`px-4 sm:px-6 py-2 text-sm sm:text-base rounded-full transition-all ${
                 filter === cat
                   ? 'bg-gradient-to-r from-primary to-secondary'
                   : 'glass-effect hover:bg-white/10'

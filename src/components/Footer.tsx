@@ -10,7 +10,7 @@ const Footer = () => {
             <p className="text-gray-400">Curious AI Engineer</p>
           </div>
 
-          <div className="flex gap-6">
+          <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
             <a
               href="https://github.com/Strikeshyni"
               target="_blank"

@@ -50,7 +50,7 @@ const Confetti = () => {
 const SudokuSolver = () => {
   type Difficulty = 'easy' | 'medium' | 'hard' | 'expert';
 
-  const [gridSize, setGridSize] = useState<9 | 16 | 25>(9);
+  const [gridSize, setGridSize] = useState<9 | 16>(9);
   const [grid, setGrid] = useState<number[][]>(
     Array(9).fill(null).map(() => Array(9).fill(0))
   );
@@ -88,9 +88,7 @@ const SudokuSolver = () => {
   const availableDifficulties: Difficulty[] =
     gridSize === 9
       ? ['easy', 'medium', 'hard', 'expert']
-      : gridSize === 16
-        ? ['easy', 'medium']
-        : ['easy'];
+      : ['easy', 'medium'];
 
   // Check if a number is valid according to Sudoku rules
   const isValidMove = (row: number, col: number, num: number, currentGrid: number[][]): boolean => {
@@ -281,8 +279,8 @@ const SudokuSolver = () => {
     setGenerating(true);
     
     // Timeouts aligned with backend (+5s margin)
-    // Backend: 10s/20s/35s -> Frontend: 15s/25s/40s
-    const timeoutMs = gridSize === 25 ? 40000 : gridSize === 16 ? 25000 : 15000;
+    // Backend: 10s/20s -> Frontend: 15s/25s
+    const timeoutMs = gridSize === 16 ? 25000 : 15000;
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
     
@@ -341,8 +339,8 @@ const SudokuSolver = () => {
     const solveStartTime = Date.now();
     
     // Timeouts aligned with backend (+5s margin)
-    // Backend: 10s/20s/50s -> Frontend: 15s/25s/60s
-    const timeoutMs = gridSize === 25 ? 60000 : gridSize === 16 ? 25000 : 15000;
+    // Backend: 10s/20s -> Frontend: 15s/25s
+    const timeoutMs = gridSize === 16 ? 25000 : 15000;
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
     
@@ -593,7 +591,7 @@ const SudokuSolver = () => {
             <div>
               <label className="block text-sm mb-3 text-gray-300">Grid size</label>
               <div className="flex gap-2">
-                {([9, 16, 25] as const).map((size) => (
+                {([9, 16] as const).map((size) => (
                   <button
                     key={size}
                     onClick={() => setGridSize(size)}

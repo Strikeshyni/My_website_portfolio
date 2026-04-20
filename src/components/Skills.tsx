@@ -56,7 +56,7 @@ const Skills = () => {
     'MLOps & Model Deployment'
   ];
 
-  const chipClass = 'px-3 py-1.5 rounded-full text-sm border transition-colors';
+  const chipClass = 'px-3 py-1.5 rounded-full text-xs sm:text-sm border transition-colors';
 
   return (
     <section id="skills" className="section-padding">
@@ -67,7 +67,7 @@ const Skills = () => {
         transition={{ duration: 0.8 }}
         className="max-w-7xl mx-auto"
       >
-        <h2 className="text-5xl font-bold mb-12 gradient-text text-center">Skills</h2>
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-8 sm:mb-12 gradient-text text-center">Skills</h2>
 
         <div className="space-y-10">
 
@@ -80,7 +80,7 @@ const Skills = () => {
           >
             <div className="flex items-center gap-3 mb-4">
               <Code2 className="text-primary" size={26} />
-              <h3 className="text-2xl font-bold">Programming</h3>
+              <h3 className="text-xl sm:text-2xl font-bold">Programming</h3>
             </div>
             <div className="flex flex-wrap gap-2">
               {languages.map((item) => (
@@ -100,7 +100,7 @@ const Skills = () => {
           >
             <div className="flex items-center gap-3 mb-6">
               <Brain className="text-secondary" size={26} />
-              <h3 className="text-2xl font-bold">Technologies</h3>
+              <h3 className="text-xl sm:text-2xl font-bold">Technologies</h3>
             </div>
 
             <div className="space-y-4">
@@ -148,7 +148,7 @@ const Skills = () => {
           >
             <div className="flex items-center gap-3 mb-4">
               <Wrench className="text-accent" size={26} />
-              <h3 className="text-2xl font-bold">Tools & Environment</h3>
+              <h3 className="text-xl sm:text-2xl font-bold">Tools & Environment</h3>
             </div>
             <div className="flex flex-wrap gap-2">
               {tools.map((item) => (
@@ -167,19 +167,19 @@ const Skills = () => {
             className="grid md:grid-cols-2 gap-8"
           >
             <div className="glass-effect p-6 rounded-2xl">
-              <h3 className="text-xl font-bold text-primary mb-4">AI Expertise</h3>
+              <h3 className="text-lg sm:text-xl font-bold text-primary mb-4">AI Expertise</h3>
               <ul className="space-y-2 text-gray-300">
                 {aiSkills.map((skill) => (
-                  <li key={skill} className="text-sm">• {skill}</li>
+                  <li key={skill} className="text-xs sm:text-sm">• {skill}</li>
                 ))}
               </ul>
             </div>
 
             <div className="glass-effect p-6 rounded-2xl">
-              <h3 className="text-xl font-bold text-secondary mb-4">Data & MLOps</h3>
+              <h3 className="text-lg sm:text-xl font-bold text-secondary mb-4">Data & MLOps</h3>
               <ul className="space-y-2 text-gray-300">
                 {dataSkills.map((skill) => (
-                  <li key={skill} className="text-sm">• {skill}</li>
+                  <li key={skill} className="text-xs sm:text-sm">• {skill}</li>
                 ))}
               </ul>
             </div>

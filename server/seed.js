@@ -35,7 +35,7 @@ const sampleProjects = [
     longDescription: `A complete Sudoku game developed in Python with automatic grid generation and optimized solving.
     
     Features:
-    - Support for 9x9, 16x16, and 25x25 grids
+    - Support for 9x9 and 16x16 grids
     - Grid generation with 4 difficulty levels (easy, medium, hard, expert)
     - Modern interface with a numeric keypad and intuitive input
     - Ultra-fast solving with optimized backtracking
@@ -49,7 +49,7 @@ const sampleProjects = [
     - Flask for the REST API
     - React + TypeScript for the interface
     
-    The algorithm can generate and solve any Sudoku grid (up to 25x25) in just a few milliseconds thanks to advanced optimizations.`,
+    The algorithm can solve any Sudoku grid (up to 16x16) in just a few milliseconds thanks to advanced optimizations.`,
     technologies: ['Python', 'Flask', 'Algorithms', 'React', 'TypeScript'],
     imageUrl: '/images/projects/sudoku.jpg',
     bannerUrl: '/images/projects/sudoku-banner.jpg',
@@ -182,10 +182,10 @@ const sampleProjects = [
     longDescription: `A modern and high-performance portfolio with smooth animations and a complete architecture.
     
     Key points:
-    - React + TypeScript for type safety
+    - React + TypeScript
     - TailwindCSS for responsive design
     - Framer Motion for smooth animations
-    - MongoDB + Express for the backend
+    - MongoDB + Express for backend
     - Integrated interactive projects
     
     The website is optimized for performance and SEO, with a modern and elegant design.`,

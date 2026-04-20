@@ -16,9 +16,9 @@ const About = () => {
         transition={{ duration: 0.8 }}
         className="max-w-4xl mx-auto"
       >
-        <h2 className="text-5xl font-bold mb-12 gradient-text">About</h2>
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-8 sm:mb-12 gradient-text">About</h2>
 
-        <div className="space-y-6 text-lg text-gray-300">
+        <div className="space-y-6 text-base sm:text-lg text-gray-300">
           {/* <p>
             I am an engineering student at EPITA Lyon with a strong focus on algorithms and artificial
             intelligence. Through coursework and personal projects, I have built solid skills across

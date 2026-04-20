@@ -40,11 +40,11 @@ const Contact = () => {
         transition={{ duration: 0.8 }}
         className="max-w-4xl mx-auto"
       >
-        <h2 className="text-5xl font-bold mb-16 gradient-text text-center">Contact</h2>
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-10 sm:mb-16 gradient-text text-center">Contact</h2>
 
         <div className="grid md:grid-cols-2 gap-8">
           <div>
-            <h3 className="text-2xl font-bold mb-4">Feel free to reach out</h3>
+            <h3 className="text-xl sm:text-2xl font-bold mb-4">Feel free to reach out</h3>
             <p className="text-gray-400 mb-6">
               I'm always open to discussing new projects, creative ideas or opportunities to be part of your vision.
             </p>

@@ -231,7 +231,7 @@ const SudokuOCR = () => {
             OCR Sudoku Solver
           </h1>
           <p className="text-xl text-gray-400 max-w-3xl">
-            Reconnaissance optique de caractères et résolution de Sudoku utilisant un CNN personnalisé en C.
+            Optical character recognition and Sudoku solving using a custom CNN in C.
             Upload a Sudoku image to see the full processing pipeline step by step.
           </p>
         </motion.div>
@@ -426,7 +426,7 @@ const SudokuOCR = () => {
                 row.map((cell, cIdx) => (
                   <div
                     key={`${rIdx}-${cIdx}`}
-                    className={`p-2 rounded-md border ${cell ? 'bg-black/20' : 'border-dashed border-gray-700 bg-black/10'}`}
+                    className={`aspect-square p-1 rounded-md border flex items-center justify-center ${cell ? 'bg-black/20' : 'border-dashed border-gray-700 bg-black/10'}`}
                     style={cell && cell.top1 ? colorStyles(cell.top1.prob) : undefined}
                     title={cell ? `Top1: ${cell.top1?.val} (${cell.top1?.prob}%)\nTop2: ${cell.top2?.val} (${cell.top2?.prob}%)\nTop3: ${cell.top3?.val} (${cell.top3?.prob}%)` : 'No prediction'}
                   >
