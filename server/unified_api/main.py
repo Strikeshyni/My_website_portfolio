@@ -7,7 +7,6 @@ from urllib.parse import unquote, urlparse
 
 import httpx
 from bson import ObjectId
-from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.wsgi import WSGIMiddleware
@@ -17,9 +16,6 @@ from pymongo.errors import PyMongoError
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 ROOT_DIR = BASE_DIR.parent
-
-# Ensure local development picks variables from the repo root .env file.
-load_dotenv(ROOT_DIR / ".env")
 
 # Make sibling service modules importable.
 sys.path.append(str(BASE_DIR / "sudoku"))
