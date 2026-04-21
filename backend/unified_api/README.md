@@ -5,7 +5,7 @@ This service aggregates all backend APIs into a single FastAPI app for one Rende
 ## Run locally
 
 ```bash
-cd server/unified_api
+cd backend/unified_api
 pip install -r requirements.txt
 uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 ```

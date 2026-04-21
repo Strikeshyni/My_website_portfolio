@@ -7,9 +7,9 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "server": "node server/index.js",
-    "seed": "node server/seed.js",
-    "sudoku-api": "cd server && python3 sudoku_api.py"
+    "server": "node backend/index.js",
+    "seed": "node backend/seed.js",
+    "sudoku-api": "cd backend && python3 sudoku_api.py"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",

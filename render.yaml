@@ -2,7 +2,7 @@ services:
   - type: web
     name: portfolio-unified-api
     runtime: python
-    rootDir: server/unified_api
+    rootDir: backend/unified_api
     plan: free
     autoDeploy: true
     buildCommand: pip install -r requirements.txt
