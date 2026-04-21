@@ -1,6 +1,6 @@
 # Portfolio Abel Aubron
 
-Portfolio moderne et interactif avec demos ML (chatbot, sudoku, OCR, prediction).
+Portfolio moderne et interactif avec demos ML (chatbot, sudoku, OCR, prediction conforme, prediction time series).
 
 ## Live
 
