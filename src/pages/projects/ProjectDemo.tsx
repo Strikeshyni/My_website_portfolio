@@ -43,12 +43,28 @@ const ProjectDemo = () => {
     );
   }
 
-  if (!project || !project.interactive || !project.interactivePath || !project.demoEnabled) {
+  if (!project) {
+    return (
+      <div className="min-h-screen bg-dark flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-4xl font-bold mb-4">Project not found</h1>
+          <Link to="/" className="text-primary hover:underline">
+            Back to home
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  if (!project.interactive || !project.interactivePath || project.demoEnabled === false) {
     const detailPath = slug ? `/projects/${slug}` : '/';
     return (
       <div className="min-h-screen bg-dark flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-4xl font-bold mb-4">Demo not found</h1>
+          <h1 className="text-4xl font-bold mb-4">Demo not available</h1>
+          <p className="text-gray-400 mb-6">
+            This project does not have a public demo yet.
+          </p>
           <Link to={detailPath} className="text-primary hover:underline">
             Back to project
           </Link>
@@ -72,7 +88,10 @@ const ProjectDemo = () => {
       return (
         <div className="min-h-screen bg-dark flex items-center justify-center">
           <div className="text-center">
-            <h1 className="text-4xl font-bold mb-4">Demo not found</h1>
+            <h1 className="text-4xl font-bold mb-4">Demo not available</h1>
+            <p className="text-gray-400 mb-6">
+              This project does not have a public demo yet.
+            </p>
             <Link to={`/projects/${slug}`} className="text-primary hover:underline">
               Back to project
             </Link>

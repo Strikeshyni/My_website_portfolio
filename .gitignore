@@ -5,8 +5,5 @@ dist
 !.env.example
 .DS_Store
 *.log
-*.txt
-!requirements.txt
-!robots.txt
 __pycache__
 *.pyc
