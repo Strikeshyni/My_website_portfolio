@@ -87,7 +87,7 @@ const Hero = () => {
             whileHover={{ scale: 1.05 }}
           >
             Explore my projects
-            <ArrowDown size={20} />
+            <ArrowDown size={20} strokeWidth={2} className="text-white" />
           </motion.a>
         </motion.div>
 
@@ -96,7 +96,7 @@ const Hero = () => {
           transition={{ repeat: Infinity, duration: 2 }}
           className="absolute bottom-6 sm:bottom-10 left-1/2 transform -translate-x-1/2"
         >
-          <ArrowDown size={32} className="text-gray-600" />
+          <ArrowDown size={32} strokeWidth={2} className="text-gray-600" />
         </motion.div>
       </div>
     </section>

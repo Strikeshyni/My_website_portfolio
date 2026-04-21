@@ -611,10 +611,10 @@ const SudokuSolver = () => {
           </div>
 
           {/* Layout principal: Grille + Sidebar */}
-          <div className="flex flex-col xl:flex-row gap-6 sm:gap-8 items-start justify-center">
+          <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_20rem] gap-6 sm:gap-8 items-start justify-center">
             
               {/* Grid container */}
-            <div className="w-full xl:w-auto overflow-x-auto flex justify-center p-2 sm:p-4">
+            <div className="w-full xl:w-auto overflow-x-auto flex justify-center p-2 sm:p-4 xl:justify-self-center">
               <div 
                 className="grid gap-0 bg-gray-700 border-2 border-gray-500 shadow-2xl"
                 style={{ 
@@ -666,7 +666,7 @@ const SudokuSolver = () => {
             </div>
 
             {/* Sidebar: Number pad and actions */}
-            <div className="w-full xl:w-80 flex flex-col gap-6 shrink-0">
+            <div className="w-full xl:w-80 flex flex-col gap-6 shrink-0 xl:justify-self-end">
               
               {/* Number pad */}
               <div className="bg-dark-light/30 p-4 sm:p-5 rounded-xl border border-gray-700 shadow-lg">
