@@ -189,7 +189,7 @@ const STRATEGY_INFO: Record<string, { name: string; description: string }> = {
 
 const StockPrediction = () => {
   const [activeTab, setActiveTab] = useState<'train' | 'predict' | 'simulate'>('train');
-  const [projectId, setProjectId] = useState<string | null>(null);
+  const [projectSlug, setProjectSlug] = useState<string | null>(null);
   
   // Training states
   const [config, setConfig] = useState<TrainingConfig>({
@@ -235,10 +235,10 @@ const StockPrediction = () => {
       try {
         const response = await axios.get('/api/projects');
         const stockProject = response.data.find(
-          (p: any) => p.interactivePath === '/projects/stock-prediction'
+          (p: any) => p.interactivePath === '/projects/stock-prediction/demo'
         );
-        if (stockProject) {
-          setProjectId(stockProject._id);
+        if (stockProject?.slug) {
+          setProjectSlug(stockProject.slug);
         }
       } catch (error) {
         console.error('Error fetching project:', error);
@@ -397,7 +397,7 @@ const StockPrediction = () => {
   return (
     <div className="min-h-screen bg-dark section-padding">
       <Link
-        to={projectId ? `/project/${projectId}` : '/#projects'}
+        to={projectSlug ? `/projects/${projectSlug}` : '/#projects'}
         className="inline-flex items-center gap-2 text-primary hover:text-secondary transition-colors mb-8"
       >
         <ArrowLeft size={20} />

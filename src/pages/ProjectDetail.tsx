@@ -6,7 +6,7 @@ import { Project } from '../types';
 import axios from 'axios';
 
 const ProjectDetail = () => {
-  const { id } = useParams();
+  const { slug } = useParams();
   const navigate = useNavigate();
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
@@ -37,7 +37,22 @@ const ProjectDetail = () => {
   useEffect(() => {
     const fetchProject = async () => {
       try {
-        const response = await axios.get(`/api/projects/${id}`);
+        if (!slug || slug === 'undefined') {
+          setProject(null);
+          return;
+        }
+
+        try {
+          const response = await axios.get(`/api/projects/slug/${slug}`);
+          setProject(response.data);
+          return;
+        } catch (error: any) {
+          if (error?.response?.status !== 404) {
+            throw error;
+          }
+        }
+
+        const response = await axios.get(`/api/projects/${slug}`);
         setProject(response.data);
       } catch (error) {
         console.error('Error fetching project:', error);
@@ -47,7 +62,7 @@ const ProjectDetail = () => {
     };
 
     fetchProject();
-  }, [id]);
+  }, [slug]);
 
   useEffect(() => {
     if (project?.healthCheckUrl) {
@@ -175,7 +190,16 @@ const ProjectDetail = () => {
                 </a>
               )}
               {project.interactive && project.interactivePath && (
-                isHealthy === false ? (
+                project.demoEnabled === false ? (
+                  <button
+                    disabled
+                    className="flex items-center gap-2 px-4 py-2 bg-red-900/20 backdrop-blur-sm border border-red-500/50 rounded-lg cursor-not-allowed text-red-400"
+                    title="Demo disabled"
+                  >
+                    <ExternalLink size={20} />
+                    <span className="hidden sm:inline">Demo Disabled</span>
+                  </button>
+                ) : isHealthy === false ? (
                   <button
                     disabled
                     className="flex items-center gap-2 px-4 py-2 bg-red-900/20 backdrop-blur-sm border border-red-500/50 rounded-lg cursor-not-allowed text-red-400"

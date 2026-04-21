@@ -3,6 +3,17 @@ import Project from '../models/Project.js';
 
 const router = express.Router();
 
+const slugify = (value) => {
+  if (!value) return '';
+  return value
+    .toString()
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-');
+};
+
 // Get all projects
 router.get('/', async (req, res) => {
   try {
@@ -24,6 +35,19 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Get project by slug
+router.get('/slug/:slug', async (req, res) => {
+  try {
+    const project = await Project.findOne({ slug: req.params.slug });
+    if (!project) {
+      return res.status(404).json({ error: 'Project not found' });
+    }
+    res.json(project);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Get project by ID
 router.get('/:id', async (req, res) => {
   try {
@@ -40,7 +64,11 @@ router.get('/:id', async (req, res) => {
 // Create new project
 router.post('/', async (req, res) => {
   try {
-    const project = new Project(req.body);
+    const payload = { ...req.body };
+    if (!payload.slug) {
+      payload.slug = slugify(payload.title);
+    }
+    const project = new Project(payload);
     await project.save();
     res.status(201).json(project);
   } catch (error) {
@@ -51,9 +79,13 @@ router.post('/', async (req, res) => {
 // Update project
 router.put('/:id', async (req, res) => {
   try {
+    const payload = { ...req.body };
+    if (!payload.slug && payload.title) {
+      payload.slug = slugify(payload.title);
+    }
     const project = await Project.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      payload,
       { new: true, runValidators: true }
     );
     if (!project) {

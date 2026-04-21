@@ -22,7 +22,7 @@ const DEBUG_IMAGES = [
 ];
 
 const SudokuOCR = () => {
-  const [projectId, setProjectId] = useState<string | null>(null);
+  const [projectSlug, setProjectSlug] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const [processing, setProcessing] = useState(false);
@@ -44,10 +44,10 @@ const SudokuOCR = () => {
     try {
         const response = await axios.get('/api/projects');
         const stockProject = response.data.find(
-        (p: any) => p.interactivePath === '/projects/ocr-sudoku'
+        (p: any) => p.interactivePath === '/projects/ocr-sudoku/demo'
         );
-        if (stockProject) {
-        setProjectId(stockProject._id);
+        if (stockProject?.slug) {
+        setProjectSlug(stockProject.slug);
         }
     } catch (error) {
         console.error('Error fetching project:', error);
@@ -215,7 +215,7 @@ const SudokuOCR = () => {
     <div className="min-h-screen bg-dark text-white pt-24 pb-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         <Link
-            to={projectId ? `/project/${projectId}` : '/#projects'}
+            to={projectSlug ? `/projects/${projectSlug}` : '/#projects'}
             className="inline-flex items-center gap-2 text-primary hover:text-secondary transition-colors mb-8"
         >
             <ArrowLeft size={20} />

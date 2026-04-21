@@ -71,7 +71,7 @@ const SudokuSolver = () => {
   const [solving, setSolving] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [difficulty, setDifficulty] = useState<Difficulty>('medium');
-  const [projectId, setProjectId] = useState<string | null>(null);
+  const [projectSlug, setProjectSlug] = useState<string | null>(null);
   const [selectedCell, setSelectedCell] = useState<{row: number, col: number} | null>(null);
   const [invalidMove, setInvalidMove] = useState<{row: number, col: number} | null>(null);
   const [hintsUsed, setHintsUsed] = useState(0);
@@ -228,9 +228,11 @@ const SudokuSolver = () => {
     const fetchProjectId = async () => {
       try {
         const response = await axios.get('/api/projects');
-        const sudokuProject = response.data.find((p: any) => p.interactivePath === '/projects/sudoku-solver');
-        if (sudokuProject) {
-          setProjectId(sudokuProject._id);
+        const sudokuProject = response.data.find(
+          (p: any) => p.interactivePath === '/projects/sudoku-solver/demo'
+        );
+        if (sudokuProject?.slug) {
+          setProjectSlug(sudokuProject.slug);
         }
       } catch (error) {
         console.error('Error fetching project:', error);
@@ -528,7 +530,7 @@ const SudokuSolver = () => {
       </AnimatePresence>
       
       <Link
-        to={projectId ? `/project/${projectId}` : '/#projects'}
+        to={projectSlug ? `/projects/${projectSlug}` : '/#projects'}
         className="inline-flex items-center gap-2 text-primary hover:text-secondary transition-colors mb-8"
       >
         <ArrowLeft size={20} />

@@ -30,6 +30,7 @@ function getMongoDbName(uri) {
 
 const sampleProjects = [
   {
+    slug: 'sudoku-solver',
     title: 'Sudoku Solver and Game',
     description: 'Sudoku generator and solver with advanced optimization algorithms in Python',
     longDescription: `A complete Sudoku game developed in Python with automatic grid generation and optimized solving.
@@ -57,12 +58,13 @@ const sampleProjects = [
     category: 'other',
     featured: true,
     interactive: true,
-    interactivePath: '/projects/sudoku-solver',
+    interactivePath: '/projects/sudoku-solver/demo',
     healthCheckUrl: '/sudoku/api/sudoku/health',
     maturity: 'stable',
     createdAt: new Date('2025-11-20'),
   },
   {
+    slug: 'chatbot',
     title: 'Conversational AI Chatbot',
     description: 'Intelligent assistant with natural language processing',
     longDescription: `An AI chatbot able to understand and answer user questions contextually.
@@ -80,12 +82,13 @@ const sampleProjects = [
     category: 'ai',
     featured: true,
     interactive: true,
-    interactivePath: '/projects/chatbot',
+    interactivePath: '/projects/chatbot/demo',
     healthCheckUrl: '/chatbot/health',
     maturity: 'stable',
     createdAt: new Date('2025-03-15'),
   },
   {
+    slug: 'mushroom-classifier',
     title: 'Mushroom Classification with Conformal Prediction',
     description: 'CNN model with conformal prediction to classify 169 mushroom species',
     longDescription: `A Deep Learning project applying conformal prediction to mushroom classification.
@@ -114,12 +117,13 @@ const sampleProjects = [
     category: 'ai',
     featured: true,
     interactive: true,
-    interactivePath: '/projects/mushroom-classifier',
+    interactivePath: '/projects/mushroom-classifier/demo',
     healthCheckUrl: '/mushroom/health',
     maturity: 'beta',
     createdAt: new Date('2025-10-15'),
   },
   {
+    slug: 'stock-prediction',
     title: 'CAC40 Stock Price Prediction',
     description: 'LSTM model to predict stock prices and simulate trading strategies',
     longDescription: `
@@ -171,12 +175,13 @@ const sampleProjects = [
     category: 'ai',
     featured: true,
     interactive: true,
-    interactivePath: '/projects/stock-prediction',
+    interactivePath: '/projects/stock-prediction/demo',
     healthCheckUrl: '/stock/health',
     maturity: 'beta',
     createdAt: new Date('2024-10-10'),
   },
   {
+    slug: 'portfolio',
     title: 'Dynamic Portfolio',
     description: 'Modern portfolio website with animations and modular architecture',
     longDescription: `A modern and high-performance portfolio with smooth animations and a complete architecture.
@@ -200,6 +205,7 @@ const sampleProjects = [
     createdAt: new Date('2025-11-20'),
   },
   {
+    slug: 'ocr-sudoku',
     title: 'OCR Sudoku Solver',
     description: 'Sudoku solver in C with OCR and a CNN built from scratch',
     longDescription: `Complete Sudoku solver in pure C with optical character recognition (OCR) based on a convolutional neural network (CNN) implemented from scratch.
@@ -226,7 +232,7 @@ const sampleProjects = [
     category: 'ai',
     featured: true,
     interactive: true,
-    interactivePath: '/projects/ocr-sudoku',
+    interactivePath: '/projects/ocr-sudoku/demo',
     healthCheckUrl: '/ocr-sudoku/health',
     maturity: 'beta',
     createdAt: new Date('2022-09-10'),

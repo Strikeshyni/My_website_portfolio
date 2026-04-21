@@ -22,7 +22,7 @@ const ChatBot = () => {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const [projectId, setProjectId] = useState<string | null>(null);
+  const [projectSlug, setProjectSlug] = useState<string | null>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -36,9 +36,11 @@ const ChatBot = () => {
     const fetchProjectId = async () => {
       try {
         const response = await axios.get('/api/projects');
-        const chatbotProject = response.data.find((p: any) => p.interactivePath === '/projects/chatbot');
-        if (chatbotProject) {
-          setProjectId(chatbotProject._id);
+        const chatbotProject = response.data.find(
+          (p: any) => p.interactivePath === '/projects/chatbot/demo'
+        );
+        if (chatbotProject?.slug) {
+          setProjectSlug(chatbotProject.slug);
         }
       } catch (error) {
         console.error('Error fetching project:', error);
@@ -110,7 +112,7 @@ const ChatBot = () => {
   return (
     <div className="min-h-screen bg-dark section-padding">
       <Link
-        to={projectId ? `/project/${projectId}` : '/#projects'}
+        to={projectSlug ? `/projects/${projectSlug}` : '/#projects'}
         className="inline-flex items-center gap-2 text-primary hover:text-secondary transition-colors mb-8"
       >
         <ArrowLeft size={20} />

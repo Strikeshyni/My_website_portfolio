@@ -68,6 +68,7 @@ const Projects = () => {
         const demoProjects: Project[] = [
           {
             _id: '1',
+            slug: 'sudoku-solver',
             title: 'Optimized Sudoku Solver',
             description: 'Advanced Sudoku solving with optimized backtracking',
             longDescription: 'A high-performance Sudoku solver using advanced optimization and intelligent backtracking to solve any valid grid.',
@@ -78,13 +79,14 @@ const Projects = () => {
             category: 'other',
             featured: true,
             interactive: true,
-            interactivePath: '/projects/sudoku-solver',
+            interactivePath: '/projects/sudoku-solver/demo',
             healthCheckUrl: '/sudoku/api/sudoku/health',
             maturity: 'stable',
             createdAt: new Date(),
           },
           {
             _id: '2',
+            slug: 'chatbot',
             title: 'AI Chatbot',
             description: 'Intelligent conversational assistant with machine learning',
             longDescription: 'An AI chatbot that can understand and respond contextually to user questions.',
@@ -94,13 +96,14 @@ const Projects = () => {
             category: 'ai',
             featured: true,
             interactive: true,
-            interactivePath: '/projects/chatbot',
+            interactivePath: '/projects/chatbot/demo',
             healthCheckUrl: '/chatbot/health',
             maturity: 'beta',
             createdAt: new Date(),
           },
           {
             _id: '4',
+            slug: 'mushroom-classifier',
             title: 'Mushroom Classification',
             description: 'CNN model with conformal prediction to classify 169 mushroom species',
             longDescription: 'A deep learning project applying conformal prediction to mushroom classification.',
@@ -110,13 +113,14 @@ const Projects = () => {
             category: 'ai',
             featured: true,
             interactive: true,
-            interactivePath: '/projects/mushroom-classifier',
+            interactivePath: '/projects/mushroom-classifier/demo',
             healthCheckUrl: '/mushroom/health',
             maturity: 'alpha',
             createdAt: new Date(),
           },
           {
             _id: '3',
+            slug: 'portfolio',
             title: 'Dynamic Portfolio',
             description: 'Modern portfolio website with animations and scroll effects',
             longDescription: 'A modern and performant portfolio with smooth animations and modular architecture.',
@@ -230,7 +234,7 @@ const Projects = () => {
               whileHover={{ y: -10 }}
               className="glass-effect rounded-xl overflow-hidden group flex flex-col h-full"
             >
-              <Link to={`/project/${project._id}`}>
+              <Link to={`/projects/${project.slug || project._id}`}>
                 <div className="relative h-48 overflow-hidden">
                   <img
                     src={project.imageUrl}
@@ -248,7 +252,7 @@ const Projects = () => {
               </Link>
 
               <div className="p-6 flex flex-col flex-1">
-                <Link to={`/project/${project._id}`}>
+                <Link to={`/projects/${project.slug || project._id}`}>
                   <div className="flex-1">
                     <h3 className="text-2xl font-bold mb-2">{project.title}</h3>
                     <p className="text-gray-400 mb-2">{project.description}</p>
@@ -274,7 +278,7 @@ const Projects = () => {
 
                 <div className="flex gap-4 mt-auto">
                   <Link
-                    to={`/project/${project._id}`}
+                    to={`/projects/${project.slug || project._id}`}
                     className="flex-1 text-center px-4 py-2 bg-primary rounded-lg hover:bg-primary/80 transition-colors"
                   >
                     Details

@@ -65,6 +65,21 @@ def _require_demo_enabled(name: str) -> None:
             detail=f"Demo '{canonical}' is disabled by ENABLED_DEMOS/DEMOS_TO_LOAD.",
         )
 
+
+def _project_demo_key(doc: Dict[str, Any]) -> Optional[str]:
+    slug = (doc.get("slug") or "").strip().lower()
+    if not slug:
+        return None
+
+    mapping = {
+        "sudoku-solver": "sudoku",
+        "chatbot": "chatbot",
+        "mushroom-classifier": "mushroom",
+        "stock-prediction": "stock",
+        "ocr-sudoku": "ocr-sudoku",
+    }
+    return mapping.get(slug)
+
 allowed_origins = [
     origin.strip()
     for origin in os.getenv("CORS_ORIGINS", "http://localhost:5173").split(",")
@@ -135,8 +150,12 @@ def serialize_project(doc: Dict[str, Any]) -> Dict[str, Any]:
     else:
         created_at_value = created_at
 
+    demo_key = _project_demo_key(doc)
+    demo_enabled = bool(demo_key and _is_demo_enabled(demo_key))
+
     return {
         "_id": str(doc.get("_id")),
+        "slug": doc.get("slug"),
         "title": doc.get("title"),
         "description": doc.get("description"),
         "longDescription": doc.get("longDescription"),
@@ -149,6 +168,7 @@ def serialize_project(doc: Dict[str, Any]) -> Dict[str, Any]:
         "featured": doc.get("featured", False),
         "interactive": doc.get("interactive", False),
         "interactivePath": doc.get("interactivePath"),
+        "demoEnabled": demo_enabled,
         "healthCheckUrl": doc.get("healthCheckUrl"),
         "maturity": doc.get("maturity"),
         "createdAt": created_at_value,
@@ -183,6 +203,15 @@ def get_projects(
     collection = get_projects_collection()
     docs = list(collection.find(filter_query).sort("createdAt", -1))
     return [serialize_project(doc) for doc in docs]
+
+
+@app.get("/api/projects/slug/{slug}")
+def get_project_by_slug(slug: str):
+    collection = get_projects_collection()
+    doc = collection.find_one({"slug": slug})
+    if not doc:
+        raise HTTPException(status_code=404, detail="Project not found")
+    return serialize_project(doc)
 
 
 @app.get("/api/projects/{project_id}")

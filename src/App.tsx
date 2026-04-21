@@ -1,24 +1,24 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useParams } from 'react-router-dom';
 import { Analytics } from '@vercel/analytics/react';
 import Home from './pages/Home';
 import ProjectDetail from './pages/ProjectDetail';
-import SudokuSolver from './pages/projects/SudokuSolver';
-import ChatBot from './pages/projects/ChatBot';
-import MushroomClassifier from './pages/projects/MushroomClassifier';
-import StockPrediction from './pages/projects/StockPrediction';
-import SudokuOCR from './pages/projects/SudokuOCR';
+import ProjectDemo from './pages/projects/ProjectDemo';
+
+const LegacyProjectRedirect = () => {
+  const { slug } = useParams();
+  const target = slug ? `/projects/${slug}` : '/';
+  return <Navigate to={target} replace />;
+};
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/project/:id" element={<ProjectDetail />} />
-        <Route path="/projects/sudoku-solver" element={<SudokuSolver />} />
-        <Route path="/projects/chatbot" element={<ChatBot />} />
-        <Route path="/projects/mushroom-classifier" element={<MushroomClassifier />} />
-        <Route path="/projects/stock-prediction" element={<StockPrediction />} />
-        <Route path="/projects/ocr-sudoku" element={<SudokuOCR />} />
+        <Route path="/projects/:slug" element={<ProjectDetail />} />
+        <Route path="/projects/:slug/demo" element={<ProjectDemo />} />
+
+        <Route path="/project/:slug" element={<LegacyProjectRedirect />} />
       </Routes>
       <Analytics />
     </Router>

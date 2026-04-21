@@ -1,5 +1,6 @@
 export interface Project {
   _id: string;
+  slug: string;
   title: string;
   description: string;
   longDescription: string;
@@ -12,6 +13,7 @@ export interface Project {
   featured: boolean;
   interactive?: boolean;
   interactivePath?: string;
+  demoEnabled?: boolean;
   healthCheckUrl?: string;
   maturity?: 'stable' | 'beta' | 'alpha' | 'deprecated';
   createdAt: Date;

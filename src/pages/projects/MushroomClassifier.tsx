@@ -24,7 +24,7 @@ const MushroomClassifier = () => {
   const [predicting, setPredicting] = useState(false);
   const [result, setResult] = useState<PredictionResult | null>(null);
   const [alpha, setAlpha] = useState(0.1);
-  const [projectId, setProjectId] = useState<string | null>(null);
+  const [projectSlug, setProjectSlug] = useState<string | null>(null);
   const [groundTruth, setGroundTruth] = useState<string | null>(null); // Ground-truth class if known
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -33,10 +33,10 @@ const MushroomClassifier = () => {
       try {
         const response = await axios.get('/api/projects');
         const mushroomProject = response.data.find(
-          (p: any) => p.interactivePath === '/projects/mushroom-classifier'
+          (p: any) => p.interactivePath === '/projects/mushroom-classifier/demo'
         );
-        if (mushroomProject) {
-          setProjectId(mushroomProject._id);
+        if (mushroomProject?.slug) {
+          setProjectSlug(mushroomProject.slug);
         }
       } catch (error) {
         console.error('Error fetching project:', error);
@@ -141,7 +141,7 @@ const MushroomClassifier = () => {
   return (
     <div className="min-h-screen bg-dark section-padding">
       <Link
-        to={projectId ? `/project/${projectId}` : '/#projects'}
+        to={projectSlug ? `/projects/${projectSlug}` : '/#projects'}
         className="inline-flex items-center gap-2 text-primary hover:text-secondary transition-colors mb-8"
       >
         <ArrowLeft size={20} />
