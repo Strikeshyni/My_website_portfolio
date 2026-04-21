@@ -4,6 +4,7 @@ import { useInView } from 'react-intersection-observer';
 import { Link } from 'react-router-dom';
 import { Github } from 'lucide-react';
 import axios from 'axios';
+import { apiUrl } from '../lib/api';
 import { Project } from '../types';
 
 const Projects = () => {
@@ -24,15 +25,20 @@ const Projects = () => {
       const checks = projects.map(async (project) => {
         if (project.healthCheckUrl) {
           try {
-            const response = await axios.get(project.healthCheckUrl, { timeout: 5000 });
+            const healthUrl = project.healthCheckUrl.startsWith('http')
+              ? project.healthCheckUrl
+              : apiUrl(project.healthCheckUrl);
+            const response = await axios.get(healthUrl, { timeout: 5000 });
             // Verify that we didn't get the HTML fallback page
             const isHtml = typeof response.data === 'string' && response.data.trim().startsWith('<!doctype html>');
             if (isHtml) {
                 throw new Error('Received HTML instead of JSON');
             }
             return { id: project._id, isHealthy: true };
-          } catch (error) {
-            console.warn(`Health check failed for ${project.title}`);
+          } catch (error: any) {
+            if (error?.code !== 'ERR_CANCELED') {
+              console.warn(`Health check failed for ${project.title}`);
+            }
             return { id: project._id, isHealthy: false };
           }
         }
@@ -58,12 +64,19 @@ const Projects = () => {
   }, [projects]);
 
   useEffect(() => {
+    const controller = new AbortController();
+
     const fetchProjects = async () => {
       try {
-        const response = await axios.get('/api/projects');
+        const response = await axios.get(apiUrl('/api/projects'), {
+          signal: controller.signal,
+          timeout: 10000,
+        });
         setProjects(response.data);
-      } catch (error) {
-        console.error('Error fetching projects:', error);
+      } catch (error: any) {
+        if (error?.code !== 'ERR_CANCELED') {
+          console.error('Error fetching projects:', error);
+        }
         // Fallback to static data if API fails
         const demoProjects: Project[] = [
           {
@@ -140,6 +153,7 @@ const Projects = () => {
     };
 
     fetchProjects();
+    return () => controller.abort();
   }, []);
 
   const categories = ['all', 'web', 'ai', 'data', 'other'];
