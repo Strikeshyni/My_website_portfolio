@@ -67,7 +67,7 @@ const MushroomClassifier = () => {
       }
       
       // Load image from public folder
-      const imagePath = `/samples/${sampleFile}`;
+      const imagePath = `/test_images_mushrooms/${sampleFile}`;
       const response = await fetch(imagePath);
       
       if (!response.ok) {

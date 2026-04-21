@@ -19,8 +19,5 @@ uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 
 ## Optional external integrations
 
-- `CHATBOT_EXTERNAL_URL` (if you want proxy to an external chatbot backend)
-- `STOCK_EXTERNAL_URL` (if stock backend remains external)
-
-If `CHATBOT_EXTERNAL_URL` is not set, a built-in lightweight chatbot response is used.
-If `STOCK_EXTERNAL_URL` is not set, `/stock/*` returns HTTP 503.
+- `CHATBOT_EXTERNAL_URL`
+- `STOCK_EXTERNAL_URL`

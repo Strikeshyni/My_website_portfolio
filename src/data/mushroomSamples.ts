@@ -81,4 +81,4 @@ export const MUSHROOM_SAMPLES: MushroomSample[] = [
   }
 ];
 
-export const getSamplePath = (filename: string) => `/samples/${filename}`;
+export const getSamplePath = (filename: string) => `/test_images_mushrooms/${filename}`;
