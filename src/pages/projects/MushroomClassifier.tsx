@@ -348,6 +348,24 @@ const MushroomClassifier = () => {
                         sur 169 total ({((result.set_size / 169) * 100).toFixed(1)}%)
                       </p>
                     </div>
+                    <div className="bg-dark-light p-4 rounded-lg">
+                      <p className="text-sm text-gray-400">Non-conformity threshold</p>
+                      <p className="text-lg font-bold text-blue-300">
+                        {result.threshold.toFixed(4)}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        Alpha: {alpha.toFixed(2)} (coverage {(1 - alpha).toFixed(2)})
+                      </p>
+                    </div>
+                    <div className="bg-dark-light p-4 rounded-lg">
+                      <p className="text-sm text-gray-400">Probability cutoff</p>
+                      <p className="text-lg font-bold text-blue-200">
+                        {(1 - result.threshold).toFixed(4)}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        Classes with p ≥ {((1 - result.threshold) * 100).toFixed(2)}%
+                      </p>
+                    </div>
                   </div>
 
                       {/* Ground truth and coverage */}
@@ -386,7 +404,7 @@ const MushroomClassifier = () => {
                         <Info size={16} />
                         <span>
                           <strong>Minimal set:</strong> The model uncertainty and threshold lead to a very small set.
-                          Only the top class is included (minimum size guarantee).
+                          Only the top class with probability superior to the probability cutoff are included.
                         </span>
                       </p>
                     </div>

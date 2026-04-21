@@ -50,17 +50,17 @@ const Contact = () => {
             </p>
 
             <div className="space-y-4">
-              <div className="flex items-center gap-4">
+              <a href="mailto:abel.aubron@epita.fr" className="flex items-center gap-4">
                 <div className="p-3 bg-primary/20 rounded-lg">
-                  <Mail size={24} className="text-primary" />
+                  <Mail size={24} className="text-primary hover:text-secondary" />
                 </div>
                 <div>
                   <p className="text-sm text-gray-400">Email</p>
-                  <a href="mailto:abel.aubron@epita.fr" className="text-white hover:text-primary">
+                  <p className="text-white hover:text-primary">
                     abel.aubron@epita.fr
-                  </a>
+                  </p>
                 </div>
-              </div>
+              </a>
             </div>
           </div>
 

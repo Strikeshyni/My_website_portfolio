@@ -46,7 +46,7 @@ const Hero = () => {
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ scale: 1.1 }}
-              className="p-3 sm:p-4 glass-effect rounded-full hover:bg-secondary/20 transition-colors"
+              className="p-3 sm:p-4 glass-effect rounded-full hover:bg-primary/20 transition-colors"
               title="CodinGame"
             >
               <Code2 size={24} />
@@ -56,7 +56,7 @@ const Hero = () => {
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ scale: 1.1 }}
-              className="p-3 sm:p-4 glass-effect rounded-full hover:bg-accent/20 transition-colors"
+              className="p-3 sm:p-4 glass-effect rounded-full hover:bg-primary/20 transition-colors"
               title="LeetCode"
             >
               <Code2 size={24} />
@@ -66,7 +66,7 @@ const Hero = () => {
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ scale: 1.1 }}
-              className="p-3 sm:p-4 glass-effect rounded-full hover:bg-accent/20 transition-colors"
+              className="p-3 sm:p-4 glass-effect rounded-full hover:bg-primary/20 transition-colors"
               title="LeekWars"
             >
               <Trophy size={24} />

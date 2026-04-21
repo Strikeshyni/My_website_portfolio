@@ -33,7 +33,7 @@ const Footer = () => {
               href="https://www.codingame.com/profile/490be14918211c1d61d97992a2bee96e2780386"
               target="_blank"
               rel="noopener noreferrer"
-              className="p-3 glass-effect rounded-full hover:bg-secondary/20 transition-colors"
+              className="p-3 glass-effect rounded-full hover:bg-primary/20 transition-colors"
               title="CodinGame"
             >
               <Code2 size={24} />
@@ -42,7 +42,7 @@ const Footer = () => {
               href="https://leetcode.com/u/L_Strom/"
               target="_blank"
               rel="noopener noreferrer"
-              className="p-3 glass-effect rounded-full hover:bg-accent/20 transition-colors"
+              className="p-3 glass-effect rounded-full hover:bg-primary/20 transition-colors"
               title="LeetCode"
             >
               <Code2 size={24} />
@@ -51,7 +51,7 @@ const Footer = () => {
               href="https://leekwars.com/farmer/90987"
               target="_blank"
               rel="noopener noreferrer"
-              className="p-3 glass-effect rounded-full hover:bg-accent/20 transition-colors"
+              className="p-3 glass-effect rounded-full hover:bg-primary/20 transition-colors"
               title="LeekWars"
             >
               <Trophy size={24} />
@@ -62,7 +62,7 @@ const Footer = () => {
               className="p-3 glass-effect rounded-full hover:bg-primary/20 transition-colors"
               title="Contact"
             >
-              <Mail size={20} />
+              <Mail size={24} />
             </a>
           </div>
         </div>

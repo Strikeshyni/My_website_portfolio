@@ -32,9 +32,9 @@ const Header = () => {
         isScrolled || isMobileMenuOpen ? 'glass-effect shadow-lg' : 'bg-transparent'
       }`}
     >
-      <nav className="section-padding py-4">
+      <nav className="section-padding py-3 sm:py-4">
         <div className="flex items-center justify-between">
-          <a href="#home" className="text-2xl font-bold gradient-text">
+          <a href="#home" className="text-xl sm:text-2xl font-bold gradient-text">
             Abel Aubron
           </a>
 
@@ -54,7 +54,7 @@ const Header = () => {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden p-2"
+            className="md:hidden p-1.5"
           >
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>

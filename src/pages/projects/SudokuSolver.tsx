@@ -565,7 +565,7 @@ const SudokuSolver = () => {
           )}
         </div>
         
-        <div className="glass-effect rounded-2xl p-8 mb-8">
+        <div className="glass-effect rounded-2xl p-4 sm:p-8 mb-8">
           {/* Difficulty and size */}
           <div className="mb-6 flex flex-wrap gap-6">
             <div>
@@ -611,15 +611,18 @@ const SudokuSolver = () => {
           </div>
 
           {/* Layout principal: Grille + Sidebar */}
-          <div className="flex flex-col xl:flex-row gap-8 items-start justify-center">
+          <div className="flex flex-col xl:flex-row gap-6 sm:gap-8 items-start justify-center">
             
               {/* Grid container */}
-            <div className="w-full xl:w-auto overflow-x-auto flex justify-center p-4">
+            <div className="w-full xl:w-auto overflow-x-auto flex justify-center p-2 sm:p-4">
               <div 
                 className="grid gap-0 bg-gray-700 border-2 border-gray-500 shadow-2xl"
                 style={{ 
-                  gridTemplateColumns: `repeat(${gridSize}, minmax(${gridSize > 16 ? '2rem' : '3rem'}, 1fr))`,
+                  gridTemplateColumns: `repeat(${gridSize}, var(--cell-size))`,
                   width: 'fit-content',
+                  ['--cell-size' as any]: gridSize === 16
+                    ? 'clamp(20px, 6vw, 34px)'
+                    : 'clamp(28px, 8vw, 44px)',
                 }}
               >
                 {grid.map((row, i) => (
@@ -645,7 +648,7 @@ const SudokuSolver = () => {
                         className={`
                           w-full h-full aspect-square text-center 
                           border-gray-700 focus:outline-none font-bold no-spinner
-                          ${gridSize > 16 ? 'text-xs sm:text-sm' : 'text-lg'}
+                          ${gridSize === 16 ? 'text-xs sm:text-sm' : 'text-base sm:text-lg'}
                           ${isRightBorder ? 'border-r-2 border-r-gray-400' : 'border-r border-r-gray-700'}
                           ${isBottomBorder ? 'border-b-2 border-b-gray-400' : 'border-b border-b-gray-700'}
                           ${isSelected && !isInitial ? 'bg-primary/20' : ''}
@@ -666,23 +669,23 @@ const SudokuSolver = () => {
             <div className="w-full xl:w-80 flex flex-col gap-6 shrink-0">
               
               {/* Number pad */}
-              <div className="bg-dark-light/30 p-5 rounded-xl border border-gray-700 shadow-lg">
+              <div className="bg-dark-light/30 p-4 sm:p-5 rounded-xl border border-gray-700 shadow-lg">
                 <label className="block text-sm mb-4 text-gray-300 text-center font-medium uppercase tracking-wider">
                   Number Pad
                 </label>
-                <div className="grid grid-cols-5 gap-2">
+                <div className="grid grid-cols-5 gap-2 sm:gap-2.5">
                   {Array.from({ length: gridSize }, (_, i) => i + 1).map((num) => (
                     <button
                       key={num}
                       onClick={() => handleNumberClick(num)}
-                      className="aspect-square rounded-lg bg-dark-light hover:bg-primary hover:text-white transition-all font-bold text-gray-300 border border-gray-600 text-sm sm:text-base shadow-sm hover:shadow-md hover:-translate-y-0.5"
+                      className="aspect-square rounded-lg bg-dark-light hover:bg-primary hover:text-white transition-all font-bold text-gray-300 border border-gray-600 text-xs sm:text-base shadow-sm hover:shadow-md hover:-translate-y-0.5"
                     >
                       {num}
                     </button>
                   ))}
                   <button
                     onClick={() => handleNumberClick(0)}
-                    className="aspect-square rounded-lg bg-red-900/30 hover:bg-red-600 hover:text-white transition-all font-bold text-red-400 border border-red-900/50 shadow-sm hover:shadow-md hover:-translate-y-0.5"
+                    className="aspect-square rounded-lg bg-red-900/30 hover:bg-red-600 hover:text-white transition-all font-bold text-red-400 border border-red-900/50 shadow-sm hover:shadow-md hover:-translate-y-0.5 text-xs sm:text-base"
                     title="Clear cell"
                   >
                     X
@@ -695,7 +698,7 @@ const SudokuSolver = () => {
                 <button
                   onClick={generatePuzzle}
                   disabled={generating}
-                  className="flex items-center justify-center gap-2 px-4 py-4 bg-gradient-to-r from-primary to-secondary rounded-xl hover:scale-[1.02] transition-transform disabled:opacity-50 font-bold shadow-lg"
+                  className="flex items-center justify-center gap-2 px-4 py-3 sm:py-4 bg-gradient-to-r from-primary to-secondary rounded-xl hover:scale-[1.02] transition-transform disabled:opacity-50 font-bold shadow-lg"
                 >
                   <Play size={20} />
                   {generating ? 'Generating...' : 'New Game'}
@@ -705,14 +708,14 @@ const SudokuSolver = () => {
                   <button
                     onClick={solveSudoku}
                     disabled={solving}
-                    className="flex items-center justify-center gap-2 px-3 py-3 bg-primary rounded-xl hover:bg-primary/80 transition-colors disabled:opacity-50 font-medium shadow-md"
+                    className="flex items-center justify-center gap-2 px-3 py-2.5 sm:py-3 bg-primary rounded-xl hover:bg-primary/80 transition-colors disabled:opacity-50 font-medium shadow-md"
                   >
                     {solving ? '...' : 'Solve'}
                   </button>
                   <button
                     onClick={getHint}
                     disabled={!gameId || hintsUsed >= MAX_HINTS}
-                    className={`flex items-center justify-center gap-2 px-3 py-3 rounded-xl transition-colors font-medium shadow-md ${
+                    className={`flex items-center justify-center gap-2 px-3 py-2.5 sm:py-3 rounded-xl transition-colors font-medium shadow-md ${
                       hintsUsed >= MAX_HINTS 
                         ? 'bg-gray-600 text-gray-400 cursor-not-allowed' 
                         : 'bg-secondary hover:bg-secondary/80 disabled:opacity-50'
@@ -725,7 +728,7 @@ const SudokuSolver = () => {
                 
                 <button
                   onClick={clearGrid}
-                  className="flex items-center justify-center gap-2 px-4 py-3 bg-gray-700 rounded-xl hover:bg-gray-600 transition-colors text-sm font-medium shadow-md"
+                  className="flex items-center justify-center gap-2 px-4 py-2.5 sm:py-3 bg-gray-700 rounded-xl hover:bg-gray-600 transition-colors text-sm font-medium shadow-md"
                 >
                   <RotateCcw size={18} />
                   Effacer la grille

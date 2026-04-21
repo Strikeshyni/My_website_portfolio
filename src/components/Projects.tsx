@@ -251,11 +251,11 @@ const Projects = () => {
                 </div>
               </Link>
 
-              <div className="p-6 flex flex-col flex-1">
+              <div className="p-4 sm:p-6 flex flex-col flex-1">
                 <Link to={`/projects/${project.slug || project._id}`}>
                   <div className="flex-1">
-                    <h3 className="text-2xl font-bold mb-2">{project.title}</h3>
-                    <p className="text-gray-400 mb-2">{project.description}</p>
+                    <h3 className="text-xl sm:text-2xl font-bold mb-2">{project.title}</h3>
+                    <p className="text-sm sm:text-base text-gray-400 mb-2">{project.description}</p>
                     <p className="text-xs text-gray-500 mb-4">
                       {new Date(project.createdAt).toLocaleDateString('en-US', {
                         year: 'numeric',
@@ -276,10 +276,10 @@ const Projects = () => {
                   </div>
                 </Link>
 
-                <div className="flex gap-4 mt-auto">
+                <div className="flex gap-3 sm:gap-4 mt-auto">
                   <Link
                     to={`/projects/${project.slug || project._id}`}
-                    className="flex-1 text-center px-4 py-2 bg-primary rounded-lg hover:bg-primary/80 transition-colors"
+                    className="flex-1 text-center px-3 py-1.5 sm:px-4 sm:py-2 bg-primary rounded-lg hover:bg-primary/80 transition-colors text-sm sm:text-base"
                   >
                     Details
                   </Link>
@@ -288,9 +288,9 @@ const Projects = () => {
                       href={project.githubUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="p-2 glass-effect rounded-lg hover:bg-white/10 transition-colors"
+                      className="p-1.5 sm:p-2 glass-effect rounded-lg hover:bg-white/10 transition-colors"
                     >
-                      <Github size={20} />
+                      <Github size={18} />
                     </a>
                   )}
                 </div>
@@ -299,6 +299,10 @@ const Projects = () => {
           ))}
         </div>
         )}
+
+        <div className="mt-10 glass-effect rounded-xl p-4 sm:p-6 text-gray-300 text-sm sm:text-base">
+          More projects are on the way. Some are already finished, but they need a clean website version before going live.
+        </div>
       </motion.div>
     </section>
   );
