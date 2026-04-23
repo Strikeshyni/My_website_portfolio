@@ -138,7 +138,7 @@ const Projects = () => {
             description: 'Modern portfolio website with animations and scroll effects',
             longDescription: 'A modern and performant portfolio with smooth animations and modular architecture.',
             technologies: ['React', 'TypeScript', 'TailwindCSS', 'Framer Motion'],
-            imageUrl: '/images/projects/portfolio.jpg',
+            imageUrl: '/images/projects/portfolio.png',
             bannerUrl: '/images/projects/portfolio-banner.jpg',
             category: 'web',
             featured: true,
