@@ -38,8 +38,12 @@ const SudokuOCR = () => {
     top3?: { val: number; prob: number } | null;
   })[][]>(() => Array.from({ length: 9 }, () => Array(9).fill(null)));
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const hasFetched = useRef(false);
 
   useEffect(() => {
+    if (hasFetched.current) return;
+    hasFetched.current = true;
+
     const fetchProjectId = async () => {
     try {
         const response = await axios.get('/api/projects');

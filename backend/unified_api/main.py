@@ -13,7 +13,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.wsgi import WSGIMiddleware
 from fastapi.responses import JSONResponse, Response
 from pymongo import MongoClient
-from pymongo.errors import PyMongoError
+from functools import lru_cache
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 ROOT_DIR = BASE_DIR.parent
@@ -23,7 +23,10 @@ sys.path.append(str(BASE_DIR / "sudoku"))
 sys.path.append(str(BASE_DIR / "prediction_conform"))
 sys.path.append(str(BASE_DIR / "ocr_sudoku"))
 
+
+
 app = FastAPI(title="Portfolio Unified API", version="1.0.0")
+
 
 
 def _normalize_demo_name(name: str) -> str:
@@ -125,23 +128,12 @@ def _get_mongodb_db_name(uri: str) -> str:
 
     return "portfolio"
 
+mongoclient = MongoClient(_get_mongodb_uri(), serverSelectionTimeoutMS=3000)
+db = mongoclient[_get_mongodb_db_name(_get_mongodb_uri())]
+collection = db[PROJECTS_COLLECTION]
 
 def get_projects_collection():
-    try:
-        mongodb_uri = _get_mongodb_uri()
-        mongodb_db = _get_mongodb_db_name(mongodb_uri)
-
-        client = MongoClient(mongodb_uri, serverSelectionTimeoutMS=3000)
-        client.admin.command("ping")
-        db = client[mongodb_db]
-        return db[PROJECTS_COLLECTION]
-    except HTTPException:
-        raise
-    except PyMongoError as exc:
-        raise HTTPException(status_code=503, detail=f"MongoDB is unreachable: {exc}")
-    except Exception as exc:
-        raise HTTPException(status_code=500, detail=f"Mongo connection error: {exc}")
-
+    return collection
 
 def serialize_project(doc: Dict[str, Any]) -> Dict[str, Any]:
     created_at = doc.get("createdAt")
@@ -174,7 +166,6 @@ def serialize_project(doc: Dict[str, Any]) -> Dict[str, Any]:
         "createdAt": created_at_value,
     }
 
-
 @app.get("/health")
 def health():
     return {
@@ -189,11 +180,12 @@ def api_health():
     return {"status": "ok", "message": "Unified API is running"}
 
 
-@app.get("/api/projects")
-def get_projects(
+@lru_cache(maxsize=1)
+def get_all_projects_cached(    
     category: Optional[str] = Query(default=None),
     featured: Optional[bool] = Query(default=None),
-):
+) -> list:
+    
     filter_query: Dict[str, Any] = {}
     if category and category != "all":
         filter_query["category"] = category
@@ -204,6 +196,16 @@ def get_projects(
     docs = list(collection.find(filter_query).sort("createdAt", -1))
     return [serialize_project(doc) for doc in docs]
 
+@app.get("/api/projects")
+def get_projects(
+    category: Optional[str] = Query(default=None),
+    featured: Optional[bool] = Query(default=None),
+):
+    data = get_all_projects_cached(category=category, featured=featured)
+    return JSONResponse(
+        content=data,
+        headers={"Cache-Control": "public, max-age=60"}
+    )
 
 @app.get("/api/projects/slug/{slug}")
 def get_project_by_slug(slug: str):

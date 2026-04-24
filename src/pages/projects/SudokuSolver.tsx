@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Lightbulb, Play, RotateCcw, Trophy } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -82,6 +82,7 @@ const SudokuSolver = () => {
   const [completionTime, setCompletionTime] = useState<number | null>(null);
   const [solvedBySolver, setSolvedBySolver] = useState(false);
   const [solverTime, setSolverTime] = useState<number | null>(null);
+  const hasFetched = useRef(false);
   
   const MAX_HINTS = 3;
 
@@ -225,6 +226,9 @@ const SudokuSolver = () => {
   }, [gridSize, difficulty, availableDifficulties]);
 
   useEffect(() => {
+    if (hasFetched.current) return;
+    hasFetched.current = true;
+
     const fetchProjectId = async () => {
       try {
         const response = await axios.get('/api/projects');

@@ -27,8 +27,12 @@ const MushroomClassifier = () => {
   const [projectSlug, setProjectSlug] = useState<string | null>(null);
   const [groundTruth, setGroundTruth] = useState<string | null>(null); // Ground-truth class if known
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const hasFetched = useRef(false);
 
   useEffect(() => {
+    if (hasFetched.current) return;
+    hasFetched.current = true;
+
     const fetchProjectId = async () => {
       try {
         const response = await axios.get('/api/projects');

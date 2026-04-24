@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { 
   ArrowLeft, TrendingUp, PlayCircle, BarChart3, 
@@ -229,8 +229,12 @@ const StockPrediction = () => {
   const [simulationStatus, setSimulationStatus] = useState<SimulationStatus | null>(null);
   const [simulationResult, setSimulationResult] = useState<SimulationResult | null>(null);
   const [simulating, setSimulating] = useState(false);
+  const hasFetched = useRef(false);
 
   useEffect(() => {
+    if (hasFetched.current) return;
+    hasFetched.current = true;
+
     const fetchProjectId = async () => {
       try {
         const response = await axios.get('/api/projects');

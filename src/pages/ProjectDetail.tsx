@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Github, ExternalLink } from 'lucide-react';
@@ -11,6 +11,7 @@ const ProjectDetail = () => {
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
   const [isHealthy, setIsHealthy] = useState<boolean | null>(null);
+  const hasFetched = useRef(false);
 
   const handleBackToProjects = () => {
     navigate('/', { replace: true });
@@ -35,6 +36,9 @@ const ProjectDetail = () => {
   };
 
   useEffect(() => {
+    if (hasFetched.current) return;
+    hasFetched.current = true;
+
     const fetchProject = async () => {
       try {
         if (!slug || slug === 'undefined') {
@@ -42,17 +46,7 @@ const ProjectDetail = () => {
           return;
         }
 
-        try {
-          const response = await axios.get(`/api/projects/slug/${slug}`);
-          setProject(response.data);
-          return;
-        } catch (error: any) {
-          if (error?.response?.status !== 404) {
-            throw error;
-          }
-        }
-
-        const response = await axios.get(`/api/projects/${slug}`);
+        const response = await axios.get(`/api/projects/slug/${slug}`);
         setProject(response.data);
       } catch (error) {
         console.error('Error fetching project:', error);
@@ -65,25 +59,28 @@ const ProjectDetail = () => {
   }, [slug]);
 
   useEffect(() => {
-    if (project?.healthCheckUrl) {
-      const checkHealth = async () => {
-        try {
-          const response = await axios.get(project.healthCheckUrl!, { timeout: 5000 });
-          // Verify that we didn't get the HTML fallback page
-          const isHtml = typeof response.data === 'string' && response.data.trim().startsWith('<!doctype html>');
-          if (isHtml) {
-             throw new Error('Received HTML instead of JSON');
-          }
-          setIsHealthy(true);
-        } catch (error) {
-          console.warn('Health check failed:', error);
-          setIsHealthy(false);
+    if (!project?.healthCheckUrl) return;
+
+    const checkHealth = async () => {
+      try {
+        const response = await axios.get(project.healthCheckUrl!, { timeout: 5000 });
+        // Verify that we didn't get the HTML fallback page
+        const isHtml = typeof response.data === 'string' && response.data.trim().startsWith('<!doctype html>');
+        if (isHtml) {
+            throw new Error('Received HTML instead of JSON');
         }
-      };
+        setIsHealthy(true);
+      } catch (error) {
+        console.warn('Health check failed:', error);
+        setIsHealthy(false);
+      }
+    };
+
+    const timeout = setTimeout(() => {
       checkHealth();
-    } else if (project) {
-      setIsHealthy(true);
-    }
+    }, 300);
+
+    return () => clearTimeout(timeout);
   }, [project]);
 
   if (loading) {

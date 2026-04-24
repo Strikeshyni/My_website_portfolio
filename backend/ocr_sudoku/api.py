@@ -62,9 +62,9 @@ async def solve_sudoku(file: UploadFile = File(...)):
 
         command = [str(SOLVER_BINARY), str(input_image), str(output_image)]
 
-        print("Temp dir:", temp_dir)
-        print("Weights exist:", (temp_models_dir / "cnn_weights.bin").exists())
-        print("Weights path:", temp_models_dir / "cnn_weights.bin")
+        # print("Temp dir:", temp_dir)
+        # print("Weights exist:", (temp_models_dir / "cnn_weights.bin").exists())
+        # print("Weights path:", temp_models_dir / "cnn_weights.bin")
 
         try:
             # Run in request-specific cwd so debug_*.png files stay isolated.
