@@ -198,7 +198,7 @@ const Projects = () => {
             interactive: true,
             interactivePath: '/projects/ocr-sudoku/demo',
             healthCheckUrl: '/ocr-sudoku/health',
-            maturity: 'beta',
+            maturity: 'stable',
             createdAt: new Date('2022-09-10'),
           },
         ]);
