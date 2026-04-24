@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
 import { motion } from 'framer-motion';
 import { 
   ArrowLeft, TrendingUp, PlayCircle, BarChart3, 
@@ -8,6 +8,7 @@ import {
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { apiUrl } from '../../lib/api';
+import { ProjectContext } from '../../context/ProjectContext';
 
 // Types
 interface TrainingConfig {
@@ -189,7 +190,7 @@ const STRATEGY_INFO: Record<string, { name: string; description: string }> = {
 
 const StockPrediction = () => {
   const [activeTab, setActiveTab] = useState<'train' | 'predict' | 'simulate'>('train');
-  const [projectSlug, setProjectSlug] = useState<string | null>(null);
+  const projectSlug = 'stock-prediction';
   
   // Training states
   const [config, setConfig] = useState<TrainingConfig>({
@@ -229,29 +230,6 @@ const StockPrediction = () => {
   const [simulationStatus, setSimulationStatus] = useState<SimulationStatus | null>(null);
   const [simulationResult, setSimulationResult] = useState<SimulationResult | null>(null);
   const [simulating, setSimulating] = useState(false);
-  const hasFetched = useRef(false);
-
-  useEffect(() => {
-    if (hasFetched.current) return;
-    hasFetched.current = true;
-
-    const fetchProjectId = async () => {
-      try {
-        const response = await axios.get('/api/projects');
-        const stockProject = response.data.find(
-          (p: any) => p.interactivePath === '/projects/stock-prediction/demo'
-        );
-        if (stockProject?.slug) {
-          setProjectSlug(stockProject.slug);
-        }
-      } catch (error) {
-        console.error('Error fetching project:', error);
-      }
-    };
-    fetchProjectId();
-    
-    return undefined;
-  }, []);
 
   // Start training
   const handleStartTraining = async () => {

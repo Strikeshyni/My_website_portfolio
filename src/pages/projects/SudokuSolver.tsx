@@ -1,9 +1,10 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Lightbulb, Play, RotateCcw, Trophy } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { apiUrl } from '../../lib/api';
+import { ProjectContext } from '../../context/ProjectContext';
 
 // Confetti component
 const Confetti = () => {
@@ -71,7 +72,6 @@ const SudokuSolver = () => {
   const [solving, setSolving] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [difficulty, setDifficulty] = useState<Difficulty>('medium');
-  const [projectSlug, setProjectSlug] = useState<string | null>(null);
   const [selectedCell, setSelectedCell] = useState<{row: number, col: number} | null>(null);
   const [invalidMove, setInvalidMove] = useState<{row: number, col: number} | null>(null);
   const [hintsUsed, setHintsUsed] = useState(0);
@@ -82,8 +82,8 @@ const SudokuSolver = () => {
   const [completionTime, setCompletionTime] = useState<number | null>(null);
   const [solvedBySolver, setSolvedBySolver] = useState(false);
   const [solverTime, setSolverTime] = useState<number | null>(null);
-  const hasFetched = useRef(false);
-  
+  const projectSlug = 'sudoku-solver';
+
   const MAX_HINTS = 3;
 
   const availableDifficulties: Difficulty[] =
@@ -224,26 +224,6 @@ const SudokuSolver = () => {
       setDifficulty(availableDifficulties[0]);
     }
   }, [gridSize, difficulty, availableDifficulties]);
-
-  useEffect(() => {
-    if (hasFetched.current) return;
-    hasFetched.current = true;
-
-    const fetchProjectId = async () => {
-      try {
-        const response = await axios.get('/api/projects');
-        const sudokuProject = response.data.find(
-          (p: any) => p.interactivePath === '/projects/sudoku-solver/demo'
-        );
-        if (sudokuProject?.slug) {
-          setProjectSlug(sudokuProject.slug);
-        }
-      } catch (error) {
-        console.error('Error fetching project:', error);
-      }
-    };
-    fetchProjectId();
-  }, []);
 
   const handleCellChange = (row: number, col: number, value: string) => {
     // Do not allow changes to initial cells

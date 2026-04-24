@@ -1,8 +1,10 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useContext } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Upload, Play, Terminal, Image as ImageIcon, CheckCircle, AlertTriangle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { ProjectContext } from '../../context/ProjectContext';
+import { apiUrl } from '../../lib/api';
 
 interface SolveResult {
   message: string;
@@ -22,7 +24,6 @@ const DEBUG_IMAGES = [
 ];
 
 const SudokuOCR = () => {
-  const [projectSlug, setProjectSlug] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const [processing, setProcessing] = useState(false);
@@ -31,6 +32,7 @@ const SudokuOCR = () => {
   const [outputImage, setOutputImage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [samples, setSamples] = useState<string[]>([]);
+  const [samplesLoading, setSamplesLoading] = useState(false);
   const [parsedPredictions, setParsedPredictions] = useState<(null | {
     empty: boolean;
     top1?: { val: number; prob: number } | null;
@@ -38,39 +40,47 @@ const SudokuOCR = () => {
     top3?: { val: number; prob: number } | null;
   })[][]>(() => Array.from({ length: 9 }, () => Array(9).fill(null)));
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const hasFetched = useRef(false);
+  const context = useContext(ProjectContext);
+  const projects = context?.projects || [];
+  const isGlobalLoading = context?.loading;
+  const projectSlug = 'ocr-sudoku';
 
   useEffect(() => {
-    if (hasFetched.current) return;
-    hasFetched.current = true;
-
-    const fetchProjectId = async () => {
-    try {
-        const response = await axios.get('/api/projects');
-        const stockProject = response.data.find(
-        (p: any) => p.interactivePath === '/projects/ocr-sudoku/demo'
-        );
-        if (stockProject?.slug) {
-        setProjectSlug(stockProject.slug);
-        }
-    } catch (error) {
-        console.error('Error fetching project:', error);
-    }
-    };
-    fetchProjectId();
-    // fetch sample images list from the backend
     const fetchSamples = async () => {
+      if (samplesLoading || samples.length > 0) return;
+
+      setSamplesLoading(true);
       try {
-        const res = await axios.get('/api/test-images-sudoku');
+        // Use apiUrl helper to ensure the correct path
+        const res = await axios.get(apiUrl('/api/test-images-sudoku'), { timeout: 10000 });
         if (res.data && Array.isArray(res.data.images)) {
           setSamples(res.data.images);
         }
       } catch (e) {
         console.warn('Could not fetch sudoku test images', e);
+      } finally {
+        setSamplesLoading(false);
       }
     };
-    fetchSamples();
-  }, []);
+
+    // Only fetch if we aren't already global-loading to prevent race conditions
+    if (context && !isGlobalLoading) {
+      fetchSamples();
+    }
+  }, [context, isGlobalLoading]);
+
+  const showSpinner = isGlobalLoading && projects.length === 0;
+
+  if (showSpinner) {
+    return (
+      <div className="min-h-screen bg-dark flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-primary"></div>
+          <p className="text-gray-400 animate-pulse">Waking up the solver server...</p>
+        </div>
+      </div>
+    );
+  }
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const uploadedFile = e.target.files?.[0];

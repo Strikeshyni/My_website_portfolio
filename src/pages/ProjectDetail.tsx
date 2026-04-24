@@ -1,17 +1,18 @@
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Github, ExternalLink } from 'lucide-react';
-import { Project } from '../types';
 import axios from 'axios';
+import { ProjectContext } from '../context/ProjectContext';
 
 const ProjectDetail = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
-  const [project, setProject] = useState<Project | null>(null);
-  const [loading, setLoading] = useState(true);
+
+  const { projects, loading: contextLoading } = useContext(ProjectContext);
   const [isHealthy, setIsHealthy] = useState<boolean | null>(null);
-  const hasFetched = useRef(false);
+
+  const project = projects.find(p => p.slug === slug);
 
   const handleBackToProjects = () => {
     navigate('/', { replace: true });
@@ -35,55 +36,7 @@ const ProjectDetail = () => {
     }
   };
 
-  useEffect(() => {
-    if (hasFetched.current) return;
-    hasFetched.current = true;
-
-    const fetchProject = async () => {
-      try {
-        if (!slug || slug === 'undefined') {
-          setProject(null);
-          return;
-        }
-
-        const response = await axios.get(`/api/projects/slug/${slug}`);
-        setProject(response.data);
-      } catch (error) {
-        console.error('Error fetching project:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProject();
-  }, [slug]);
-
-  useEffect(() => {
-    if (!project?.healthCheckUrl) return;
-
-    const checkHealth = async () => {
-      try {
-        const response = await axios.get(project.healthCheckUrl!, { timeout: 5000 });
-        // Verify that we didn't get the HTML fallback page
-        const isHtml = typeof response.data === 'string' && response.data.trim().startsWith('<!doctype html>');
-        if (isHtml) {
-            throw new Error('Received HTML instead of JSON');
-        }
-        setIsHealthy(true);
-      } catch (error) {
-        console.warn('Health check failed:', error);
-        setIsHealthy(false);
-      }
-    };
-
-    const timeout = setTimeout(() => {
-      checkHealth();
-    }, 300);
-
-    return () => clearTimeout(timeout);
-  }, [project]);
-
-  if (loading) {
+  if (contextLoading) {
     return (
       <div className="min-h-screen bg-dark flex items-center justify-center">
         <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-primary"></div>

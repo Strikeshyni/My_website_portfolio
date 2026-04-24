@@ -1,39 +1,18 @@
-import { useEffect, useState } from 'react';
+import { useContext } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import axios from 'axios';
-import { Project } from '../../types';
 import ChatBot from './ChatBot';
 import MushroomClassifier from './MushroomClassifier';
 import StockPrediction from './StockPrediction';
 import SudokuOCR from './SudokuOCR';
 import SudokuSolver from './SudokuSolver';
+import { ProjectContext } from '../../context/ProjectContext';
 
 const ProjectDemo = () => {
   const { slug } = useParams();
-  const [project, setProject] = useState<Project | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchProject = async () => {
-      if (!slug || slug === 'undefined') {
-        setProject(null);
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const response = await axios.get(`/api/projects/slug/${slug}`);
-        setProject(response.data);
-      } catch (error) {
-        console.error('Error fetching project:', error);
-        setProject(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProject();
-  }, [slug]);
+  const context = useContext(ProjectContext);
+  const loading = context ? context.loading : true;
+  const projects = context?.projects || [];
+  const project = projects.find((p) => p.slug === slug);
 
   if (loading) {
     return (

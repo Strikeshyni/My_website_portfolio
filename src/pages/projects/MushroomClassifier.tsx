@@ -1,9 +1,10 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useContext } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Upload, AlertTriangle, Info, Image as ImageIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { MUSHROOM_SAMPLES, getSamplePath } from '../../data/mushroomSamples';
+import { ProjectContext } from '../../context/ProjectContext';
 
 interface PredictionResult {
   predicted_classes: string[];
@@ -24,30 +25,9 @@ const MushroomClassifier = () => {
   const [predicting, setPredicting] = useState(false);
   const [result, setResult] = useState<PredictionResult | null>(null);
   const [alpha, setAlpha] = useState(0.1);
-  const [projectSlug, setProjectSlug] = useState<string | null>(null);
   const [groundTruth, setGroundTruth] = useState<string | null>(null); // Ground-truth class if known
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const hasFetched = useRef(false);
-
-  useEffect(() => {
-    if (hasFetched.current) return;
-    hasFetched.current = true;
-
-    const fetchProjectId = async () => {
-      try {
-        const response = await axios.get('/api/projects');
-        const mushroomProject = response.data.find(
-          (p: any) => p.interactivePath === '/projects/mushroom-classifier/demo'
-        );
-        if (mushroomProject?.slug) {
-          setProjectSlug(mushroomProject.slug);
-        }
-      } catch (error) {
-        console.error('Error fetching project:', error);
-      }
-    };
-    fetchProjectId();
-  }, []);
+  const projectSlug = 'mushroom-classifier';
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

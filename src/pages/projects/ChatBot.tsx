@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Send } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
 import { apiUrl } from '../../lib/api';
 
 interface Message {
@@ -12,6 +11,15 @@ interface Message {
 }
 
 const ChatBot = () => {
+  const [input, setInput] = useState('');
+  const [loading, setLoading] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const projectSlug = 'chatbot';
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
@@ -19,35 +27,10 @@ const ChatBot = () => {
       timestamp: new Date(),
     },
   ]);
-  const [input, setInput] = useState('');
-  const [loading, setLoading] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const [projectSlug, setProjectSlug] = useState<string | null>(null);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
 
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
-
-  useEffect(() => {
-    const fetchProjectId = async () => {
-      try {
-        const response = await axios.get('/api/projects');
-        const chatbotProject = response.data.find(
-          (p: any) => p.interactivePath === '/projects/chatbot/demo'
-        );
-        if (chatbotProject?.slug) {
-          setProjectSlug(chatbotProject.slug);
-        }
-      } catch (error) {
-        console.error('Error fetching project:', error);
-      }
-    };
-    fetchProjectId();
-  }, []);
 
   const sendMessage = async () => {
     if (!input.trim() || loading) return;
