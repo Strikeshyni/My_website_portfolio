@@ -78,14 +78,31 @@ const Projects = () => {
           console.error('Error fetching projects:', error);
         }
         // Fallback to static data if API fails
-        const demoProjects: Project[] = [
+        setProjects([
           {
-            _id: '1',
+            _id: 'sudoku-solver',
             slug: 'sudoku-solver',
-            title: 'Optimized Sudoku Solver',
-            description: 'Advanced Sudoku solving with optimized backtracking',
-            longDescription: 'A high-performance Sudoku solver using advanced optimization and intelligent backtracking to solve any valid grid.',
-            technologies: ['Python', 'Algorithmes', 'Optimisation'],
+            title: 'Sudoku Solver and Game',
+            description: 'Sudoku generator and solver with advanced optimization algorithms in Python',
+            longDescription: `A complete Sudoku game developed in Python with automatic grid generation and optimized solving.
+            
+        Features:
+        - Support for 9x9 and 16x16 grids
+        - Grid generation with 4 difficulty levels (easy, medium, hard, expert)
+        - Modern interface with a numeric keypad and intuitive input
+        - Ultra-fast solving with optimized backtracking
+        - Smart hint system
+        - Real-time move validation
+        - REST API for frontend integration
+
+        Technologies:
+        - Python for game logic
+        - Backtracking algorithm with heuristics
+        - Flask for the REST API
+        - React + TypeScript for the interface
+
+        The algorithm can solve any Sudoku grid (up to 16x16) in just a few milliseconds thanks to advanced optimizations.`,
+            technologies: ['Python', 'Flask', 'Algorithms', 'React', 'TypeScript'],
             imageUrl: '/images/projects/sudoku.jpg',
             bannerUrl: '/images/projects/sudoku-banner.jpg',
             githubUrl: 'https://github.com/Strikeshyni/SudokuSolver_optimisation',
@@ -95,15 +112,15 @@ const Projects = () => {
             interactivePath: '/projects/sudoku-solver/demo',
             healthCheckUrl: '/sudoku/api/sudoku/health',
             maturity: 'stable',
-            createdAt: new Date(),
+            createdAt: new Date('2025-11-20'),
           },
           {
-            _id: '2',
+            _id: 'chatbot',
             slug: 'chatbot',
-            title: 'AI Chatbot',
-            description: 'Intelligent conversational assistant with machine learning',
-            longDescription: 'An AI chatbot that can understand and respond contextually to user questions.',
-            technologies: ['Python', 'NLP', 'Machine Learning', 'React'],
+            title: 'Conversational AI Chatbot',
+            description: 'Intelligent assistant with natural language processing',
+            longDescription: `An AI chatbot able to understand and answer user questions contextually.`,
+            technologies: ['Python', 'NLP', 'Machine Learning', 'React', 'TypeScript'],
             imageUrl: '/images/projects/chatbot.jpg',
             bannerUrl: '/images/projects/chatbot-banner.jpg',
             category: 'ai',
@@ -111,42 +128,80 @@ const Projects = () => {
             interactive: true,
             interactivePath: '/projects/chatbot/demo',
             healthCheckUrl: '/chatbot/health',
-            maturity: 'beta',
-            createdAt: new Date(),
+            maturity: 'stable',
+            createdAt: new Date('2025-03-15'),
           },
           {
-            _id: '4',
+            _id: 'mushroom-classifier',
             slug: 'mushroom-classifier',
-            title: 'Mushroom Classification',
+            title: 'Mushroom Classification with Conformal Prediction',
             description: 'CNN model with conformal prediction to classify 169 mushroom species',
-            longDescription: 'A deep learning project applying conformal prediction to mushroom classification.',
-            technologies: ['Python', 'PyTorch', 'Deep Learning', 'React'],
+            longDescription: `A Deep Learning project applying conformal prediction to mushroom classification.`,
+            technologies: ['Python', 'PyTorch', 'Deep Learning', 'Conformal Prediction', 'CNN', 'React'],
             imageUrl: '/images/projects/mushroom.jpg',
             bannerUrl: '/images/projects/mushroom-banner.jpg',
+            githubUrl: 'https://github.com/Strikeshyni/conformal_prediction',
             category: 'ai',
             featured: true,
             interactive: true,
             interactivePath: '/projects/mushroom-classifier/demo',
             healthCheckUrl: '/mushroom/health',
-            maturity: 'alpha',
-            createdAt: new Date(),
+            maturity: 'beta',
+            createdAt: new Date('2025-10-15'),
           },
           {
-            _id: '3',
+            _id: 'stock-prediction',
+            slug: 'stock-prediction',
+            title: 'CAC40 Stock Price Prediction',
+            description: 'LSTM model to predict stock prices and simulate trading strategies',
+            longDescription: `Stock prediction system using LSTM neural networks with simulation.`,
+            technologies: ['Python', 'TensorFlow', 'LSTM', 'FastAPI', 'React'],
+            imageUrl: '/images/projects/stock.jpg',
+            bannerUrl: '/images/projects/stock-banner.jpg',
+            githubUrl: 'https://github.com/Strikeshyni/CAC40_prediction',
+            category: 'ai',
+            featured: true,
+            interactive: true,
+            interactivePath: '/projects/stock-prediction/demo',
+            healthCheckUrl: '/stock/health',
+            maturity: 'beta',
+            createdAt: new Date('2024-10-10'),
+          },
+          {
+            _id: 'portfolio',
             slug: 'portfolio',
             title: 'Dynamic Portfolio',
-            description: 'Modern portfolio website with animations and scroll effects',
-            longDescription: 'A modern and performant portfolio with smooth animations and modular architecture.',
+            description: 'Modern portfolio website with animations and modular architecture',
+            longDescription: `A modern and high-performance portfolio.`,
             technologies: ['React', 'TypeScript', 'TailwindCSS', 'Framer Motion'],
             imageUrl: '/images/projects/portfolio.png',
             bannerUrl: '/images/projects/portfolio-banner.jpg',
+            githubUrl: 'https://github.com/Strikeshyni/My_website_portfolio',
             category: 'web',
             featured: true,
+            interactive: false,
             maturity: 'stable',
-            createdAt: new Date(),
+            createdAt: new Date('2025-11-20'),
           },
-        ];
-        setProjects(demoProjects);
+          {
+            _id: 'ocr-sudoku',
+            slug: 'ocr-sudoku',
+            title: 'OCR Sudoku Solver',
+            description: 'Sudoku solver in C with OCR and a CNN built from scratch',
+            longDescription: `Complete Sudoku solver in pure C with OCR and CNN.`,
+            technologies: ['C', 'CNN', 'OCR', 'Image Processing'],
+            imageUrl: '/images/projects/ocr-sudoku.png',
+            bannerUrl: '/images/projects/ocr-sudoku-banner.png',
+            githubUrl: 'https://github.com/Strikeshyni/OCR_Sudoku',
+            category: 'ai',
+            featured: true,
+            interactive: true,
+            interactivePath: '/projects/ocr-sudoku/demo',
+            healthCheckUrl: '/ocr-sudoku/health',
+            maturity: 'beta',
+            createdAt: new Date('2022-09-10'),
+          },
+        ]);
       } finally {
         setLoading(false);
       }
