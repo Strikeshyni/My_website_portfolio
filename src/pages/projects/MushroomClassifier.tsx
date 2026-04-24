@@ -1,10 +1,9 @@
-import { useState, useRef, useContext } from 'react';
+import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Upload, AlertTriangle, Info, Image as ImageIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { MUSHROOM_SAMPLES, getSamplePath } from '../../data/mushroomSamples';
-import { ProjectContext } from '../../context/ProjectContext';
 
 interface PredictionResult {
   predicted_classes: string[];

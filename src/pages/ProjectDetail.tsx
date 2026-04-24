@@ -1,18 +1,29 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Github, ExternalLink } from 'lucide-react';
-import axios from 'axios';
 import { ProjectContext } from '../context/ProjectContext';
+import { Project } from '../types';
 
 const ProjectDetail = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
 
-  const { projects, loading: contextLoading } = useContext(ProjectContext);
-  const [isHealthy, setIsHealthy] = useState<boolean | null>(null);
+  // 1. Consume context
+  const context = useContext(ProjectContext);
 
-  const project = projects.find(p => p.slug === slug);
+  // 2. Handle the null context case for TypeScript
+  if (!context) {
+    return null; // Or a generic error message
+  }
+
+  const { projects, loading: contextLoading, healthStatus } = context;
+
+  // 3. Find project and type the parameter 'p'
+  const project = projects.find((p: Project) => p.slug === slug);
+
+  // 4. Determine health status from the context dictionary using the project ID
+  const isHealthy = project ? healthStatus[project._id] : null;
 
   const handleBackToProjects = () => {
     navigate('/', { replace: true });
@@ -77,7 +88,7 @@ const ProjectDetail = () => {
           {isHealthy === false && (
             <div className="mb-8 p-4 bg-red-900/20 border border-red-500/50 rounded-lg text-red-200">
               <p className="flex items-center gap-2">
-                This project demo needs a GPU, and sadly my wallet is still in beta mode :)
+                Note: The demo for this project is currently unavailable (Backend service offline).
               </p>
             </div>
           )}
@@ -90,7 +101,7 @@ const ProjectDetail = () => {
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-dark via-dark/50 to-transparent" />
-            <div className="absolute bottom-0 left-0 p-4 sm:p-8">
+            <div className="absolute bottom-0 left-0 p-4 sm:p-8 w-full">
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-2">{project.title}</h1>
               <p className="text-xs sm:text-sm text-gray-300 mb-3 sm:mb-4">
                 {new Date(project.createdAt).toLocaleDateString('en-US', {
@@ -100,7 +111,7 @@ const ProjectDetail = () => {
                 })}
               </p>
               <div className="flex flex-wrap gap-2">
-                {project.technologies.map((tech) => (
+                {project.technologies.map((tech: string) => (
                   <span
                     key={tech}
                     className="px-4 py-2 bg-primary/20 rounded-full text-sm"
@@ -113,7 +124,6 @@ const ProjectDetail = () => {
 
             {getMaturityBadge(project.maturity)}
             
-            {/* Boutons en bas à droite */}
             <div className="absolute bottom-4 sm:bottom-8 right-4 sm:right-8 left-4 sm:left-auto flex flex-wrap justify-end gap-3">
               {project.githubUrl && (
                 <a
@@ -121,30 +131,17 @@ const ProjectDetail = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 px-4 py-2 bg-dark/80 backdrop-blur-sm border border-primary/50 rounded-lg hover:bg-primary/20 hover:border-primary transition-all"
-                  title="Source code"
                 >
                   <Github size={20} />
                   <span className="hidden sm:inline">Source code</span>
                 </a>
               )}
-              {project.liveUrl && (
-                <a
-                  href={project.liveUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-4 py-2 bg-dark/80 backdrop-blur-sm border border-secondary/50 rounded-lg hover:bg-secondary/20 hover:border-secondary transition-all"
-                  title="View project"
-                >
-                  <ExternalLink size={20} />
-                  <span className="hidden sm:inline">Demo</span>
-                </a>
-              )}
+
               {project.interactive && project.interactivePath && (
                 project.demoEnabled === false ? (
                   <button
                     disabled
                     className="flex items-center gap-2 px-4 py-2 bg-red-900/20 backdrop-blur-sm border border-red-500/50 rounded-lg cursor-not-allowed text-red-400"
-                    title="Demo disabled"
                   >
                     <ExternalLink size={20} />
                     <span className="hidden sm:inline">Demo Disabled</span>
@@ -153,19 +150,17 @@ const ProjectDetail = () => {
                   <button
                     disabled
                     className="flex items-center gap-2 px-4 py-2 bg-red-900/20 backdrop-blur-sm border border-red-500/50 rounded-lg cursor-not-allowed text-red-400"
-                    title="Demo unavailable"
                   >
                     <ExternalLink size={20} />
-                    <span className="hidden sm:inline">Demo Unavailable</span>
+                    <span className="hidden sm:inline">Demo Offline</span>
                   </button>
                 ) : (
                   <Link
                     to={project.interactivePath}
                     className="flex items-center gap-2 px-4 py-2 bg-dark/80 backdrop-blur-sm border border-secondary/50 rounded-lg hover:bg-secondary/20 hover:border-secondary transition-all"
-                    title="Interactive demo"
                   >
                     <ExternalLink size={20} />
-                    <span className="hidden sm:inline">Demo</span>
+                    <span className="hidden sm:inline">Try Demo</span>
                   </Link>
                 )
               )}

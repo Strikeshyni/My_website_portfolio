@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useContext } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
   ArrowLeft, TrendingUp, PlayCircle, BarChart3, 
@@ -8,7 +8,6 @@ import {
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { apiUrl } from '../../lib/api';
-import { ProjectContext } from '../../context/ProjectContext';
 
 // Types
 interface TrainingConfig {

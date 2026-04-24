@@ -1,10 +1,8 @@
-import { useState, useEffect, useRef, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Lightbulb, Play, RotateCcw, Trophy } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
 import { apiUrl } from '../../lib/api';
-import { ProjectContext } from '../../context/ProjectContext';
 
 // Confetti component
 const Confetti = () => {
