@@ -281,48 +281,6 @@ const SudokuOCR = () => {
     return parsedCount > 0 ? rows : null;
   }
 
-  // Helper function to get prediction for a specific cell
-  function getCellPrediction(grid: PredictionGrid | null, row: number, col: number): CellData | null {
-    if (!grid || row < 0 || row > 8 || col < 0 || col > 8) {
-      return null;
-    }
-    return grid[row][col];
-  }
-
-  // Helper to format predictions for display
-  function formatPrediction(pred: CellPrediction | null): string {
-    if (!pred) return '-';
-    return `${pred.val} (${pred.prob.toFixed(1)}%)`;
-  }
-
-  // Example usage
-  function displayPredictions(stdout: string) {
-    const predictions = parseRawPredictions(stdout);
-    
-    if (!predictions) {
-      console.log('No predictions found in output');
-      return;
-    }
-    
-    // Display summary
-    console.log('=== Predictions Summary ===');
-    for (let r = 0; r < 9; r++) {
-      for (let c = 0; c < 9; c++) {
-        const cell = predictions[r][c];
-        if (!cell) continue;
-        
-        if (cell.empty) {
-          console.log(`[${r},${c}]: Empty`);
-        } else {
-          console.log(
-            `[${r},${c}]: ${formatPrediction(cell.top1)} | ` +
-            `${formatPrediction(cell.top2)} | ${formatPrediction(cell.top3)}`
-          );
-        }
-      }
-    }
-  }
-
   // Convert a probability (0-100) to a CSS style with gradient background and border color
   function colorStyles(prob?: number) {
     if (prob === undefined || prob === null || Number.isNaN(prob)) {
