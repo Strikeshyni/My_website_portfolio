@@ -170,40 +170,157 @@ const SudokuOCR = () => {
     }
   };
 
-  // Parse the raw predictions table from solver logs into a 9x9 structure
-  function parseRawPredictions(stdout: string) {
-    const rows = Array.from({ length: 9 }, () => Array(9).fill(null));
-    const lines = stdout.split('\n');
+  interface CellPrediction {
+    val: number;
+    prob: number;
+  }
 
+  interface CellData {
+    empty: boolean;
+    top1: CellPrediction | null;
+    top2: CellPrediction | null;
+    top3: CellPrediction | null;
+  }
+
+  type PredictionGrid = (CellData | null)[][];
+
+  /**
+   * Parse CNN predictions table from solver output
+   * Expects format:
+   * │ Row │ Col │ Empty? │ #1 (Prob)   │ #2 (Prob)   │ #3 (Prob)   │
+   * │  0  │  1  │   NO   │ 5 (98.5%) │ 3 (1.2%) │ 8 (0.1%) │
+   */
+  function parseRawPredictions(stdout: string): PredictionGrid | null {
+    const rows: PredictionGrid = Array.from({ length: 9 }, () => Array(9).fill(null));
+    const lines = stdout.split('\n');
+    
+    let parsedCount = 0;
+    
     for (const raw of lines) {
       const line = raw.trim();
-      // match lines starting with a row number and a pipe
-      if (!/^\d+\s*\|/.test(line)) continue;
-      const parts = line.split('|').map(p => p.trim());
-      if (parts.length < 6) continue;
+      
+      // Skip empty lines
+      if (!line) continue;
+      
+      // Skip table borders and headers
+      // ┌─, ├─, └─, ─, Row, Col, etc.
+      if (
+        line.startsWith('┌') || 
+        line.startsWith('├') || 
+        line.startsWith('└') || 
+        line.startsWith('─') ||
+        line.includes('Row') ||
+        line.includes('Col')
+      ) {
+        continue;
+      }
+      
+      // Must be a data line starting with │
+      if (!line.startsWith('│')) continue;
+      
+      // Split by │ and filter empty strings
+      const parts = line
+        .split('│')
+        .map(p => p.trim())
+        .filter(p => p.length > 0);
+      
+      // Expect exactly 6 columns: Row, Col, Empty?, #1, #2, #3
+      if (parts.length !== 6) {
+        console.warn(`Skipping malformed line (${parts.length} columns): ${line}`);
+        continue;
+      }
+      
       const row = parseInt(parts[0], 10);
       const col = parseInt(parts[1], 10);
-      if (Number.isNaN(row) || Number.isNaN(col) || row < 0 || row > 8 || col < 0 || col > 8) continue;
-
-      const empty = /^YES$/i.test(parts[2]);
-
-      function parseTop(cellText: string) {
-        if (!cellText || /^-+$/.test(cellText) || cellText === '-') return null;
-        const m = cellText.match(/(\d+)\s*\(\s*([\d.]+)%\s*\)/);
-        if (m) return { val: parseInt(m[1], 10), prob: parseFloat(m[2]) };
-        return null;
+      
+      // Validate coordinates
+      if (Number.isNaN(row) || Number.isNaN(col)) {
+        console.warn(`Invalid row/col: ${parts[0]}, ${parts[1]}`);
+        continue;
       }
-
+      
+      if (row < 0 || row > 8 || col < 0 || col > 8) {
+        console.warn(`Row/col out of range: ${row}, ${col}`);
+        continue;
+      }
+      
+      // Parse empty flag
+      const empty = /^YES$/i.test(parts[2]);
+      
+      // Parse prediction: "digit (prob%)" or "-"
+      function parseTop(cellText: string): CellPrediction | null {
+        if (!cellText || cellText === '-' || /^-+$/.test(cellText)) {
+          return null;
+        }
+        
+        // Match: "5 (98.5%)" or "5(98.5%)" or "5 ( 98.5 %)"
+        const match = cellText.match(/^(\d+)\s*\(\s*([\d.]+)\s*%?\s*\)$/);
+        
+        if (!match) {
+          console.warn(`Failed to parse prediction: "${cellText}"`);
+          return null;
+        }
+        
+        return {
+          val: parseInt(match[1], 10),
+          prob: parseFloat(match[2])
+        };
+      }
+      
       const top1 = parseTop(parts[3]);
       const top2 = parseTop(parts[4]);
       const top3 = parseTop(parts[5]);
-
+      
       rows[row][col] = { empty, top1, top2, top3 };
+      parsedCount++;
     }
+    
+    console.log(`Parsed ${parsedCount} cells from predictions table`);
+    
+    // Return null if no valid cells were parsed
+    return parsedCount > 0 ? rows : null;
+  }
 
-    // check if any cell was parsed
-    const any = rows.some(r => r.some(c => c !== null));
-    return any ? rows : null;
+  // Helper function to get prediction for a specific cell
+  function getCellPrediction(grid: PredictionGrid | null, row: number, col: number): CellData | null {
+    if (!grid || row < 0 || row > 8 || col < 0 || col > 8) {
+      return null;
+    }
+    return grid[row][col];
+  }
+
+  // Helper to format predictions for display
+  function formatPrediction(pred: CellPrediction | null): string {
+    if (!pred) return '-';
+    return `${pred.val} (${pred.prob.toFixed(1)}%)`;
+  }
+
+  // Example usage
+  function displayPredictions(stdout: string) {
+    const predictions = parseRawPredictions(stdout);
+    
+    if (!predictions) {
+      console.log('No predictions found in output');
+      return;
+    }
+    
+    // Display summary
+    console.log('=== Predictions Summary ===');
+    for (let r = 0; r < 9; r++) {
+      for (let c = 0; c < 9; c++) {
+        const cell = predictions[r][c];
+        if (!cell) continue;
+        
+        if (cell.empty) {
+          console.log(`[${r},${c}]: Empty`);
+        } else {
+          console.log(
+            `[${r},${c}]: ${formatPrediction(cell.top1)} | ` +
+            `${formatPrediction(cell.top2)} | ${formatPrediction(cell.top3)}`
+          );
+        }
+      }
+    }
   }
 
   // Convert a probability (0-100) to a CSS style with gradient background and border color

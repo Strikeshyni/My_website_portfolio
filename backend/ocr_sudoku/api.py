@@ -27,11 +27,12 @@ SOLVER_BINARY = BASE_DIR / "build" / "sudoku_solver"
 CNN_WEIGHTS = BASE_DIR / "models" / "cnn_weights.bin"
 DEBUG_IMAGES = [
     "debug_1_gray.png",
-    "debug_2_blurred.png",
+    "debug_2_blur.png",
     "debug_3_binary.png",
-    "debug_4_grid_detected.png",
-    "debug_5_rectified.png",
-    "debug_6_cells.png"
+    "debug_4_dilated.png",
+    "debug_5_grid.png",
+    "debug_6_warp.png",
+    "debug_7_cells.png"
 ]
 
 @app.get("/health")
