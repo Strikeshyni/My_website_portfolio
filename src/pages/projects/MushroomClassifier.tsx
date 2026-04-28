@@ -483,26 +483,26 @@ const MushroomClassifier = () => {
                         <>
                           <p className="text-green-300 flex items-center gap-2">
                             <span className="text-green-400 font-bold px-2 py-0.5 bg-green-500/20 rounded">✓</span>
-                            Vraie classe DANS l'ensemble (couverture réussie)
+                            True class in the set (successful coverage)
                           </p>
                           <p className="text-red-300 flex items-center gap-2">
                             <span className="text-red-400 font-bold px-2 py-0.5 bg-red-500/20 rounded">✗</span>
-                            Vraie classe HORS de l'ensemble (couverture échouée)
+                            True class OUTSIDE the set (failed coverage)
                           </p>
                         </>
                       )}
                       <p className="text-blue-300 flex items-center gap-2">
                         <span className="text-blue-400 font-bold px-2 py-0.5 bg-blue-500/20 rounded">∈</span>
-                        Classe dans l'ensemble conforme ({result.set_size} classes)
+                        Class in the conformal set ({result.set_size} classes)
                       </p>
                       <p className="text-gray-400 text-xs mt-2">
-                        Seuil de non-conformité: {result.threshold.toFixed(4)}
+                        Non-conformity threshold: {result.threshold.toFixed(4)}
                       </p>
                     </div>
 
                     {result.all_classes.length > 20 && (
                       <p className="text-sm text-gray-400 mt-3 text-center">
-                        ... et {result.all_classes.length - 20} autres classes (169 total)
+                        ... and {result.all_classes.length - 20} other classes (169 total)
                       </p>
                     )}
                   </div>
@@ -527,9 +527,9 @@ const MushroomClassifier = () => {
             <div>
               <h3 className="text-xl font-bold mb-3 text-primary">Architecture</h3>
               <ul className="space-y-2 text-gray-300">
-                <li>• <strong>Modèle:</strong> CNN personnalisé (4 blocs conv)</li>
-                <li>• <strong>Dataset:</strong> 169 espèces de champignons</li>
-                <li>• <strong>Méthode:</strong> Split Conformal Prediction</li>
+                <li>• <strong>Model:</strong> CNN personalized (4 conv blocks)</li>
+                <li>• <strong>Dataset:</strong> 169 species of mushrooms</li>
+                <li>• <strong>Method:</strong> Split Conformal Prediction</li>
                 <li>• <strong>Framework:</strong> PyTorch + React</li>
               </ul>
             </div>
@@ -537,10 +537,10 @@ const MushroomClassifier = () => {
             <div>
               <h3 className="text-xl font-bold mb-3 text-secondary">Performances</h3>
               <ul className="space-y-2 text-gray-300">
-                <li>• <strong>Couverture empirique:</strong> ~90% (α=0.1)</li>
-                <li>• <strong>Ensemble moyen:</strong> 8 classes sur 169</li>
-                <li>• <strong>Garantie:</strong> Couverture ≥ 1-α</li>
-                <li>• <strong>Efficacité:</strong> ~4.7% des classes</li>
+                <li>• <strong>Empirical coverage:</strong> ~90% (α=0.1)</li>
+                <li>• <strong>Average set size:</strong> 8 classes out of 169</li>
+                <li>• <strong>Guarantee:</strong> Coverage ≥ 1-α</li>
+                <li>• <strong>Efficiency:</strong> ~4.7% of classes</li>
               </ul>
             </div>
           </div>

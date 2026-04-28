@@ -18,19 +18,18 @@ const Skills = () => {
     'PyTorch', 'TensorFlow', 'Keras', 'OpenCV'
   ];
 
-  // Backend / Data engineering
-  const backendFrameworks = [
-    'FastAPI', 'Flask', 'Uvicorn', 'PySpark'
+  const dataFrameworks = [
+    'MongoDB', 'PostgreSQL', 'PySpark'
   ];
 
-  // Frontend
-  const frontend = [
-    'React', 'Angular', 'Vue', 'Tailwind CSS', 'Framer Motion'
+  // Backend / Frontend
+  const deploymentandfrontend = [
+    'FastAPI', 'Flask', 'Uvicorn', 'React', 'Angular', 'Vue', 'Tailwind CSS', 'Framer Motion'
   ];
 
   // Tools
   const tools = [
-    'Git', 'Docker', 'MLflow', 'AWS', 'VS Code', 'PyCharm', 'IntelliJ', 'Jira', 'LaTex'
+    'Git', 'Docker', 'MLflow', 'AWS', 'VS Code', 'PyCharm', 'IntelliJ', 'Jira', 'Agile Scrum', 'Markdown', 'LaTex'
   ];
 
   // AI expertise
@@ -39,8 +38,8 @@ const Skills = () => {
     'Deep Learning',
     'Reinforcement Learning',
     'Natural Language Processing (NLP)',
-    'Computer Vision (OCR)',
-    'Generative AI',
+    'Computer Vision (OCR, Image Classification, Object Detection, etc.)',
+    'Generative AI (GANs, Diffusion Models)',
     'Anomaly Detection',
     'Recommendation Systems'
   ];
@@ -115,10 +114,10 @@ const Skills = () => {
                 </div>
               </div>
 
-              <div>
-                <p className="text-sm text-gray-400 mb-2">Backend & Data</p>
+                            <div>
+                <p className="text-sm text-gray-400 mb-2">Data</p>
                 <div className="flex flex-wrap gap-2">
-                  {backendFrameworks.map((item) => (
+                  {dataFrameworks.map((item) => (
                     <span key={item} className={`${chipClass} bg-secondary/10 text-secondary border-secondary/30`}>
                       {item}
                     </span>
@@ -127,9 +126,9 @@ const Skills = () => {
               </div>
 
               <div>
-                <p className="text-sm text-gray-400 mb-2">Frontend</p>
+                <p className="text-sm text-gray-400 mb-2">Backend / Frontend</p>
                 <div className="flex flex-wrap gap-2">
-                  {frontend.map((item) => (
+                  {deploymentandfrontend.map((item) => (
                     <span key={item} className={`${chipClass} bg-secondary/10 text-secondary border-secondary/30`}>
                       {item}
                     </span>

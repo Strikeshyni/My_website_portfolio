@@ -241,7 +241,7 @@ const StockPrediction = () => {
       pollJobStatus(jobId);
     } catch (error) {
       console.error('Error starting training:', error);
-      alert('Error: Assurez-vous que l\'API Stock est lancée sur le port 8002');
+      alert('Error: make sure stock api is running.');
       setIsTraining(false);
     }
   };
@@ -268,7 +268,7 @@ const StockPrediction = () => {
   // Make predictions
   const handlePredict = async () => {
     if (!currentJobId || jobStatus?.status !== 'completed') {
-      alert('Veuillez d\'abord entraîner un modèle jusqu\'à la fin');
+      alert('Please train a model first to get predictions.');
       return;
     }
     
@@ -281,7 +281,7 @@ const StockPrediction = () => {
       setPredictions(response.data.predictions);
     } catch (error) {
       console.error('Error making predictions:', error);
-      alert('Error lors de la prédiction');
+      alert('Error: make sure stock api is running.');
     } finally {
       setPredicting(false);
     }
@@ -300,7 +300,7 @@ const StockPrediction = () => {
       pollSimulationStatus(simId);
     } catch (error) {
       console.error('Error starting simulation:', error);
-      alert('Error lors du démarrage de la simulation');
+      alert('Error: make sure stock api is running.');
       setSimulating(false);
     }
   };

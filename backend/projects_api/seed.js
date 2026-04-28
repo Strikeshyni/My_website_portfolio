@@ -73,9 +73,7 @@ const sampleProjects = [
     - Natural language understanding
     - Smart contextual responses
     - Modern conversational interface
-    - Conversation history
-    
-    The chatbot can be trained on specific domains to provide personalized and relevant responses.`,
+    - Conversation history`,
     technologies: ['Python', 'NLP', 'Machine Learning', 'React', 'TypeScript'],
     imageUrl: '/images/projects/chatbot.jpg',
     bannerUrl: '/images/projects/chatbot-banner.jpg',
@@ -219,12 +217,12 @@ const sampleProjects = [
     - Reconstruction: generation of the final image with completed digits
     
     Performance:
-    - OCR accuracy > 98.3% on handwritten digits
+    - OCR accuracy > 98.3% on handwritten digits & custom digital number dataset (generated with various multiple fonts, sizes and noise levels)
     - Solving time < 100ms per grid
     
     Architecture:
     - Standard C99 with no heavy dependencies (no OpenCV/TensorFlow)
-    - Training on the MNIST dataset`,
+    - Training on the MNIST & custom digital number dataset`,
     technologies: ['C', 'CNN', 'OCR', 'Image Processing', 'Make'],
     imageUrl: '/images/projects/ocr-sudoku.png',
     bannerUrl: '/images/projects/ocr-sudoku-banner.png',

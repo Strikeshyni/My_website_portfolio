@@ -713,7 +713,7 @@ const SudokuSolver = () => {
                   className="flex items-center justify-center gap-2 px-4 py-2.5 sm:py-3 bg-gray-700 rounded-xl hover:bg-gray-600 transition-colors text-sm font-medium shadow-md"
                 >
                   <RotateCcw size={18} />
-                  Effacer la grille
+                  Clear grid
                 </button>
               </div>
             </div>
@@ -721,12 +721,12 @@ const SudokuSolver = () => {
         </div>
 
         <div className="text-gray-400 space-y-3">
-          <p className="font-bold text-white">Comment jouer :</p>
+          <p className="font-bold text-white">How to play:</p>
           <ol className="list-decimal list-inside space-y-2 ml-4">
-            <li>Choisissez une difficulté et cliquez sur "Nouvelle Partie"</li>
-            <li>Remplissez la grille en respectant les règles du Sudoku</li>
-            <li>Vous avez droit à <span className="text-amber-400 font-bold">{MAX_HINTS} indices</span> par partie</li>
-            <li>Cliquez sur "Résoudre" pour voir la solution (avec le temps du solveur)</li>
+            <li>Choose a difficulty and click "New Game"</li>
+            <li>Fill the grid following the Sudoku rules</li>
+            <li>You have access to <span className="text-amber-400 font-bold">{MAX_HINTS} hints</span> per game</li>
+            <li>Click "Solve" to see the solution (with the solver's time)</li>
           </ol>
         </div>
       </motion.div>
