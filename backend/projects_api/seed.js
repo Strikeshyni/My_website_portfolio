@@ -59,7 +59,7 @@ const sampleProjects = [
     featured: true,
     interactive: true,
     interactivePath: '/projects/sudoku-solver/demo',
-    healthCheckUrl: '/sudoku/api/sudoku/health',
+    healthCheckUrl: '/sudoku/health',
     maturity: 'stable',
     createdAt: new Date('2025-11-20'),
   },

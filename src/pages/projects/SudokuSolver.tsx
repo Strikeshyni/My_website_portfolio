@@ -269,7 +269,7 @@ const SudokuSolver = () => {
     const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
     
     try {
-      const response = await fetch(apiUrl('/sudoku/api/sudoku/generate'), {
+      const response = await fetch(apiUrl('/sudoku/generate'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ difficulty, size: gridSize }),
@@ -329,7 +329,7 @@ const SudokuSolver = () => {
     const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
     
     try {
-      const response = await fetch(apiUrl('/sudoku/api/sudoku/solve'), {
+      const response = await fetch(apiUrl('/sudoku/solve'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ grid }),
@@ -378,7 +378,7 @@ const SudokuSolver = () => {
     }
 
     try {
-      const response = await fetch(apiUrl('/sudoku/api/sudoku/hint'), {
+      const response = await fetch(apiUrl('/sudoku/hint'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ gameId, currentGrid: grid }),

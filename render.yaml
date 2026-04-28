@@ -5,6 +5,7 @@ services:
     rootDir: backend/unified_api
     plan: free
     autoDeploy: true
+    healthCheckPath: /health
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
@@ -31,6 +32,7 @@ services:
     rootDir: backend/projects_api
     plan: free
     autoDeploy: true
+    healthCheckPath: /health
     buildCommand: npm install
     startCommand: npm start
     envVars:
@@ -49,6 +51,7 @@ services:
     rootDir: backend/chatbot_api
     plan: free
     autoDeploy: true
+    healthCheckPath: /health
     buildCommand: npm install
     startCommand: npm start
     envVars:
@@ -61,6 +64,7 @@ services:
     rootDir: backend/sudoku
     plan: free
     autoDeploy: true
+    healthCheckPath: /health
     buildCommand: pip install -r requirements.txt
     startCommand: python sudoku_api.py
     envVars:
@@ -73,6 +77,7 @@ services:
     rootDir: backend/prediction_conform
     plan: free
     autoDeploy: true
+    healthCheckPath: /health
     buildCommand: pip install -r requirements.txt
     startCommand: python mushroom_api.py
     envVars:
@@ -85,5 +90,6 @@ services:
     rootDir: backend/ocr_sudoku
     plan: free
     autoDeploy: true
+    healthCheckPath: /health
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn api:app --host 0.0.0.0 --port $PORT

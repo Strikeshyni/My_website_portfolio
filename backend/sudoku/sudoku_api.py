@@ -10,15 +10,22 @@ import json
 import os
 
 app = Flask(__name__)
-CORS(app)  # Permettre les requêtes depuis le frontend
+CORS(app)
 
 # Stocker les parties en cours (en production, utiliser une vraie DB)
 active_games = {}
 
 sudoku = SudokuGame()
 
+@app.route('/health', methods=['GET'])
+def health_check():
+    """Vérifier que l'API fonctionne"""
+    return jsonify({
+        'status': 'ok',
+        'message': 'Sudoku API is running',
+    })
 
-@app.route('/api/sudoku/generate', methods=['POST'])
+@app.route('/generate', methods=['POST'])
 def generate_puzzle():
     """Génère une nouvelle grille de Sudoku"""
     data = request.get_json()
@@ -75,7 +82,7 @@ def generate_puzzle():
     }), 500
 
 
-@app.route('/api/sudoku/solve', methods=['POST'])
+@app.route('/solve', methods=['POST'])
 def solve_puzzle():
     """Résout une grille de Sudoku donnée"""
     data = request.get_json()
@@ -114,7 +121,7 @@ def solve_puzzle():
         }), 408
 
 
-@app.route('/api/sudoku/check', methods=['POST'])
+@app.route('/check', methods=['POST'])
 def check_solution():
     """Vérifie si une solution est correcte"""
     data = request.get_json()
@@ -137,7 +144,7 @@ def check_solution():
     })
 
 
-@app.route('/api/sudoku/hint', methods=['POST'])
+@app.route('/hint', methods=['POST'])
 def get_hint():
     """Retourne un indice pour le joueur"""
     data = request.get_json()
@@ -172,7 +179,7 @@ def get_hint():
         })
 
 
-@app.route('/api/sudoku/validate-move', methods=['POST'])
+@app.route('/validate-move', methods=['POST'])
 def validate_move():
     """Valide si un coup est légal"""
     data = request.get_json()
@@ -193,26 +200,15 @@ def validate_move():
         'success': True
     })
 
-
-@app.route('/api/sudoku/health', methods=['GET'])
-def health_check():
-    """Vérifier que l'API fonctionne"""
-    return jsonify({
-        'status': 'ok',
-        'message': 'Sudoku API is running',
-        'active_games': len(active_games)
-    })
-
-
 if __name__ == '__main__':
     print(" Sudoku API démarrée sur http://localhost:8004")
     print(" Endpoints disponibles:")
-    print("  POST /api/sudoku/generate - Générer une grille")
-    print("  POST /api/sudoku/solve - Résoudre une grille")
-    print("  POST /api/sudoku/check - Vérifier une solution")
-    print("  POST /api/sudoku/hint - Obtenir un indice")
-    print("  POST /api/sudoku/validate-move - Valider un coup")
-    print("  GET  /api/sudoku/health - Health check")
+    print("  POST /generate - Générer une grille")
+    print("  POST /solve - Résoudre une grille")
+    print("  POST /check - Vérifier une solution")
+    print("  POST /hint - Obtenir un indice")
+    print("  POST /validate-move - Valider un coup")
+    print("  GET  /health - Health check")
     
     port = int(os.getenv('PORT', '8004'))
     app.run(debug=False, port=port, host='0.0.0.0')

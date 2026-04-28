@@ -39,6 +39,10 @@ DEBUG_IMAGES = [
 async def health_check():
     return {"status": "healthy", "service": "ocr-sudoku"}
 
+@app.get("/")
+async def root():
+    return {"status": "ok", "service": "ocr-sudoku"}
+
 @app.post("/solve")
 async def solve_sudoku(file: UploadFile = File(...)):
     if not SOLVER_BINARY.exists():
