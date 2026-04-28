@@ -32,7 +32,7 @@ const Header = () => {
         isScrolled || isMobileMenuOpen ? 'glass-effect shadow-lg' : 'bg-transparent'
       }`}
     >
-      <nav className="section-padding py-3 sm:py-5 lg:py-6">
+      <nav className="section-padding py-3 sm:py-5 md:py-6 lg:py-8">
         <div className="flex items-center justify-between">
           <a href="#home" className="text-xl sm:text-2xl lg:text-3xl font-bold gradient-text">
             Abel Aubron

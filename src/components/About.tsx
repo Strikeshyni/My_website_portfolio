@@ -19,21 +19,6 @@ const About = () => {
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-8 sm:mb-12 gradient-text">About</h2>
 
         <div className="space-y-6 text-base sm:text-lg text-gray-300">
-          {/* <p>
-            I am an engineering student at EPITA Lyon with a strong focus on algorithms and artificial
-            intelligence. Through coursework and personal projects, I have built solid skills across
-            multiple programming languages and modern technologies.
-          </p>
-          <p>
-            My expertise spans Machine Learning, Deep Learning, Reinforcement Learning, and data work
-            (Big Data, analytics, and visualization), as well as specialized areas such as OCR, NLP,
-            anomaly detection, and operational workflows (MLOps, DevOps).
-          </p>
-          <p>
-            I enjoy solving complex problems through algorithm design and building practical, innovative
-            solutions. My projects range from algorithm optimization to end-to-end AI applications.
-            I also challenge myself regularly on CodinGame, LeetCode, and LeekWars.
-          </p> */}
           <p>
             I am an engineering student at EPITA Lyon, specialized in AI and graph-based systems.
             What drives me is a deep curiosity about the underlying logic of the world. How complex systems behave, how patterns emerge, and how intelligence can be modeled and replicated.
@@ -48,30 +33,6 @@ const About = () => {
             I am especially interested in the future of AI systems that can reason, adapt, and assist humans in solving complex real-world challenges.
           </p>
         </div>
-
-        {/* <div className="grid md:grid-cols-3 gap-6 mt-12">
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            className="glass-effect p-6 rounded-xl text-center"
-          >
-            <div className="text-4xl font-bold text-primary mb-2">15+</div>
-            <div className="text-gray-400">Projects réalisés en IA</div>
-          </motion.div>
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            className="glass-effect p-6 rounded-xl text-center"
-          >
-            <div className="text-4xl font-bold text-secondary mb-2">10+</div>
-            <div className="text-gray-400">Technologies maîtrisées</div>
-          </motion.div>
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            className="glass-effect p-6 rounded-xl text-center"
-          >
-            <div className="text-4xl font-bold text-accent mb-2">100%</div>
-            <div className="text-gray-400">Engagement qualité</div>
-          </motion.div>
-        </div> */}
       </motion.div>
     </section>
   );
