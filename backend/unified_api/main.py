@@ -59,6 +59,24 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/warmup")
+async def warmup():
+    urls = [
+        os.getenv("MUSHROOM_API_URL") + "/health",
+        os.getenv("SUDOKU_API_URL") + "/health",
+        os.getenv("OCR_SUDOKU_API_URL") + "/health",
+        os.getenv("CHATBOT_API_URL") + "/health",
+        os.getenv("STOCK_API_URL") + "/health",
+    ]
+
+    async with httpx.AsyncClient(timeout=60.0) as client:
+        results = await asyncio.gather(
+            *[client.get(url) for url in urls],
+            return_exceptions=True
+        )
+
+    return {"status": "warming", "results": str(results)}
+
 
 @app.get("/health")
 def health():
@@ -131,7 +149,7 @@ async def _proxy_request(
 
     body = await request.body()
 
-    async with httpx.AsyncClient(timeout=30.0) as client:
+    async with httpx.AsyncClient(timeout=40.0) as client:
         try:
             upstream_resp = await _fetch_with_retry(
                 client, request, target_url, headers, body

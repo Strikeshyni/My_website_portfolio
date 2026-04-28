@@ -1,28 +1,8 @@
 {
   "rewrites": [
     {
-      "source": "/api/(.*)",
-      "destination": "https://portfolio-unified-api.onrender.com/api/$1"
-    },
-    {
-      "source": "/sudoku/(.*)",
-      "destination": "https://portfolio-unified-api.onrender.com/sudoku/$1"
-    },
-    {
-      "source": "/mushroom/(.*)",
-      "destination": "https://portfolio-unified-api.onrender.com/mushroom/$1"
-    },
-    {
-      "source": "/ocr-sudoku/(.*)",
-      "destination": "https://portfolio-unified-api.onrender.com/ocr-sudoku/$1"
-    },
-    {
-      "source": "/chatbot/(.*)",
-      "destination": "https://portfolio-unified-api.onrender.com/chatbot/$1"
-    },
-    {
-      "source": "/stock/(.*)",
-      "destination": "https://portfolio-unified-api.onrender.com/stock/$1"
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }

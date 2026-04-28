@@ -31,7 +31,7 @@ export const ProjectProvider = ({ children }: { children: React.ReactNode }) => 
           ? project.healthCheckUrl
           : apiUrl(project.healthCheckUrl);
 
-        const response = await axios.get(healthUrl, { timeout: 5000 });
+        const response = await axios.get(healthUrl, { timeout: 10000 });
         
         // Safety check: If the response is HTML, it might be a redirect to a 404 page
         // instead of a real API response (common on some hosting providers).
