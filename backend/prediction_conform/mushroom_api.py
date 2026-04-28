@@ -165,9 +165,36 @@ transform = transforms.Compose([
 print(f"Loading model from: {MODEL_PATH}")
 model = MushroomCNN(num_classes=169)
 
+def _load_state_dict_safe(target_model: nn.Module, checkpoint_path: str) -> bool:
+    try:
+        checkpoint = torch.load(checkpoint_path, map_location=device)
+    except Exception as exc:
+        print(f"⚠️  Failed to load checkpoint: {exc}")
+        return False
+
+    if isinstance(checkpoint, dict) and "state_dict" in checkpoint:
+        checkpoint = checkpoint["state_dict"]
+
+    model_state = target_model.state_dict()
+    filtered_state = {
+        key: value
+        for key, value in checkpoint.items()
+        if key in model_state and value.shape == model_state[key].shape
+    }
+
+    missing = set(model_state.keys()) - set(filtered_state.keys())
+    if missing:
+        print(f"⚠️  Incomplete checkpoint: {len(missing)} params not loaded.")
+
+    target_model.load_state_dict(filtered_state, strict=False)
+    return len(filtered_state) > 0
+
 if os.path.exists(MODEL_PATH):
-    model.load_state_dict(torch.load(MODEL_PATH, map_location=device))
-    print("✅ Pre-trained model loaded successfully!")
+    loaded = _load_state_dict_safe(model, MODEL_PATH)
+    if loaded:
+        print("✅ Pre-trained model loaded successfully (partial match)!")
+    else:
+        print("⚠️  Model file found but no compatible weights were loaded.")
 else:
     print("⚠️  Model file not found, using random initialization")
 
@@ -280,8 +307,7 @@ if __name__ == '__main__':
     print(f"Model: MushroomCNN (169 classes)")
     print(f"Model file: {'✅ Found' if os.path.exists(MODEL_PATH) else '❌ Not found'}")
     print(f"Calibration: {'✅ Found' if os.path.exists(CALIBRATION_SCORES_PATH) else '⚠️  Using defaults'}")
-    print(f"Server: http://localhost:8001")
     print("="*70 + "\n")
-    
+
     port = int(os.getenv('PORT', '8001'))
-    app.run(host='0.0.0.0', port=port, debug=False)
+    app.run(debug=False, port=port, host='0.0.0.0')

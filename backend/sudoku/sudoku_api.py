@@ -201,7 +201,7 @@ def validate_move():
     })
 
 if __name__ == '__main__':
-    print(" Sudoku API démarrée sur http://localhost:8004")
+    print(" Sudoku API démarrée")
     print(" Endpoints disponibles:")
     print("  POST /generate - Générer une grille")
     print("  POST /solve - Résoudre une grille")

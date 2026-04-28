@@ -54,6 +54,6 @@ const projectSchema = new mongoose.Schema({
   },
 });
 
-const collectionName = (process.env.PROJECTS_COLLECTION || 'projetcs').trim();
+const collectionName = (process.env.PROJECTS_COLLECTION || 'projects').trim();
 
 export default mongoose.model('Project', projectSchema, collectionName);
