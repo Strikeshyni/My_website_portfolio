@@ -86,11 +86,9 @@ def health():
         "enabledDemos": sorted(ENABLED_DEMOS),
     }
 
-
-@app.get("/api/health")
-def api_health():
-    return {"status": "ok", "message": "Manager API is running"}
-
+@app.head("/health")
+def health_head():
+    return Response(status_code=200)
 
 def _get_service_url(env_var: str) -> str:
     value = (os.getenv(env_var) or "").strip()

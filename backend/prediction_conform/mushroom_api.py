@@ -3,7 +3,7 @@ API Flask pour la classification de champignons avec prédiction conforme
 Utilise un modèle PyTorch pré-entraîné pour l'inférence uniquement
 """
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
 from flask_cors import CORS
 from PIL import Image
 import torch
@@ -221,6 +221,9 @@ def health():
         'num_classes': 169
     })
 
+@app.route('/health', methods=['HEAD'])
+def health_head():
+    return Response(status_code=200)
 
 @app.route('/predict', methods=['POST'])
 def predict():

@@ -3,7 +3,7 @@ API Flask pour le jeu Sudoku
 Connecte le jeu Python au frontend React
 """
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
 from flask_cors import CORS
 from sudoku_game import SudokuGame
 import json
@@ -24,6 +24,10 @@ def health_check():
         'status': 'ok',
         'message': 'Sudoku API is running',
     })
+
+@app.route('/health', methods=['HEAD'])
+def health_check_head():
+    return Response(status=200)
 
 @app.route('/generate', methods=['POST'])
 def generate_puzzle():

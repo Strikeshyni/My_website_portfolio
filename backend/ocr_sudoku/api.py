@@ -6,7 +6,7 @@ import subprocess
 import tempfile
 from pathlib import Path
 
-from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi import FastAPI, UploadFile, File, HTTPException, Response
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="OCR Sudoku API")
@@ -34,6 +34,10 @@ DEBUG_IMAGES = [
     "debug_6_warp.png",
     "debug_7_cells.png"
 ]
+
+@app.head("/health")
+async def health_check_head():
+    return Response(status_code=200)
 
 @app.get("/health")
 async def health_check():

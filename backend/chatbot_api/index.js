@@ -77,6 +77,10 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', service: 'chatbot' });
 });
 
+app.head('/health', (req, res) => {
+  res.status(200).end();
+});
+
 app.listen(PORT, () => {
   console.log(`🤖 Chatbot API running on port ${PORT}`);
 });

@@ -47,9 +47,11 @@ mongoose
 
 app.use('/api/projects', projectRoutes);
 app.use('/api/test-images-sudoku', testImagesSudokuRoutes);
-
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Projects API is running' });
+});
+app.head('/api/health', (req, res) => {
+  res.status(200).end();
 });
 
 app.listen(PORT, () => {
