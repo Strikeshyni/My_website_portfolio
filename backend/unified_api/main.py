@@ -100,6 +100,8 @@ async def _proxy_request(
     headers = dict(request.headers)
     headers.pop("host", None)
     headers.pop("content-length", None)
+    headers.pop("accept-encoding", None)
+    headers["accept-encoding"] = "identity"
 
     body = await request.body()
 
