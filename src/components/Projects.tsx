@@ -143,7 +143,9 @@ const Projects = () => {
                     </p>
 
                     <div className="flex flex-wrap gap-2 mb-4">
-                      {project.technologies.slice(0, 3).map((tech) => (
+                      {(Array.isArray(project.technologies) ? project.technologies : [])
+                        .slice(0, 3)
+                        .map((tech) => (
                         <span
                           key={tech}
                           className="px-3 py-1 bg-primary/20 rounded-full text-xs"

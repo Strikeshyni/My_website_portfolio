@@ -45,7 +45,7 @@ const projectSchema = new mongoose.Schema({
   healthCheckUrl: String,
   maturity: {
     type: String,
-    enum: ['stable', 'beta', 'alpha', 'deprecated'],
+    enum: ['stable', 'beta', 'alpha'],
     default: 'stable',
   },
   createdAt: {
@@ -54,4 +54,6 @@ const projectSchema = new mongoose.Schema({
   },
 });
 
-export default mongoose.model('Project', projectSchema);
+const collectionName = (process.env.PROJECTS_COLLECTION || 'projetcs').trim();
+
+export default mongoose.model('Project', projectSchema, collectionName);

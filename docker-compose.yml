@@ -41,6 +41,8 @@ services:
       - /workspace/backend/projects_api/node_modules
     environment:
       MONGODB_URI: mongodb://mongo:27017/portfolio
+      MONGODB_DB: portfolio
+      PROJECTS_COLLECTION: projects
       CORS_ORIGINS: http://localhost:5173
     ports:
       - "3001:3001"

@@ -111,7 +111,7 @@ const ProjectDetail = () => {
                 })}
               </p>
               <div className="flex flex-wrap gap-2">
-                {project.technologies.map((tech: string) => (
+                {(Array.isArray(project.technologies) ? project.technologies : []).map((tech: string) => (
                   <span
                     key={tech}
                     className="px-4 py-2 bg-primary/20 rounded-full text-sm"
