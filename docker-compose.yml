@@ -1,0 +1,107 @@
+version: "3.9"
+
+services:
+  mongo:
+    image: mongo:6
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  manager-api:
+    image: python:3.10-slim
+    working_dir: /workspace/backend/unified_api
+    volumes:
+      - ./:/workspace
+    environment:
+      PROJECTS_API_URL: http://projects-api:3001
+      CHATBOT_API_URL: http://chatbot-api:3002
+      SUDOKU_API_URL: http://sudoku-api:8004
+      MUSHROOM_API_URL: http://mushroom-api:8001
+      OCR_SUDOKU_API_URL: http://ocr-sudoku-api:8002
+      CORS_ORIGINS: http://localhost:5173
+      ENABLED_DEMOS: sudoku,mushroom,ocr-sudoku
+    ports:
+      - "8000:8000"
+    depends_on:
+      - projects-api
+      - chatbot-api
+      - sudoku-api
+      - mushroom-api
+      - ocr-sudoku-api
+    command: >
+      sh -c "pip install -r requirements.txt &&
+      uvicorn main:app --host 0.0.0.0 --port 8000"
+
+  projects-api:
+    image: node:20-slim
+    working_dir: /workspace/backend/projects_api
+    volumes:
+      - ./:/workspace
+      - /workspace/backend/projects_api/node_modules
+    environment:
+      MONGODB_URI: mongodb://mongo:27017/portfolio
+      CORS_ORIGINS: http://localhost:5173
+    ports:
+      - "3001:3001"
+    depends_on:
+      - mongo
+    command: >
+      sh -c "npm install && npm start"
+
+  chatbot-api:
+    image: node:20-slim
+    working_dir: /workspace/backend/chatbot_api
+    volumes:
+      - ./:/workspace
+      - /workspace/backend/chatbot_api/node_modules
+    environment:
+      CORS_ORIGINS: http://localhost:5173
+    ports:
+      - "3002:3002"
+    command: >
+      sh -c "npm install && npm start"
+
+  sudoku-api:
+    image: python:3.10-slim
+    working_dir: /workspace/backend/sudoku
+    volumes:
+      - ./:/workspace
+    environment:
+      CORS_ORIGINS: http://localhost:5173
+      PORT: "8004"
+    ports:
+      - "8004:8004"
+    command: >
+      sh -c "pip install -r requirements.txt &&
+      python sudoku_api.py"
+
+  mushroom-api:
+    image: python:3.10-slim
+    working_dir: /workspace/backend/prediction_conform
+    volumes:
+      - ./:/workspace
+    environment:
+      CORS_ORIGINS: http://localhost:5173
+      PORT: "8001"
+    ports:
+      - "8001:8001"
+    command: >
+      sh -c "pip install -r requirements.txt &&
+      python mushroom_api.py"
+
+  ocr-sudoku-api:
+    image: python:3.10-slim
+    working_dir: /workspace/backend/ocr_sudoku
+    volumes:
+      - ./:/workspace
+    environment:
+      PORT: "8002"
+    ports:
+      - "8002:8002"
+    command: >
+      sh -c "pip install -r requirements.txt &&
+      uvicorn api:app --host 0.0.0.0 --port 8002"
+
+volumes:
+  mongo_data:

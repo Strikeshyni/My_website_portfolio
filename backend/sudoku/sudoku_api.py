@@ -7,6 +7,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from sudoku_game import SudokuGame
 import json
+import os
 
 app = Flask(__name__)
 CORS(app)  # Permettre les requêtes depuis le frontend
@@ -213,4 +214,5 @@ if __name__ == '__main__':
     print("  POST /api/sudoku/validate-move - Valider un coup")
     print("  GET  /api/sudoku/health - Health check")
     
-    app.run(debug=True, port=8004, host='0.0.0.0')
+    port = int(os.getenv('PORT', '8004'))
+    app.run(debug=False, port=port, host='0.0.0.0')

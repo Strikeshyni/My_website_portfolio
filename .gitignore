@@ -7,3 +7,4 @@ dist
 *.log
 __pycache__
 *.pyc
+**/test_images_sudoku/*.jpg

@@ -45,7 +45,7 @@ const projectSchema = new mongoose.Schema({
   healthCheckUrl: String,
   maturity: {
     type: String,
-    enum: ['stable', 'beta', 'alpha'],
+    enum: ['stable', 'beta', 'alpha', 'deprecated'],
     default: 'stable',
   },
   createdAt: {

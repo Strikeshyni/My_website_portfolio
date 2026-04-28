@@ -1,12 +1,38 @@
 services:
   - type: web
-    name: portfolio-unified-api
+    name: portfolio-manager-api
     runtime: python
     rootDir: backend/unified_api
     plan: free
     autoDeploy: true
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PROJECTS_API_URL
+        sync: false
+      - key: CHATBOT_API_URL
+        sync: false
+      - key: SUDOKU_API_URL
+        sync: false
+      - key: MUSHROOM_API_URL
+        sync: false
+      - key: OCR_SUDOKU_API_URL
+        sync: false
+      - key: STOCK_API_URL
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false
+      - key: ENABLED_DEMOS
+        sync: false
+
+  - type: web
+    name: portfolio-projects-api
+    runtime: node
+    rootDir: backend/projects_api
+    plan: free
+    autoDeploy: true
+    buildCommand: npm install
+    startCommand: npm start
     envVars:
       - key: MONGODB_URI
         sync: false
@@ -16,7 +42,48 @@ services:
         value: projects
       - key: CORS_ORIGINS
         sync: false
-      - key: CHATBOT_EXTERNAL_URL
+
+  - type: web
+    name: portfolio-chatbot-api
+    runtime: node
+    rootDir: backend/chatbot_api
+    plan: free
+    autoDeploy: true
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: CORS_ORIGINS
         sync: false
-      - key: STOCK_EXTERNAL_URL
+
+  - type: web
+    name: portfolio-sudoku-api
+    runtime: python
+    rootDir: backend/sudoku
+    plan: free
+    autoDeploy: true
+    buildCommand: pip install -r requirements.txt
+    startCommand: python sudoku_api.py
+    envVars:
+      - key: CORS_ORIGINS
         sync: false
+
+  - type: web
+    name: portfolio-mushroom-api
+    runtime: python
+    rootDir: backend/prediction_conform
+    plan: free
+    autoDeploy: true
+    buildCommand: pip install -r requirements.txt
+    startCommand: python mushroom_api.py
+    envVars:
+      - key: CORS_ORIGINS
+        sync: false
+
+  - type: web
+    name: portfolio-ocr-sudoku-api
+    runtime: python
+    rootDir: backend/ocr_sudoku
+    plan: free
+    autoDeploy: true
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn api:app --host 0.0.0.0 --port $PORT

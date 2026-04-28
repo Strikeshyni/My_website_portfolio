@@ -146,7 +146,7 @@ const SudokuOCR = () => {
     formData.append('file', file);
 
     try {
-      const response = await axios.post('/ocr-sudoku/solve', formData, {
+      const response = await axios.post(apiUrl('/ocr-sudoku/solve'), formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

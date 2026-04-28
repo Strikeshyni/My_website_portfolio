@@ -4,6 +4,7 @@ import { ArrowLeft, Upload, AlertTriangle, Info, Image as ImageIcon } from 'luci
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { MUSHROOM_SAMPLES, getSamplePath } from '../../data/mushroomSamples';
+import { apiUrl } from '../../lib/api';
 
 interface PredictionResult {
   predicted_classes: string[];
@@ -96,7 +97,7 @@ const MushroomClassifier = () => {
       formData.append('alpha', alpha.toString());
 
       const apiResponse = await axios.post(
-        '/mushroom/predict',
+        apiUrl('/mushroom/predict'),
         formData,
         {
           headers: { 'Content-Type': 'multipart/form-data' },
