@@ -59,9 +59,17 @@ export const ProjectProvider = ({ children }: { children: React.ReactNode }) => 
     const fetchAll = async () => {
       try {
         const res = await axios.get(apiUrl('/api/projects'), { timeout: 8000 });
-        const fetchedProjects = res.data;
+        const rawProjects = res.data;
+        const fetchedProjects = Array.isArray(rawProjects)
+          ? rawProjects
+          : (rawProjects?.projects || rawProjects?.data || []);
+
+        if (!Array.isArray(fetchedProjects)) {
+          throw new Error('Projects API did not return an array');
+        }
+
         setProjects(fetchedProjects);
-        
+
         // Trigger health checks for live data
         checkAllHealth(fetchedProjects);
       } catch (err) {
