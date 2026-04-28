@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Github, ExternalLink } from 'lucide-react';
@@ -8,6 +8,10 @@ import { Project } from '../types';
 const ProjectDetail = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, []);
 
   // 1. Consume context
   const context = useContext(ProjectContext);
@@ -111,7 +115,7 @@ const ProjectDetail = () => {
                 })}
               </p>
               <div className="flex flex-wrap gap-2">
-                {(Array.isArray(project.technologies) ? project.technologies : []).map((tech: string) => (
+                {project.technologies.map((tech: string) => (
                   <span
                     key={tech}
                     className="px-4 py-2 bg-primary/20 rounded-full text-sm"

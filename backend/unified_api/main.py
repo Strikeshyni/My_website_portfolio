@@ -1,4 +1,5 @@
 import os
+import asyncio
 from typing import Optional, Set
 
 import httpx
@@ -83,6 +84,31 @@ def _get_service_url(env_var: str) -> str:
     return value
 
 
+MAX_RETRIES = 3
+RETRY_DELAY = 2
+
+async def _fetch_with_retry(client, request, target_url, headers, body):
+    last_exception = None
+
+    for attempt in range(MAX_RETRIES):
+        try:
+            return await client.request(
+                method=request.method,
+                url=target_url,
+                params=request.query_params,
+                headers=headers,
+                content=body,
+            )
+        except httpx.RequestError as exc:
+            last_exception = exc
+
+            if attempt < MAX_RETRIES - 1:
+                await asyncio.sleep(RETRY_DELAY * (attempt + 1))  # backoff
+            else:
+                raise exc
+
+    raise last_exception
+
 async def _proxy_request(
     request: Request,
     base_url: str,
@@ -105,17 +131,16 @@ async def _proxy_request(
 
     body = await request.body()
 
-    try:
-        async with httpx.AsyncClient(timeout=120.0) as client:
-            upstream_resp = await client.request(
-                method=request.method,
-                url=target_url,
-                params=request.query_params,
-                headers=headers,
-                content=body,
+    async with httpx.AsyncClient(timeout=30.0) as client:
+        try:
+            upstream_resp = await _fetch_with_retry(
+                client, request, target_url, headers, body
             )
-    except httpx.RequestError as exc:
-        raise HTTPException(status_code=502, detail=f"Upstream request failed: {exc}")
+        except httpx.RequestError as exc:
+            raise HTTPException(
+                status_code=502,
+                detail=f"Upstream request failed after retries: {exc}"
+            )
 
     excluded_headers = {"content-encoding", "transfer-encoding", "connection"}
     response_headers = {

@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import ChatBot from './ChatBot';
 import MushroomClassifier from './MushroomClassifier';
@@ -13,6 +13,10 @@ const ProjectDemo = () => {
   const loading = context ? context.loading : true;
   const projects = context?.projects || [];
   const project = projects.find((p) => p.slug === slug);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, []);
 
   if (loading) {
     return (
