@@ -44,6 +44,8 @@ const SudokuOCR = () => {
   const projects = context?.projects || [];
   const isGlobalLoading = context?.loading;
   const projectSlug = 'ocr-sudoku';
+  const IMAGE_WRAPPER = "w-full max-w-[420px] mx-auto flex items-center justify-center";
+  const IMAGE_STYLE = "max-h-[200px] sm:max-h-[320px] max-w-[320px] w-full object-contain rounded-lg shadow-lg";
 
   useEffect(() => {
     const fetchSamples = async () => {
@@ -363,11 +365,9 @@ const SudokuOCR = () => {
         )}
 
         <div className="grid lg:grid-cols-2 gap-8 mb-12">
-          {/* Input Section */}
+
+          {/* ================= INPUT ================= */}
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2 }}
             className="glass-effect p-8 rounded-2xl"
           >
             <h2 className="text-2xl font-bold mb-6 flex items-center">
@@ -375,16 +375,18 @@ const SudokuOCR = () => {
               Image Source
             </h2>
 
-            <div 
-              className="border-2 border-dashed border-gray-700 rounded-xl p-8 text-center cursor-pointer hover:border-primary transition-colors relative min-h-[300px] flex flex-col items-center justify-center"
+            <div
+              className="border-2 border-dashed border-gray-700 rounded-xl p-6 sm:p-8 text-center cursor-pointer hover:border-primary transition-colors relative min-h-[200px] sm:min-h-[300px] flex flex-col items-center justify-center mx-auto max-w-[420px]"
               onClick={() => fileInputRef.current?.click()}
             >
               {selectedImage ? (
-                <img 
-                  src={selectedImage} 
-                  alt="Source" 
-                  className="max-h-[400px] w-auto rounded-lg shadow-lg"
-                />
+                <div className={IMAGE_WRAPPER}>
+                  <img
+                    src={selectedImage}
+                    alt="Source"
+                    className={IMAGE_STYLE}
+                  />
+                </div>
               ) : (
                 <div className="text-gray-400">
                   <ImageIcon size={48} className="mx-auto mb-4 opacity-50" />
@@ -392,6 +394,7 @@ const SudokuOCR = () => {
                   <p className="text-sm mt-2 text-gray-500">JPG and PNG supported</p>
                 </div>
               )}
+
               <input
                 type="file"
                 ref={fileInputRef}
@@ -401,6 +404,7 @@ const SudokuOCR = () => {
               />
             </div>
 
+            {/* button unchanged */}
             <button
               onClick={handleSolve}
               disabled={!file || processing}
@@ -431,11 +435,8 @@ const SudokuOCR = () => {
             )}
           </motion.div>
 
-          {/* Output Section */}
+          {/* ================= OUTPUT ================= */}
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3 }}
             className="glass-effect p-8 rounded-2xl"
           >
             <h2 className="text-2xl font-bold mb-6 flex items-center">
@@ -443,13 +444,15 @@ const SudokuOCR = () => {
               Résultat
             </h2>
 
-            <div className="min-h-[300px] flex items-center justify-center bg-black/20 rounded-xl p-4">
+            <div className="min-h-[140px] sm:min-h-[220px] flex items-center justify-center bg-black/20 rounded-xl mx-auto max-w-[420px] p-6">
               {outputImage ? (
-                <img 
-                  src={outputImage} 
-                  alt="Résultat" 
-                  className="max-h-[400px] w-auto rounded-lg shadow-lg"
-                />
+          <div className={IMAGE_WRAPPER}>
+                  <img
+                    src={outputImage}
+                    alt="Résultat"
+                    className={IMAGE_STYLE}
+                  />
+                </div>
               ) : (
                 <div className="text-center text-gray-500">
                   <p>Result will appear here</p>
@@ -457,17 +460,17 @@ const SudokuOCR = () => {
               )}
             </div>
 
-            {result && (
-              <div className="mt-6">
-                <div className="flex items-center mb-2">
-                  <Terminal className="mr-2 text-gray-400" size={16} />
-                  <span className="text-sm text-gray-400">Solver logs</span>
-                </div>
-                <div className="bg-black/50 rounded-lg p-4 font-mono text-xs text-green-400 overflow-x-auto max-h-48 overflow-y-auto">
-                  <pre>{result.stdout}</pre>
-                </div>
+            <div className="mt-6">
+              <div className="flex items-center mb-2">
+                <Terminal className="mr-2 text-gray-400" size={16} />
+                <span className="text-sm text-gray-400">Solver logs</span>
               </div>
-            )}
+              <div className="bg-black/50 rounded-lg p-4 font-mono text-xs text-green-400 overflow-x-auto overflow-y-auto max-h-40 sm:max-h-48 max-w-[420px] break-words">
+                <pre className="whitespace-pre-wrap break-words">
+                  {result?.stdout || 'Waiting for solver output...'}
+                </pre>
+              </div>
+            </div>
           </motion.div>
         </div>
 
@@ -510,20 +513,20 @@ const SudokuOCR = () => {
             className="glass-effect p-6 rounded-2xl mt-8"
           >
             <h2 className="text-2xl font-bold mb-4">OCR Predictions (per cell)</h2>
-            <div className="grid grid-cols-9 gap-2">
+            <div className="grid grid-cols-3 sm:grid-cols-9 gap-2">
               {parsedPredictions.map((row, rIdx) =>
                 row.map((cell, cIdx) => (
                   <div
                     key={`${rIdx}-${cIdx}`}
-                    className={`aspect-square p-1 rounded-md border flex items-center justify-center ${cell ? 'bg-black/20' : 'border-dashed border-gray-700 bg-black/10'}`}
+                    className={`aspect-square p-0.5 sm:p-1 rounded-md border flex items-center justify-center ${cell ? 'bg-black/20' : 'border-dashed border-gray-700 bg-black/10'}`}
                     style={cell && cell.top1 ? colorStyles(cell.top1.prob) : undefined}
                     title={cell ? `Top1: ${cell.top1?.val} (${cell.top1?.prob}%)\nTop2: ${cell.top2?.val} (${cell.top2?.prob}%)\nTop3: ${cell.top3?.val} (${cell.top3?.prob}%)` : 'No prediction'}
                   >
                     {cell ? (
                       <div className="text-center">
-                        <div className="text-lg font-bold">{cell.top1 ? cell.top1.val : '-'}</div>
-                        <div className="text-xs text-gray-400">{cell.top1 ? `${cell.top1.prob}%` : ''}</div>
-                        <div className="text-[10px] text-gray-500 mt-1">{cell.empty ? 'Empty' : 'Detected'}</div>
+                        <div className="text-sm sm:text-lg font-bold">{cell.top1 ? cell.top1.val : '-'}</div>
+                        <div className="text-[10px] sm:text-xs text-gray-400">{cell.top1 ? `${cell.top1.prob}%` : ''}</div>
+                        <div className="text-[9px] sm:text-[10px] text-gray-500 mt-0.5 sm:mt-1">{cell.empty ? 'Empty' : 'Detected'}</div>
                       </div>
                     ) : (
                       <div className="text-center text-gray-500 text-sm">-</div>
