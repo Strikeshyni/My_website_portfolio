@@ -42,10 +42,6 @@ const ProjectDetail = () => {
         return <span className="absolute top-4 right-4 px-3 py-1 bg-green-500/80 text-white text-xs font-bold rounded-full backdrop-blur-sm">Stable</span>;
       case 'beta':
         return <span className="absolute top-4 right-4 px-3 py-1 bg-yellow-500/80 text-white text-xs font-bold rounded-full backdrop-blur-sm">Beta</span>;
-      case 'alpha':
-        return <span className="absolute top-4 right-4 px-3 py-1 bg-orange-500/80 text-white text-xs font-bold rounded-full backdrop-blur-sm">Alpha</span>;
-      case 'deprecated':
-        return <span className="absolute top-4 right-4 px-3 py-1 bg-red-500/80 text-white text-xs font-bold rounded-full backdrop-blur-sm">Deprecated</span>;
       default:
         return null;
     }
@@ -90,9 +86,9 @@ const ProjectDetail = () => {
         >
           {/* Health Warning Banner */}
           {isHealthy === false && (
-            <div className="mb-8 p-4 bg-red-900/20 border border-red-500/50 rounded-lg text-red-200">
+            <div className="mb-8 p-4 bg-red-900/20 border border-orange-500/50 rounded-lg text-orange-200">
               <p className="flex items-center gap-2">
-                Note: The demo for this project is currently unavailable (Backend service offline).
+                The demo for this project is currently unavailable (No GPU available). You can still explore the project details and source code.
               </p>
             </div>
           )}

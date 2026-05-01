@@ -21,7 +21,7 @@ const Projects = () => {
 
   const [filter, setFilter] = useState<string>('all');
 
-  const categories = ['all', 'web', 'ai', 'data', 'other'];
+  const categories = ['all', 'web', 'ai', 'other'];
   
   const filteredProjects = filter === 'all' 
     ? projects 
@@ -33,8 +33,6 @@ const Projects = () => {
         return <span className="absolute top-4 right-4 px-3 py-1 bg-green-500/80 text-white text-xs font-bold rounded-full backdrop-blur-sm">Stable</span>;
       case 'beta':
         return <span className="absolute top-4 right-4 px-3 py-1 bg-yellow-500/80 text-white text-xs font-bold rounded-full backdrop-blur-sm">Beta</span>;
-      case 'alpha':
-        return <span className="absolute top-4 right-4 px-3 py-1 bg-orange-500/80 text-white text-xs font-bold rounded-full backdrop-blur-sm">Alpha</span>;
       default:
         return null;
     }
@@ -53,7 +51,6 @@ const Projects = () => {
 
         {/* Maturity Legend */}
         <div className="flex flex-wrap gap-4 mb-8 p-4 glass-effect rounded-lg">
-          <span className="text-sm text-gray-400 mr-2">Legend:</span>
           <div className="flex items-center gap-2">
             <span className="w-3 h-3 rounded-full bg-green-500"></span>
             <span className="text-xs text-gray-300">Stable</span>
@@ -62,20 +59,7 @@ const Projects = () => {
             <span className="w-3 h-3 rounded-full bg-yellow-500"></span>
             <span className="text-xs text-gray-300">Beta (Testing/Might contain bugs)</span>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full bg-orange-500"></span>
-            <span className="text-xs text-gray-300">Alpha (In development/Might contain bugs)</span>
-          </div>
         </div>
-
-        {/* Global Health Warning */}
-        {Object.values(healthStatus).some(status => status === false) && (
-          <div className="mb-8 p-4 bg-red-900/20 border border-red-500/50 rounded-lg text-red-200 text-sm">
-            <p className="flex items-center gap-2">
-              Demos require backend services and some of them are currently unavailable. You can still explore the project details and source code.
-            </p>
-          </div>
-        )}
 
         {/* Filters */}
         <div className="flex flex-wrap gap-4 mb-12">
@@ -121,9 +105,9 @@ const Projects = () => {
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-dark via-dark/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                  {healthStatus[project._id] === false && (
-                    <span className="absolute top-4 left-4 px-3 py-1 bg-red-600/90 text-white text-xs font-bold rounded-full backdrop-blur-sm z-10">
-                      Demo Unavailable
+                  {healthStatus[project._id] && (
+                    <span className="absolute top-4 left-4 px-3 py-1 bg-green-600/90 text-white text-xs font-bold rounded-full backdrop-blur-sm z-10">
+                      Demo Available
                     </span>
                   )}
                   {getMaturityBadge(project.maturity)}
