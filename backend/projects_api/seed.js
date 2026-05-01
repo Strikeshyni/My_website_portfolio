@@ -125,26 +125,72 @@ const sampleProjects = [
     slug: 'mushroom-classifier',
     title: 'Mushroom Classification with Conformal Prediction',
     description: 'CNN model with conformal prediction to classify 169 mushroom species',
-    longDescription: `A Deep Learning project applying conformal prediction to mushroom classification.
-    
-    Challenge:
-    Mushroom classification is critical (risk of poisoning). Conformal prediction quantifies uncertainty by returning sets of possible classes with statistical coverage guarantees.
-    
-    Technical architecture:
-    - Custom CNN (4 conv blocks, 256 filters, dropout 0.5)
-    - 169 mushroom classes from the Kaggle Mushroom Classification dataset
-    - Split Conformal Prediction with coverage guarantee >= 1-alpha
-    - Adaptive prediction sets based on uncertainty
-    
-    Results:
-    - Empirical coverage: ~90% (alpha=0.1)
-    - Average set size: ~8 classes out of 169 (4.7%)
-    - Top-1 accuracy: 53.02%
-    - Adjustable trade-off: confidence vs set size
-    
-    Practical use:
-    Upload images to receive a prediction set with configurable confidence. A warning is triggered if a toxic species appears in the set.`,
-    technologies: ['Python', 'PyTorch', 'Deep Learning', 'Conformal Prediction', 'CNN', 'React'],
+    longDescription: `Deep learning system for large-scale mushroom classification enhanced with conformal prediction to provide statistically valid uncertainty estimates.
+
+  Problem context:
+  - Fine-grained visual classification over 169 mushroom species
+  - High intra-class similarity and inter-class ambiguity
+  - Safety-critical domain (misclassification may lead to poisoning)
+  - Strong class imbalance across dataset
+
+  Dataset:
+  - ~104,000 images across 169 classes (Kaggle Mushroom dataset)
+  - Highly imbalanced distribution (200 → 5,800 images per class)
+  - Significant morphological diversity (color, texture, shape variations)
+  - Split: 70% train / 15% validation / 15% test
+
+  Model architecture:
+  - Custom CNN (~9.7M parameters) implemented in PyTorch
+  - 4 convolutional blocks:
+    - Conv → BatchNorm → ReLU ×2 + MaxPooling
+    - Progressive feature expansion (32 → 64 → 128 → 256 channels)
+  - Fully connected head with dropout (0.5) for regularization
+  - Input normalization + data augmentation:
+    - Random rotations, flips, color jitter
+  - Optimization:
+    - Cross-entropy loss
+    - Adam optimizer with weight decay
+
+  Training pipeline:
+  - Mini-batch training with DataLoader parallelization
+  - Validation-based checkpointing (best model selection)
+  - GPU acceleration (CUDA) for efficient training
+  - Achieved validation accuracy: ~53% (top-1) on 169-class problem
+
+  Conformal prediction layer:
+  - Split conformal prediction applied on top of softmax outputs
+  - Calibration performed on held-out validation set
+  - Nonconformity score: 1 - P(true class)
+  - Quantile-based threshold selection ensuring coverage guarantee
+
+  Prediction mechanism:
+  - Instead of single-label output → prediction sets
+  - Each prediction = subset of plausible classes
+  - Confidence level controlled by α (e.g. α=0.1 → 90% coverage)
+
+  Results:
+  - Empirical coverage ≈ 90% (aligned with theoretical guarantee)
+  - Average prediction set size ≈ 8 classes (≈4.7% of label space)
+  - Top-1 accuracy: ~53%
+  - Adaptive uncertainty: larger sets for ambiguous samples
+
+  System behavior:
+  - High-confidence inputs → small prediction sets
+  - Ambiguous inputs → larger sets (uncertainty-aware)
+  - Natural robustness to visually similar species
+
+  Practical application:
+  - User uploads an image → receives a set of possible species
+  - Safety mechanism: alert triggered if any toxic species is included
+  - Adjustable confidence threshold to trade precision vs safety
+
+  Design insights:
+  - Classical classification is insufficient in high-risk domains
+  - Conformal prediction provides distribution-free uncertainty guarantees
+  - Trade-off between prediction set size and coverage is explicit and controllable
+
+  This project demonstrates how to extend deep learning models with statistically grounded uncertainty quantification for safer real-world decision systems.`,
+    technologies: ['Python', 'PyTorch', 'Deep Learning', 'Conformal Prediction', 'CNN'],
     imageUrl: '/images/projects/mushroom.jpg',
     bannerUrl: '/images/projects/mushroom-banner.jpg',
     githubUrl: 'https://github.com/Strikeshyni/conformal_prediction',
@@ -161,42 +207,42 @@ const sampleProjects = [
     title: 'CAC40 Stock Price Prediction',
     description: 'ML models to predict stock prices and simulate trading strategies',
     longDescription: `NEW version of this project in progress - Using World wide stocks and Graph based models for better temporal and cross-feature modeling.
-    
-  Multi-model financial forecasting and trading simulation system designed for time-series prediction and strategy evaluation.
 
-  Models architecture tested:
-  - Bi-directional LSTM for temporal sequence modeling
-  - Transformer encoder for attention-based long-range dependency capture
-  - XGBoost regressor for non-linear feature baselines
-  - Modular model interface enabling benchmark comparisons
+### Multi-model financial forecasting and trading simulation system designed for time-series prediction and strategy evaluation.
 
-  Data pipeline:
-  - Yahoo Finance historical market data
-  - Feature engineering (returns, moving averages, volatility indicators)
-  - MinMax normalization and sliding window sequence generation
+### Models architecture tested
+- Bi-directional LSTM for temporal sequence modeling
+- Transformer encoder for attention-based long-range dependency capture
+- XGBoost regressor for non-linear feature baselines
+- Modular model interface enabling benchmark comparisons
 
-  Training system:
-  - Asynchronous FastAPI-based training jobs
-  - Hyperparameter tuning via Keras Tuner (random search)
-  - Real-time training progress streamed via WebSocket
+### Data pipeline
+- Yahoo Finance historical market data
+- Feature engineering (returns, moving averages, volatility indicators)
+- MinMax normalization and sliding window sequence generation
 
-  Simulation engine:
-  - Time-aware backtesting system with anti-data-leakage design
-  - "Time-travel training": model retrained per simulation step
-  - Multiple trading strategies (simple, threshold, conservative, aggressive)
-  - Portfolio evolution tracking with profit/loss analytics
+### Training system
+- Asynchronous FastAPI-based training jobs
+- Hyperparameter tuning via Keras Tuner (random search)
+- Real-time training progress streamed via WebSocket
 
-  Benchmarking system:
-  - Cross-model evaluation on identical time windows
-  - Metrics: MAE, directional accuracy, simulated ROI
-  - Comparative visualization of strategies and predictions
+### Simulation engine
+- Time-aware backtesting system with anti-data-leakage design
+- "Time-travel training": model retrained per simulation step
+- Multiple trading strategies (simple, threshold, conservative, aggressive)
+- Portfolio evolution tracking with profit/loss analytics
 
-  Important design constraints:
-  - Financial data treated as stochastic and non-stationary
-  - Emphasis on experimental validation rather than predictive certainty
-  - Strong separation between training, inference, and simulation layers
+### Benchmarking system
+- Cross-model evaluation on identical time windows
+- Metrics: MAE, directional accuracy, simulated ROI
+- Comparative visualization of strategies and predictions
 
-  This project focuses on applied deep learning for financial time series and realistic trading simulation systems.`,
+### Important design constraints
+- Financial data treated as stochastic and non-stationary
+- Emphasis on experimental validation rather than predictive certainty
+- Strong separation between training, inference, and simulation layers
+
+This project focuses on applied deep learning for financial time series and realistic trading simulation systems.`,
     technologies: ['Python', 'TensorFlow', 'Keras', 'LSTM', 'Transformers', 'XGBoost', 'FastAPI', 'WebSocket'],
     imageUrl: '/images/projects/stock.jpg',
     bannerUrl: '/images/projects/stock-banner.jpg',

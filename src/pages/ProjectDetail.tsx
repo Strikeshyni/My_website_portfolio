@@ -4,6 +4,9 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, Github, ExternalLink } from 'lucide-react';
 import { ProjectContext } from '../context/ProjectContext';
 import { Project } from '../types';
+import ReactMarkdown from "react-markdown";
+import remarkGfm from 'remark-gfm';
+import rehypeHighlight from 'rehype-highlight';
 
 const ProjectDetail = () => {
   const { slug } = useParams();
@@ -168,12 +171,13 @@ const ProjectDetail = () => {
           </div>
 
           {/* Content */}
-          <div className="max-w-4xl mx-auto">
-            <div className="prose prose-invert max-w-none">
-              <p className="text-base sm:text-lg lg:text-xl text-gray-300 leading-relaxed whitespace-pre-line">
-                {project.longDescription}
-              </p>
-            </div>
+          <div className="prose prose-invert max-w-none">
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              rehypePlugins={[rehypeHighlight]}
+            >
+              {project.longDescription}
+            </ReactMarkdown>
           </div>
         </motion.div>
       </div>
