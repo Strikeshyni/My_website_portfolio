@@ -27,7 +27,8 @@ export const ProjectProvider = ({ children }: { children: React.ReactNode }) => 
     const checks = projectList.map(async (project) => {
       if (!project.healthCheckUrl) return null;
       try {
-        const healthUrl = project.healthCheckUrl.startsWith('http')
+        const is_http = project.healthCheckUrl.startsWith('http');
+        const healthUrl = is_http
           ? project.healthCheckUrl
           : apiUrl(project.healthCheckUrl);
 
@@ -35,7 +36,7 @@ export const ProjectProvider = ({ children }: { children: React.ReactNode }) => 
         
         // Safety check: If the response is HTML, it might be a redirect to a 404 page
         // instead of a real API response (common on some hosting providers).
-        const isHtml = typeof response.data === 'string' && response.data.trim().startsWith('<!doctype html>');
+        const isHtml = typeof response.data === 'string' && (response.data.trim().startsWith('<!doctype html>') && !is_http);
 
         return { id: project._id, isHealthy: !isHtml };
       } catch (error) {

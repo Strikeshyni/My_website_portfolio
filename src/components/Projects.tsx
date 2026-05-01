@@ -21,11 +21,13 @@ const Projects = () => {
 
   const [filter, setFilter] = useState<string>('all');
 
-  const categories = ['all', 'web', 'ai', 'other'];
+  const categories = ['all', 'demo available', 'web', 'ai', 'other'];
   
   const filteredProjects = filter === 'all' 
     ? projects 
-    : projects.filter(p => p.category === filter);
+    : filter === 'demo available'
+      ? projects.filter(p => p.interactive && healthStatus[p._id])
+      : projects.filter(p => p.category === filter);
 
   const getMaturityBadge = (maturity?: string) => {
     switch (maturity) {
@@ -51,13 +53,14 @@ const Projects = () => {
 
         {/* Maturity Legend */}
         <div className="flex flex-wrap gap-4 mb-8 p-4 glass-effect rounded-lg">
+          <span className="text-xs text-gray-300">Demo maturity:</span>
           <div className="flex items-center gap-2">
             <span className="w-3 h-3 rounded-full bg-green-500"></span>
             <span className="text-xs text-gray-300">Stable</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="w-3 h-3 rounded-full bg-yellow-500"></span>
-            <span className="text-xs text-gray-300">Beta (Testing/Might contain bugs)</span>
+            <span className="text-xs text-gray-300">Beta Testing (Might contain bugs)</span>
           </div>
         </div>
 
@@ -110,7 +113,12 @@ const Projects = () => {
                       Demo Available
                     </span>
                   )}
-                  {getMaturityBadge(project.maturity)}
+                  {project.interactive && !healthStatus[project._id] && (
+                    <span className="absolute top-4 left-4 px-3 py-1 bg-orange-600/90 text-white text-xs font-bold rounded-full backdrop-blur-sm z-10">
+                      Demo Unavailable
+                    </span>
+                  )}
+                  {project.interactive && getMaturityBadge(project.maturity)}
                 </div>
               </Link>
 
@@ -166,7 +174,7 @@ const Projects = () => {
         )}
 
         <div className="mt-10 glass-effect rounded-xl p-4 sm:p-6 text-gray-300 text-sm sm:text-base">
-          More projects are on the way. Some are already finished, but they need a clean website version before going live.
+          More projects are on the way. Some are already finished, but they need a clean public version before going live.
         </div>
       </motion.div>
     </section>
