@@ -2,53 +2,41 @@ export interface Project {
   _id: string;
   slug: string;
   title: string;
+  titleFr: string;
   description: string;
+  descriptionFr: string;
   longDescription: string;
+  longDescriptionFr: string;
+  details: {
+    context: string;
+    duration: string;
+    team: string;
+    role: string;
+    why: string;
+    learnings: string[];
+    improvements: string[];
+  };
+  detailsFr: {
+    context: string;
+    duration: string;
+    team: string;
+    role: string;
+    why: string;
+    learnings: string[];
+    improvements: string[];
+  };
   technologies: string[];
+  technologiesFr: string[];
   imageUrl: string;
   bannerUrl: string;
   githubUrl?: string;
   liveUrl?: string;
-  category: 'web' | 'ai' | 'data' | 'embedded' | 'other';
+  category: 'web' | 'ai' | 'other';
   featured: boolean;
   interactive?: boolean;
   interactivePath?: string;
   demoEnabled?: boolean;
   healthCheckUrl?: string;
-  maturity?: 'stable' | 'beta' | 'alpha';
+  maturity?: 'stable' | 'beta';
   createdAt: Date;
-}
-
-export interface Profile {
-  name: string;
-  title: string;
-  bio: string;
-  email: string;
-  github: string;
-  linkedin: string;
-  avatarUrl: string;
-  skills: Skill[];
-  experiences: Experience[];
-  education: Education[];
-}
-
-export interface Skill {
-  name: string;
-  category: string;
-  level: number;
-}
-
-export interface Experience {
-  company: string;
-  position: string;
-  period: string;
-  description: string;
-  technologies: string[];
-}
-
-export interface Education {
-  school: string;
-  degree: string;
-  period: string;
-  description: string;
 }

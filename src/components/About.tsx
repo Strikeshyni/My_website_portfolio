@@ -1,7 +1,9 @@
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
+import { useTranslation } from "react-i18next";
 
 const About = () => {
+  const { t } = useTranslation();
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
@@ -16,21 +18,17 @@ const About = () => {
         transition={{ duration: 0.8 }}
         className="max-w-4xl mx-auto"
       >
-        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-8 sm:mb-12 gradient-text">About</h2>
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-8 sm:mb-12 gradient-text">{t("about")}</h2>
 
-        <div className="space-y-6 text-base sm:text-lg text-gray-300">
+        <div className="space-y-6 text-base sm:text-lg text-gray-300 text-justify leading-relaxed">
           <p>
-            I am an engineering student at EPITA Lyon, specialized in AI and graph-based systems.
-            What drives me is a deep curiosity about the underlying logic of the world. How complex systems behave, how patterns emerge, and how intelligence can be modeled and replicated.
+            {t("about_content_1")}
           </p>
           <p>
-            Through my work, I explore how artificial intelligence can go beyond predictions and become a powerful tool to help humans understand problems, anticipate outcomes, and make better decisions.
-            I learn by building. From machine learning models and optimization algorithms to full-stack AI applications, I constantly develop small and large projects to experiment, fail, and improve. This portfolio itself is part of that process.
+            {t("about_content_2")}
           </p>
-
           <p>
-            My interests span across machine learning, deep learning, NLP, computer vision, and data engineering, with a particular focus on designing end-to-end systems that are both robust and practical.
-            I am especially interested in the future of AI systems that can reason, adapt, and assist humans in solving complex real-world challenges.
+            {t("about_content_3")}
           </p>
         </div>
       </motion.div>

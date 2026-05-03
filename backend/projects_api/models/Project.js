@@ -10,15 +10,39 @@ const projectSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  titleFr: String,
   description: {
     type: String,
     required: true,
   },
+  descriptionFr: String,
   longDescription: {
     type: String,
     required: true,
   },
+  longDescriptionFr: String,
+  details: {
+    context: String,
+    duration: String,
+    team: String,
+    role: String,
+    why: String,
+    learnings: [String],
+    improvements: [String],
+  },
+  detailsFr: {
+    context: String,
+    duration: String,
+    team: String,
+    role: String,
+    why: String,
+    learnings: [String],
+    improvements: [String],
+  },
   technologies: [{
+    type: String,
+  }],
+  technologiesFr: [{
     type: String,
   }],
   imageUrl: {

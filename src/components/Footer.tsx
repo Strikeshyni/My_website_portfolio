@@ -1,13 +1,15 @@
 import { Code2, Github, Linkedin, Mail, Trophy } from 'lucide-react';
+import { useTranslation } from "react-i18next";
 
 const Footer = () => {
+  const { t } = useTranslation();
   return (
     <footer className="bg-dark-light section-padding py-12">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-center gap-6">
           <div>
             <h3 className="text-2xl font-bold gradient-text mb-2">Abel Aubron</h3>
-            <p className="text-gray-400">Curious AI Engineer</p>
+            <p className="text-gray-400">{t("footer_description")}</p>
           </div>
 
           <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
@@ -68,7 +70,7 @@ const Footer = () => {
         </div>
 
         <div className="mt-8 pt-8 border-t border-gray-800 text-center text-gray-400">
-          <p>&copy; {new Date().getFullYear()} Abel Aubron. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Abel Aubron. {t("all_rights_reserved")}</p>
         </div>
       </div>
     </footer>

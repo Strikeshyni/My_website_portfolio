@@ -11,7 +11,7 @@
 
   html {
     scroll-behavior: smooth;
-    scroll-padding-top: 120px; /* Hauteur de la navbar */
+    scroll-padding-top: 80px; /* Hauteur de la navbar */
     overflow-x: hidden;
   }
 }

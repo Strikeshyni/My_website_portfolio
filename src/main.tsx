@@ -2,6 +2,7 @@ import ReactDOM from 'react-dom/client'
 import axios from 'axios'
 import App from './App.tsx'
 import './index.css'
+import "./i18n";
 import { API_BASE_URL } from './lib/api'
 import { ProjectProvider } from './context/ProjectContext';
 

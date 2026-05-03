@@ -2,34 +2,14 @@
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { Mail } from 'lucide-react';
+import { useTranslation } from "react-i18next";
 
 const Contact = () => {
+  const { t } = useTranslation();
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
   });
-
-//   const [formData, setFormData] = useState({
-//     name: '',
-//     email: '',
-//     message: '',
-//   });
-
-//   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
-
-//   const handleSubmit = async (e: React.FormEvent) => {
-//     e.preventDefault();
-//     setStatus('sending');
-
-//     try {
-//       // Simulation d'envoi - À remplacer par votre API
-//       await new Promise(resolve => setTimeout(resolve, 1000));
-//       setStatus('sent');
-//       setFormData({ name: '', email: '', message: '' });
-//     } catch (error) {
-//       setStatus('error');
-//     }
-//   };
 
   return (
     <section id="contact" className="section-padding">
@@ -40,13 +20,13 @@ const Contact = () => {
         transition={{ duration: 0.8 }}
         className="max-w-4xl mx-auto"
       >
-        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-10 sm:mb-16 gradient-text text-center">Contact</h2>
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-10 sm:mb-16 gradient-text text-center">{t("contact")}</h2>
 
         <div className="grid md:grid-cols-2 gap-8">
           <div>
-            <h3 className="text-xl sm:text-2xl font-bold mb-4">Feel free to reach out</h3>
+            <h3 className="text-xl sm:text-2xl font-bold mb-4">{t("contact_reach_out")}</h3>
             <p className="text-gray-400 mb-6">
-              I'm always open to discussing new projects, creative ideas or opportunities to be part of your vision.
+              {t("contact_message")}
             </p>
 
             <div className="space-y-4">
@@ -55,7 +35,7 @@ const Contact = () => {
                   <Mail size={24} className="text-primary hover:text-secondary" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-400">Email</p>
+                  <p className="text-sm text-gray-400">{t("contact_email")}</p>
                   <p className="text-white hover:text-primary">
                     abel.aubron@epita.fr
                   </p>
@@ -63,72 +43,6 @@ const Contact = () => {
               </a>
             </div>
           </div>
-
-          {/* <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label htmlFor="name" className="block text-sm mb-2">
-                Nom
-              </label>
-              <input
-                type="text"
-                id="name"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                required
-                className="w-full px-4 py-3 bg-dark-light border border-gray-700 rounded-lg focus:border-primary focus:outline-none"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="email" className="block text-sm mb-2">
-                Email
-              </label>
-              <input
-                type="email"
-                id="email"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                required
-                className="w-full px-4 py-3 bg-dark-light border border-gray-700 rounded-lg focus:border-primary focus:outline-none"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="message" className="block text-sm mb-2">
-                Message
-              </label>
-              <textarea
-                id="message"
-                value={formData.message}
-                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                required
-                rows={5}
-                className="w-full px-4 py-3 bg-dark-light border border-gray-700 rounded-lg focus:border-primary focus:outline-none resize-none"
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={status === 'sending'}
-              className="w-full px-8 py-3 bg-gradient-to-r from-primary to-secondary rounded-lg hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-            >
-              {status === 'sending' ? (
-                'Envoi en cours...'
-              ) : status === 'sent' ? (
-                'Message envoyé !'
-              ) : (
-                <>
-                  Envoyer <Send size={20} />
-                </>
-              )}
-            </button>
-
-            {status === 'error' && (
-              <p className="text-red-400 text-sm">
-                Une erreur est survenue. Veuillez réessayer.
-              </p>
-            )}
-          </form> */}
         </div>
       </motion.div>
     </section>

@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from '../utils/langage_switcher';
 
 const Header = () => {
+  const { t } = useTranslation();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -16,11 +19,11 @@ const Header = () => {
   }, []);
 
   const menuItems = [
-    { label: 'Home', href: '#home' },
-    { label: 'About', href: '#about' },
-    { label: 'Skills', href: '#skills' },
-    { label: 'Projects', href: '#projects' },
-    { label: 'Contact', href: '#contact' },
+    { label: t("home"), href: '#home' },
+    { label: t('about'), href: '#about' },
+    { label: t('skills'), href: '#skills' },
+    { label: t('projects'), href: '#projects' },
+    { label: t('contact'), href: '#contact' },
   ];
 
   return (
@@ -32,7 +35,7 @@ const Header = () => {
         isScrolled || isMobileMenuOpen ? 'glass-effect shadow-lg' : 'bg-transparent'
       }`}
     >
-      <nav className="section-padding py-3 sm:py-5 md:py-6 lg:py-8">
+      <nav className="section-padding py-1 sm:py-5 md:py-6 lg:py-8 [@media(max-height:700px)]:py-1">
         <div className="flex items-center justify-between">
           <a href="#home" className="text-xl sm:text-2xl lg:text-3xl font-bold gradient-text">
             Abel Aubron
@@ -49,6 +52,7 @@ const Header = () => {
                 {item.label}
               </a>
             ))}
+            <LanguageSwitcher />
           </div>
 
           {/* Mobile Menu Button */}
@@ -78,6 +82,7 @@ const Header = () => {
                 {item.label}
               </a>
             ))}
+            <LanguageSwitcher />
           </motion.div>
         )}
       </nav>
