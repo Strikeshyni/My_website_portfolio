@@ -30,6 +30,9 @@ const About = () => {
           <p>
             {t("about_content_3")}
           </p>
+          <p>
+            {t("about_content_4")}
+          </p>
         </div>
       </motion.div>
     </section>
