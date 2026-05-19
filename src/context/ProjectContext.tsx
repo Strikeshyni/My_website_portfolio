@@ -2,6 +2,7 @@ import { createContext, useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { Project } from '../types';
 import { apiUrl } from '../lib/api';
+import { projects_fallback } from '../data/projects_fallback.ts';
 
 export const ProjectContext = createContext<{
   projects: Project[];
@@ -75,7 +76,7 @@ export const ProjectProvider = ({ children }: { children: React.ReactNode }) => 
         checkAllHealth(fetchedProjects);
       } catch (err) {
         console.error('Failed to fetch projects, using fallback data:', err);
-        const fallback: Project[] = [];
+        const fallback: Project[] = projects_fallback; // Import or define your fallback data
         setProjects(fallback);
         
         // Trigger health checks for fallback data
