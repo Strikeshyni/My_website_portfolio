@@ -21,7 +21,7 @@ const Skills = () => {
   ];
 
   const dataFrameworks = [
-    'MongoDB', 'PostgreSQL', 'PySpark'
+    'MongoDB', 'PostgreSQL', 'PySpark', 'ElasticSearch', 'Neo4j', 'Pandas', 'Redis', 'NumPy'
   ];
 
   // Backend / Frontend
@@ -31,7 +31,7 @@ const Skills = () => {
 
   // Tools
   const tools = [
-    'Git', 'Docker', 'MLflow', 'AWS', 'VS Code', 'PyCharm', 'IntelliJ', 'Jira', 'Agile Scrum', 'Markdown', 'LaTex'
+    'Git', 'Docker', 'MLflow', 'S3', 'Kubernetes', 'Dataiku', 'MinIO', 'Jira', 'Markdown', 'LaTex'
   ];
 
   // AI expertise
@@ -42,19 +42,22 @@ const Skills = () => {
     'Natural Language Processing (NLP)',
     'Computer Vision (OCR, Image Classification, Object Detection, etc.)',
     'Generative AI (GANs, Diffusion Models)',
+    'Time Series Analysis',
     'Anomaly Detection',
     'Recommendation Systems'
   ];
 
-  // Data / MLOps
+  // MLOps / DevOps expertise
   const dataSkills = [
     'Data Pipelines',
     'Feature Engineering',
-    'Data Cleaning & Preprocessing',
     'Statistical Modeling',
-    'Forecasting & Time Series',
-    'Experiment Tracking',
-    'MLOps & Model Deployment'
+    'Experiment Tracking (MLflow, MinIO)',
+    'Data Version Control (DVC)',
+    'Multi-service Deployment (Kubernetes, Docker Compose)',
+    'Derive & retrain detections',
+    'CI/CD (GitHub Actions, GitLab CI/CD)',
+    'Monitoring (Prometheus, Grafana, Evidently)',
   ];
 
   const chipClass = 'px-3 py-1.5 rounded-full text-xs sm:text-sm border transition-colors';
@@ -177,7 +180,7 @@ const Skills = () => {
             </div>
 
             <div className="glass-effect p-6 rounded-2xl">
-              <h3 className="text-lg sm:text-xl font-bold text-secondary mb-4">{t("data and mlops")}</h3>
+              <h3 className="text-lg sm:text-xl font-bold text-secondary mb-4">{t("MLOps / DevOps expertise")}</h3>
               <ul className="space-y-2 text-gray-300">
                 {dataSkills.map((skill) => (
                   <li key={skill} className="text-xs sm:text-sm">• {skill}</li>
