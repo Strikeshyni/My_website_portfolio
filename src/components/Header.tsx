@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from '../utils/langage_switcher';
+import ThemeControls from './ThemeControls';
 
 const Header = () => {
   const { t } = useTranslation();
@@ -42,17 +43,20 @@ const Header = () => {
           </a>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden md:flex items-center gap-6">
             {menuItems.map((item) => (
               <a
                 key={item.href}
                 href={item.href}
-                className="text-gray-300 hover:text-white transition-colors"
+                className="text-muted hover:text-strong transition-colors"
               >
                 {item.label}
               </a>
             ))}
-            <LanguageSwitcher />
+            <div className="flex items-center gap-4">
+              <ThemeControls />
+              <LanguageSwitcher />
+            </div>
           </div>
 
           {/* Mobile Menu Button */}
@@ -77,12 +81,15 @@ const Header = () => {
                 key={item.href}
                 href={item.href}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="block text-gray-300 hover:text-white transition-colors"
+                className="block text-muted hover:text-strong transition-colors"
               >
                 {item.label}
               </a>
             ))}
-            <LanguageSwitcher />
+            <div className="flex flex-col gap-4">
+              <ThemeControls />
+              <LanguageSwitcher />
+            </div>
           </motion.div>
         )}
       </nav>

@@ -15,10 +15,10 @@ const Hero = () => {
           <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold mb-4 sm:mb-6 gradient-text">
             Abel Aubron
           </h1>
-          <p className="text-lg sm:text-2xl md:text-3xl text-gray-300 mb-6 sm:mb-8">
+          <p className="text-lg sm:text-2xl md:text-3xl text-muted mb-6 sm:mb-8">
             {t("hero_title")}
           </p>
-          <p className="text-base sm:text-lg text-gray-400 mb-10 sm:mb-12 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-subtle mb-10 sm:mb-12 max-w-2xl mx-auto">
             {t("hero_sentence")}
           </p>
 
@@ -28,7 +28,7 @@ const Hero = () => {
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ scale: 1.1 }}
-              className="p-3 sm:p-4 glass-effect rounded-full hover:bg-primary/20 transition-colors"
+              className="p-3 sm:p-4 glass-effect rounded-full hover-accent-soft transition-colors"
               title="GitHub"
             >
               <Github size={24} />
@@ -38,7 +38,7 @@ const Hero = () => {
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ scale: 1.1 }}
-              className="p-3 sm:p-4 glass-effect rounded-full hover:bg-primary/20 transition-colors"
+              className="p-3 sm:p-4 glass-effect rounded-full hover-accent-soft transition-colors"
               title="LinkedIn"
             >
               <Linkedin size={24} />
@@ -48,7 +48,7 @@ const Hero = () => {
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ scale: 1.1 }}
-              className="p-3 sm:p-4 glass-effect rounded-full hover:bg-primary/20 transition-colors"
+              className="p-3 sm:p-4 glass-effect rounded-full hover-accent-soft transition-colors"
               title="CodinGame"
             >
               <Code2 size={24} />
@@ -58,7 +58,7 @@ const Hero = () => {
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ scale: 1.1 }}
-              className="p-3 sm:p-4 glass-effect rounded-full hover:bg-primary/20 transition-colors"
+              className="p-3 sm:p-4 glass-effect rounded-full hover-accent-soft transition-colors"
               title="LeetCode"
             >
               <Code2 size={24} />
@@ -68,7 +68,7 @@ const Hero = () => {
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ scale: 1.1 }}
-              className="p-3 sm:p-4 glass-effect rounded-full hover:bg-primary/20 transition-colors"
+              className="p-3 sm:p-4 glass-effect rounded-full hover-accent-soft transition-colors"
               title="LeekWars"
             >
               <Trophy size={24} />
@@ -76,7 +76,7 @@ const Hero = () => {
             <motion.a
               href="#contact"
               whileHover={{ scale: 1.1 }}
-              className="p-3 sm:p-4 glass-effect rounded-full hover:bg-primary/20 transition-colors"
+              className="p-3 sm:p-4 glass-effect rounded-full hover-accent-soft transition-colors"
               title="Contact"
             >
               <Mail size={24} />
@@ -85,7 +85,7 @@ const Hero = () => {
 
           <motion.a
             href="#projects"
-            className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-primary to-secondary rounded-full text-base sm:text-lg font-semibold hover:scale-105 transition-transform"
+            className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 btn-primary rounded-full text-base sm:text-lg font-semibold transition-transform"
             whileHover={{ scale: 1.05 }}
           >
             {t("hero_see_projects")}
@@ -98,7 +98,7 @@ const Hero = () => {
           transition={{ repeat: Infinity, duration: 2 }}
           className="absolute bottom-6 sm:bottom-10 left-1/2 transform -translate-x-1/2"
         >
-          <ArrowDown size={32} strokeWidth={2} className="text-gray-600" />
+          <ArrowDown size={32} strokeWidth={2} className="text-subtle" />
         </motion.div>
       </div>
     </section>

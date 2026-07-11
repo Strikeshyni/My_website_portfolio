@@ -10,7 +10,7 @@ const About = () => {
   });
 
   return (
-    <section id="about" className="section-padding bg-dark-light">
+    <section id="about" className="section-padding bg-page-alt">
       <motion.div
         ref={ref}
         initial={{ opacity: 0, y: 50 }}
@@ -20,7 +20,7 @@ const About = () => {
       >
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-8 sm:mb-12 gradient-text">{t("about")}</h2>
 
-        <div className="space-y-6 text-base sm:text-lg text-gray-300 text-justify leading-relaxed">
+        <div className="space-y-6 text-base sm:text-lg text-muted text-justify leading-relaxed">
           <p>
             {t("about_content_1")}
           </p>

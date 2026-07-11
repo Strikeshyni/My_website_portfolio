@@ -4,12 +4,12 @@ import { useTranslation } from "react-i18next";
 const Footer = () => {
   const { t } = useTranslation();
   return (
-    <footer className="bg-dark-light section-padding py-12">
+    <footer className="bg-page-alt section-padding py-12">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-center gap-6">
           <div>
             <h3 className="text-2xl font-bold gradient-text mb-2">Abel Aubron</h3>
-            <p className="text-gray-400">{t("footer_description")}</p>
+            <p className="text-subtle">{t("footer_description")}</p>
           </div>
 
           <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
@@ -17,7 +17,7 @@ const Footer = () => {
               href="https://github.com/Strikeshyni"
               target="_blank"
               rel="noopener noreferrer"
-              className="p-3 glass-effect rounded-full hover:bg-primary/20 transition-colors"
+              className="p-3 glass-effect rounded-full hover-accent-soft transition-colors"
               title="GitHub"
             >
               <Github size={24} />
@@ -26,7 +26,7 @@ const Footer = () => {
               href="https://www.linkedin.com/in/abel-aubron/"
               target="_blank"
               rel="noopener noreferrer"
-              className="p-3 glass-effect rounded-full hover:bg-primary/20 transition-colors"
+              className="p-3 glass-effect rounded-full hover-accent-soft transition-colors"
               title="LinkedIn"
             >
               <Linkedin size={24} />
@@ -35,7 +35,7 @@ const Footer = () => {
               href="https://www.codingame.com/profile/490be14918211c1d61d97992a2bee96e2780386"
               target="_blank"
               rel="noopener noreferrer"
-              className="p-3 glass-effect rounded-full hover:bg-primary/20 transition-colors"
+              className="p-3 glass-effect rounded-full hover-accent-soft transition-colors"
               title="CodinGame"
             >
               <Code2 size={24} />
@@ -44,7 +44,7 @@ const Footer = () => {
               href="https://leetcode.com/u/L_Strom/"
               target="_blank"
               rel="noopener noreferrer"
-              className="p-3 glass-effect rounded-full hover:bg-primary/20 transition-colors"
+              className="p-3 glass-effect rounded-full hover-accent-soft transition-colors"
               title="LeetCode"
             >
               <Code2 size={24} />
@@ -53,7 +53,7 @@ const Footer = () => {
               href="https://leekwars.com/farmer/90987"
               target="_blank"
               rel="noopener noreferrer"
-              className="p-3 glass-effect rounded-full hover:bg-primary/20 transition-colors"
+              className="p-3 glass-effect rounded-full hover-accent-soft transition-colors"
               title="LeekWars"
             >
               <Trophy size={24} />
@@ -61,7 +61,7 @@ const Footer = () => {
             <a
               href="#contact"
               rel="noopener noreferrer"
-              className="p-3 glass-effect rounded-full hover:bg-primary/20 transition-colors"
+              className="p-3 glass-effect rounded-full hover-accent-soft transition-colors"
               title="Contact"
             >
               <Mail size={24} />
@@ -69,7 +69,7 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="mt-8 pt-8 border-t border-gray-800 text-center text-gray-400">
+        <div className="mt-8 pt-8 border-t border-subtle text-center text-subtle">
           <p>&copy; {new Date().getFullYear()} Abel Aubron. {t("all_rights_reserved")}</p>
         </div>
       </div>

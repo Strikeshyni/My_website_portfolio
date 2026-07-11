@@ -25,18 +25,18 @@ const Contact = () => {
         <div className="grid md:grid-cols-2 gap-8">
           <div>
             <h3 className="text-xl sm:text-2xl font-bold mb-4">{t("contact_reach_out")}</h3>
-            <p className="text-gray-400 mb-6">
+            <p className="text-subtle mb-6">
               {t("contact_message")}
             </p>
 
             <div className="space-y-4">
               <a href="mailto:abel.aubron@epita.fr" className="flex items-center gap-4">
-                <div className="p-3 bg-primary/20 rounded-lg">
-                  <Mail size={24} className="text-primary hover:text-secondary" />
+                <div className="p-3 chip rounded-lg">
+                  <Mail size={24} className="text-accent hover-accent-2" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-400">{t("contact_email")}</p>
-                  <p className="text-white hover:text-primary">
+                  <p className="text-sm text-subtle">{t("contact_email")}</p>
+                  <p className="text-strong link-accent">
                     abel.aubron@epita.fr
                   </p>
                 </div>

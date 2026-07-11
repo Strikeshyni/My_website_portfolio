@@ -20,7 +20,7 @@ const Home = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: isLoaded ? 1 : 0 }}
       transition={{ duration: 0.5 }}
-      className="min-h-screen bg-dark"
+      className="min-h-screen bg-page"
     >
       <Header />
       <Hero />

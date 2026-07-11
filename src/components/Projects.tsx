@@ -43,7 +43,7 @@ const Projects = () => {
   };
 
   return (
-    <section id="projects" className="section-padding bg-dark-light">
+    <section id="projects" className="section-padding bg-page-alt">
       <motion.div
         ref={ref}
         initial={{ opacity: 0, y: 50 }}
@@ -54,15 +54,15 @@ const Projects = () => {
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-8 sm:mb-12 gradient-text">{t("projects")}</h2>
 
         {/* Maturity Legend */}
-        <div className="flex flex-wrap gap-4 mb-8 p-4 glass-effect rounded-lg">
-          <span className="text-xs text-gray-300">{t("demo_maturity")} :</span>
+        <div className="flex flex-wrap gap-4 mb-8 p-4 card-surface rounded-lg">
+          <span className="text-xs text-muted">{t("demo_maturity")} :</span>
           <div className="flex items-center gap-2">
             <span className="w-3 h-3 rounded-full bg-green-500"></span>
-            <span className="text-xs text-gray-300">Stable</span>
+            <span className="text-xs text-muted">Stable</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="w-3 h-3 rounded-full bg-yellow-500"></span>
-            <span className="text-xs text-gray-300">Beta Testing ({t("might_contain_bug")})</span>
+            <span className="text-xs text-muted">Beta Testing ({t("might_contain_bug")})</span>
           </div>
         </div>
 
@@ -79,8 +79,8 @@ const Projects = () => {
               onClick={() => setFilter(cat)}
               className={`px-4 sm:px-6 py-2 text-sm sm:text-base rounded-full transition-all ${
                 filter === cat
-                  ? 'bg-gradient-to-r from-primary to-secondary'
-                  : 'glass-effect hover:bg-white/10'
+                  ? 'btn-primary'
+                  : 'btn-ghost'
               }`}
             >
               {t(cat)}
@@ -113,7 +113,7 @@ const Projects = () => {
                   animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
                   transition={{ duration: 0.5, delay: idx * 0.1 }}
                   whileHover={{ y: -10 }}
-                  className="glass-effect rounded-xl overflow-hidden group flex flex-col h-full"
+                  className="card-surface rounded-xl overflow-hidden group flex flex-col h-full"
                 >
                   <Link to={`/projects/${project.slug || project._id}`}>
                     <div className="relative h-48 overflow-hidden">
@@ -141,8 +141,8 @@ const Projects = () => {
                     <Link to={`/projects/${project.slug || project._id}`}>
                       <div className="flex-1">
                         <h3 className="text-xl sm:text-2xl font-bold mb-2">{currentTitle}</h3>
-                        <p className="text-sm sm:text-base text-gray-400 mb-2">{currentDescription}</p>
-                        <p className="text-xs text-gray-500 mb-4">
+                        <p className="text-sm sm:text-base text-subtle mb-2">{currentDescription}</p>
+                        <p className="text-xs text-subtle mb-4">
                           {new Date(project.createdAt).toLocaleDateString(isFr ? 'fr-FR' : 'en-US', {
                             year: 'numeric',
                             month: 'long'
@@ -157,7 +157,7 @@ const Projects = () => {
                             .map((tech) => (
                             <span
                               key={tech}
-                              className="px-3 py-1 bg-primary/20 rounded-full text-xs"
+                              className="px-3 py-1 rounded-full text-xs chip"
                             >
                               {tech}
                             </span>
@@ -169,7 +169,7 @@ const Projects = () => {
                     <div className="flex gap-3 sm:gap-4 mt-auto">
                       <Link
                         to={`/projects/${project.slug || project._id}`}
-                        className="flex-1 text-center px-3 py-1.5 sm:px-4 sm:py-2 bg-primary rounded-lg hover:bg-primary/80 transition-colors text-sm sm:text-base"
+                        className="flex-1 text-center px-3 py-1.5 sm:px-4 sm:py-2 btn-primary rounded-lg transition-colors text-sm sm:text-base"
                       >
                         {t("details")}
                       </Link>
@@ -178,7 +178,7 @@ const Projects = () => {
                           href={project.githubUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="p-1.5 sm:p-2 glass-effect rounded-lg hover:bg-white/10 transition-colors"
+                          className="p-1.5 sm:p-2 glass-effect rounded-lg hover-accent-soft transition-colors"
                         >
                           <Github size={18} />
                         </a>
@@ -191,7 +191,7 @@ const Projects = () => {
           </div>
         )}
 
-        <div className="mt-10 glass-effect rounded-xl p-4 sm:p-6 text-gray-300 text-sm sm:text-base">
+        <div className="mt-10 card-surface rounded-xl p-4 sm:p-6 text-muted text-sm sm:text-base">
           {t("more_project")}
         </div>
       </motion.div>
