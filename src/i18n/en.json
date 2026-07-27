@@ -46,5 +46,11 @@
   "demo_disabled": "Demo Disabled",
   "demo_offline": "Demo Offline",
   "try_demo": "Try Demo",
-  "source_code": "Source code"
+  "source_code": "Source code",
+  "certifications": {
+    "title": "Official Certifications",
+    "verify": "Verify certification",
+    "showAll": "Expand all",
+    "carouselView": "Carousel view"
+  }
 }

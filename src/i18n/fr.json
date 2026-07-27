@@ -46,5 +46,11 @@
   "demo_disabled": "Démo désactivée",
   "demo_offline": "Démo hors ligne",
   "try_demo": "Essayer la démo",
-  "source_code": "Code source"
+  "source_code": "Code source",
+  "certifications": {
+    "title": "Certifications Officielles",
+    "verify": "Vérifier la certification",
+    "showAll": "Tout voir",
+    "carouselView": "Vue carrousel"
+  }
 }
