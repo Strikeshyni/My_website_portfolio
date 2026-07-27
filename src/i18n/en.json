@@ -42,7 +42,7 @@
   "technical_details": "Technical Details",
   "what_i_learned": "What I learned",
   "future_improvements": "Future improvements",
-  "demo_unavailable_message": "The demo for this project is currently unavailable (No GPU available). You can still explore the project details and source code.",
+  "demo_unavailable_message": "The demo for this project is currently unavailable (No server available). You can still explore the project details and source code.",
   "demo_disabled": "Demo Disabled",
   "demo_offline": "Demo Offline",
   "try_demo": "Try Demo",

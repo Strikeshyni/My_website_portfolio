@@ -42,7 +42,7 @@
   "what_i_learned": "Ce que j'ai appris",
   "future_improvements": "Améliorations futures",
   "about_project": "À propos de ce projet",
-  "demo_unavailable_message": "La démo de ce projet est actuellement indisponible (Pas de GPU disponible). Vous pouvez toujours explorer les détails du projet et le code source.",
+  "demo_unavailable_message": "La démo de ce projet est actuellement indisponible (Pas de serveur disponible). Vous pouvez toujours explorer les détails du projet et le code source.",
   "demo_disabled": "Démo désactivée",
   "demo_offline": "Démo hors ligne",
   "try_demo": "Essayer la démo",
