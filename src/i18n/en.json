@@ -52,5 +52,7 @@
     "verify": "Verify certification",
     "showAll": "Expand all",
     "carouselView": "Carousel view"
-  }
+  },
+  "download_cv": "Download my Resume",
+  "companies_title": "Companies I've worked with"
 }
