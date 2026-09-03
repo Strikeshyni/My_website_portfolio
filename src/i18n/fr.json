@@ -52,5 +52,7 @@
     "verify": "Vérifier la certification",
     "showAll": "Tout voir",
     "carouselView": "Vue carrousel"
-  }
+  },
+  "download_cv": "Télécharger mon CV",
+  "companies_title": "Entreprises avec lesquelles j'ai collaboré"
 }

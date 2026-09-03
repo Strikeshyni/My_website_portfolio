@@ -30,14 +30,14 @@ const Contact = () => {
             </p>
 
             <div className="space-y-4">
-              <a href="mailto:abel.aubron@epita.fr" className="flex items-center gap-4">
+              <a href="mailto:abel.aubron%40gmail.com?subject=%5BContact%20via%20Portfolio%5D%20-%20Your%20Subject&cc=abel.aubron%40epita.fr&bcc=abel.aubron%40epita.fr" className="flex items-center gap-4">
                 <div className="p-3 bg-primary/20 rounded-lg">
                   <Mail size={24} className="text-primary hover:text-secondary" />
                 </div>
                 <div>
                   <p className="text-sm text-gray-400">{t("contact_email")}</p>
                   <p className="text-white hover:text-primary">
-                    abel.aubron@epita.fr
+                    abel.aubron@gmail.com
                   </p>
                 </div>
               </a>
