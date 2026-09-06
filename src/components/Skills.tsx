@@ -27,9 +27,9 @@ const Skills: React.FC = () => {
   const [isPaused, setIsPaused] = useState<boolean>(false);
 
   // --- Données existantes ---
-  const languages: string[] = ['Python', 'Java', 'C++', 'JavaScript', 'TypeScript', 'C', 'OCaml', 'Lua'];
-  const aiFrameworks: string[] = ['PyTorch', 'TensorFlow', 'Keras', 'OpenCV'];
-  const dataFrameworks: string[] = ['MongoDB', 'PostgreSQL', 'PySpark', 'ElasticSearch', 'Neo4j', 'Pandas', 'Redis', 'NumPy'];
+  const languages: string[] = ['Python', 'Java', 'JavaScript', 'TypeScript', 'C#', 'C', 'C++', 'SQL', 'HTML', 'OCaml', 'Lua'];
+  const aiFrameworks: string[] = ['PyTorch', 'TensorFlow', 'Keras', 'OpenCV', 'NumPy', 'Pandas', 'Scikit-learn'];
+  const dataFrameworks: string[] = ['MongoDB', 'PostgreSQL', 'MySQL', 'ElasticSearch', 'Neo4j', 'Redis', 'PySpark', 'Hadoop'];
   const deploymentandfrontend: string[] = ['FastAPI', 'Flask', 'Uvicorn', 'React', 'Angular', 'Vue', 'Tailwind CSS', 'Framer Motion'];
   const tools: string[] = ['Git', 'Docker', 'MLflow', 'S3', 'Kubernetes', 'Dataiku', 'MinIO', 'Jira', 'Markdown', 'LaTex'];
   const aiSkills: string[] = [
