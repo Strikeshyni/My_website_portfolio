@@ -8,6 +8,7 @@ const companies = [
   { name: "CNS Communications", logo: "/logos/logo_cns_com.svg", url: "https://www.cns-com.com/" },
   { name: "Duguit Technologies", logo: "/logos/logo_duguit_technologies.png", url: "https://www.duguit-technologies.com/fr/" },
   { name: "Le Mas du Paradis", logo: "/logos/logo_le_mas_du_paradis.jpg", url: "https://lemasduparadispivat.wixsite.com/lemasduparadis-pivat" },
+  { name: "Free Mobile", logo: "/logos/logo_free_mobile.jpg", url: "https://www.free-mobile.fr/" },
 ];
 
 const About = () => {
