@@ -41,8 +41,8 @@ const About = () => {
         {/* Bouton Télécharger le CV - Centré sur tous les écrans */}
         <div className="mt-10 flex justify-center">
           <a
-            href="/CV_Abel_AUBRON_2026_DATA_IA_web_version.pdf"
-            download="CV_Abel_AUBRON_2026_web_version.pdf"
+            href="/CV_Abel_AUBRON_2026_FR.pdf"
+            download="CV_Abel_AUBRON_2026_FR.pdf"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium shadow-lg hover:shadow-purple-500/20 transition-all hover:-translate-y-0.5 active:translate-y-0"
           >
             <svg
