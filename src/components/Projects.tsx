@@ -23,7 +23,7 @@ const Projects = () => {
 
   const [filter, setFilter] = useState<string>('all');
 
-  const categories = ['all', 'demo available', 'web', 'ai', 'other'];
+  const categories = ['all', 'demo available', 'web', 'data/ai', 'other'];
   
   const filteredProjects = filter === 'all' 
     ? projects 

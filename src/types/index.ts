@@ -31,7 +31,7 @@ export interface Project {
   bannerUrl: string;
   githubUrl?: string;
   liveUrl?: string;
-  category: 'web' | 'ai' | 'other';
+  category: 'web' | 'data/ai' | 'other';
   featured: boolean;
   interactive?: boolean;
   interactivePath?: string;
