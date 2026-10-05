@@ -128,11 +128,6 @@ const Projects = () => {
                           {t("demo available")}
                         </span>
                       )}
-                      {project.interactive && !healthStatus[project._id] && (
-                        <span className="absolute top-4 left-4 px-3 py-1 bg-orange-600/90 text-white text-xs font-bold rounded-full backdrop-blur-sm z-10">
-                          {t("demo unavailable")}
-                        </span>
-                      )}
                       {project.interactive && getMaturityBadge(project.maturity)}
                     </div>
                   </Link>
